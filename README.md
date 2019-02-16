@@ -3,10 +3,10 @@ Hotel reservation booking
 
 
 1.Nužne funkcionalnosti:
-Javni dio:
+1.1.Javni dio:
   * prikazuje se kalendar s slobodnim sobama po danu
   * kreiranje rezervacije sobe, odabire se datumi od do, vrsta sobe, unosi se email
-Privatni:
+1.2.Privatni:
   * hotel moze promjeniti status rezervacije, moze ju odbit, prihvatit ...
   * u kalendaru se vide odbijene rezervaciije
   * hotel moze unositi vrste sobe i konkretne sobe 
