@@ -19,11 +19,19 @@
             <li class="nav-item active">
                 <a class="nav-link" href="{{ path('index') }}">Home</a>
             </li>
+            {% if is_granted('ROLE_USER') %}
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('create-category') }}">Dodaj kategoriju</a>
+            </li>
+            {% endif %}
         </ul>
     </div>
     <div class="navbar-collapse">
         <ul class="navbar-nav ml-auto">
             {% if is_granted('ROLE_USER') %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('admin') }}">Admin</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_logout') }}">Logout</a>
                 </li>

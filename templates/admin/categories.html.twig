@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h3>Enter new subcategory</h3>
+    {{ form_start(form) }}
+        {{ form_row(form.name) }}
+        <button type="submit" class="btn btn-primary" formnovalidate>Save</button>
+    {{ form_end(form) }}
+
+    {% for subCategory in subCategories %}
+        <div class="row">
+            <div class="col-6">
+                <p>{{ subCategory.name }}</p>
+            </div>
+        </div>
+    {% endfor %}
+
+    <h3>Enter new category</h3>
+
+{% endblock %}
