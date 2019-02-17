@@ -3,9 +3,14 @@
 
 namespace App\Controller;
 
-
+use App\Entity\SubCategory;
+use App\Form\SubCategoryFormType;
+use App\Repository\SubCategoryRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -18,6 +23,43 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
  */
 class AdminController extends AbstractController
 {
+
+    /**
+     * @Route("/admin", name="admin")
+     */
+    public function index()
+    {
+        return $this->render('admin/index.html.twig');
+    }
+
+    /**
+     * @Route("/create-category", name="create-category")
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @param SubCategoryRepository $subCategoryRepository
+     * @return Response
+     */
+    public function createCategory(Request $request, EntityManagerInterface $entityManager, SubCategoryRepository
+    $subCategoryRepository)
+    {
+        $form = $this->createForm(SubCategoryFormType::class);
+        $form->handleRequest($request);
+        if ($this->isGranted('ROLE_USER') && $form->isSubmitted() && $form->isValid()) {
+
+            $subCategory = $form->getData();
+            $entityManager->persist($subCategoryRepository);
+            $entityManager->flush();
+            $this->addFlash('succes', 'New subcategory created');
+            return $this->redirectToRoute('create-category');
+        }
+
+        $subCategory = $subCategoryRepository->getAll();
+
+        return $this->render('admin/categories.html.twig', [
+           'form' => $form->createView(),
+           'subCategories' => $subCategory
+        ]);
+    }
 
     /**
      * @Route("/login", name="app_login")

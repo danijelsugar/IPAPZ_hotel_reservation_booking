@@ -13,4 +13,11 @@ class SubCategoryRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, SubCategory::class);
     }
+
+    public function getAll()
+    {
+        return $this->createQueryBuilder('s')
+            ->getQuery()
+            ->getResult();
+    }
 }
