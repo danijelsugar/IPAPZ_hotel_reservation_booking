@@ -34,7 +34,7 @@ class Category
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\SubCategory", inversedBy="categories")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, referencedColumnName="id")
      */
     private $subcategory;
 
@@ -94,7 +94,7 @@ class Category
     /**
      * @return mixed
      */
-    public function getSubCategory(): SubCategory
+    public function getSubCategory()
     {
         return $this->subcategory;
     }

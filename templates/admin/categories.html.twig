@@ -4,7 +4,8 @@
     <h3>Enter new subcategory</h3>
     {{ form_start(form) }}
         {{ form_row(form.name) }}
-        <button type="submit" class="btn btn-primary" formnovalidate>Save</button>
+        <button type="submit" class="btn btn-primary mt-3" formnovalidate>Save</button>
+    <hr>
     {{ form_end(form) }}
 
     {% for subCategory in subCategories %}
@@ -16,5 +17,23 @@
     {% endfor %}
 
     <h3>Enter new category</h3>
+    {{ form_start(categoryForm) }}
+        {{ form_row(categoryForm.name) }}
+        {{ form_row(categoryForm.subcategory) }}
+    <button type="submit" class="btn btn-primary mt-3" formnovalidate>Save</button>
+    <hr>
+    {{ form_end(categoryForm) }}
+
+    {% for category in categories %}
+        <div class="row">
+            <div class="col-6">
+                <p>{{ category.name }}</p>
+                <p>{{ category.subcategory.name }}</p>
+            </div>
+        </div>
+    {% endfor %}
+
+
+
 
 {% endblock %}

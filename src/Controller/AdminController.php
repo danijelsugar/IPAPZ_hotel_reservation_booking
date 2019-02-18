@@ -4,7 +4,10 @@
 namespace App\Controller;
 
 use App\Entity\SubCategory;
+use App\Entity\Category;
+use App\Form\CategoryFormType;
 use App\Form\SubCategoryFormType;
+use App\Repository\CategoryRepository;
 use App\Repository\SubCategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,7 +28,7 @@ class AdminController extends AbstractController
 {
 
     /**
-     * @Route("/admin", name="admin")
+     * @Route("/", name="home")
      */
     public function index()
     {
@@ -36,28 +39,48 @@ class AdminController extends AbstractController
      * @Route("/create-category", name="create-category")
      * @param Request $request
      * @param EntityManagerInterface $entityManager
+     * @param CategoryRepository $categoryRepository
      * @param SubCategoryRepository $subCategoryRepository
      * @return Response
      */
     public function createCategory(Request $request, EntityManagerInterface $entityManager, SubCategoryRepository
-    $subCategoryRepository)
+    $subCategoryRepository, CategoryRepository $categoryRepository)
     {
         $form = $this->createForm(SubCategoryFormType::class);
-        $form->handleRequest($request);
-        if ($this->isGranted('ROLE_USER') && $form->isSubmitted() && $form->isValid()) {
 
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            /** @var SubCategory $subCategory */
             $subCategory = $form->getData();
-            $entityManager->persist($subCategoryRepository);
+            $entityManager->persist($subCategory);
             $entityManager->flush();
-            $this->addFlash('succes', 'New subcategory created');
+
             return $this->redirectToRoute('create-category');
         }
 
+        $categoryForm = $this->createForm(CategoryFormType::class);
+        $categoryForm->handleRequest($request);
+        if ($categoryForm->isSubmitted() && $categoryForm->isValid()) {
+
+            /** @var Category $category */
+            $category = $categoryForm->getData();
+            $entityManager->persist($category);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('create-category');
+        }
+
+
         $subCategory = $subCategoryRepository->getAll();
+        $category = $categoryRepository->getAll();
 
         return $this->render('admin/categories.html.twig', [
            'form' => $form->createView(),
-           'subCategories' => $subCategory
+           'subCategories' => $subCategory,
+           'categoryForm' => $categoryForm->createView(),
+           'categories' => $category
+
         ]);
     }
 

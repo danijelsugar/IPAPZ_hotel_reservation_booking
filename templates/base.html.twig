@@ -17,7 +17,7 @@
     <div class="navbar-collapse">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="{{ path('index') }}">Home</a>
+                <a class="nav-link" href="{{ path('home') }}">Home</a>
             </li>
             {% if is_granted('ROLE_USER') %}
             <li class="nav-item">
@@ -30,7 +30,7 @@
         <ul class="navbar-nav ml-auto">
             {% if is_granted('ROLE_USER') %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('admin') }}">Admin</a>
+                    <a class="nav-link" href="">Admin</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_logout') }}">Logout</a>
