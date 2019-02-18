@@ -31,9 +31,15 @@ class Room
     private $category;
 
     /**
-     * @ORM\Column(type="boolean", options={"default":"0"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\SubCategory", inversedBy="rooms")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $status;
+    private $subcategory;
+
+    /**
+     * @ORM\Column(type="boolean", options={"default":0})
+     */
+    private $status = 0;
 
     /**
      * @return mixed
@@ -73,6 +79,22 @@ class Room
     public function setCategory($category): void
     {
         $this->category = $category;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSubcategory()
+    {
+        return $this->subcategory;
+    }
+
+    /**
+     * @param mixed $subcategory
+     */
+    public function setSubcategory($subcategory): void
+    {
+        $this->subcategory = $subcategory;
     }
 
     /**

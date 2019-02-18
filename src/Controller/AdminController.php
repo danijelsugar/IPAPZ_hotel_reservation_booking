@@ -5,7 +5,9 @@ namespace App\Controller;
 
 use App\Entity\SubCategory;
 use App\Entity\Category;
+use App\Entity\Room;
 use App\Form\CategoryFormType;
+use App\Form\RoomFormType;
 use App\Form\SubCategoryFormType;
 use App\Repository\CategoryRepository;
 use App\Repository\SubCategoryRepository;
@@ -32,7 +34,7 @@ class AdminController extends AbstractController
      */
     public function index()
     {
-        return $this->render('admin/index.html.twig');
+        return $this->render('home/index.html.twig');
     }
 
     /**
@@ -81,6 +83,67 @@ class AdminController extends AbstractController
            'categoryForm' => $categoryForm->createView(),
            'categories' => $category
 
+        ]);
+    }
+
+    /**
+     * @Route("/edit-subcategory/{id}", name="edit-subcategory")
+     * Method({"GET", "POST"})
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @param SubCategoryRepository $subCategoryRepository
+     * @param $id
+     * @return Response
+     */
+    public function editSubcategory(Request $request, EntityManagerInterface $entityManager, SubCategoryRepository
+    $subCategoryRepository, $id)
+    {
+        $form = $this->createForm(SubCategoryFormType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var SubCategory $subCategory */
+            $subCategory = $form->getData();
+            $entityManager->persist($subCategory);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('edit-subcategory', [
+                'id' => $subCategory->getId()
+            ]);
+        }
+
+        $subCategory = $subCategoryRepository->find($id);
+
+        return $this->render('admin/edit_subcategory.html.twig', [
+           'form' => $form->createView(),
+            'subCategory' => $subCategory
+        ]);
+
+
+    }
+
+    /**
+     * @Route("/create-room", name="create-room")
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     */
+    public function createRoom(Request $request, EntityManagerInterface $entityManager)
+    {
+        $form = $this->createForm(RoomFormType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Room $room */
+            $room = $form->getData();
+            $entityManager->persist($room);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('create-room');
+        }
+
+        return $this->render('admin/rooms.html.twig', [
+            'form' => $form->createView()
         ]);
     }
 

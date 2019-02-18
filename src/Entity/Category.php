@@ -33,12 +33,6 @@ class Category
     private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\SubCategory", inversedBy="categories")
-     * @ORM\JoinColumn(nullable=false, referencedColumnName="id")
-     */
-    private $subcategory;
-
-    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Room", mappedBy="category")
      */
     private $rooms;
@@ -81,22 +75,6 @@ class Category
     public function setName($name): void
     {
         $this->name = $name;
-    }
-
-    /**
-     * @param mixed $subcategory
-     */
-    public function setSubCategory($subcategory): void
-    {
-        $this->subcategory = $subcategory;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getSubCategory()
-    {
-        return $this->subcategory;
     }
 
 }

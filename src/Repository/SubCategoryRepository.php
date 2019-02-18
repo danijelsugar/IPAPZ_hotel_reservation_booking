@@ -20,4 +20,16 @@ class SubCategoryRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+ public function find($id, $lockMode = null, $lockVersion = null)
+ {
+     return $this->createQueryBuilder('s')
+         ->select('s.name')
+         ->where('s.id <= :id')
+         ->setParameter(':id', $id)
+         ->getQuery()
+         ->getResult();
+ }
+
+
 }

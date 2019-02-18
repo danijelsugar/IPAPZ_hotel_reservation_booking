@@ -6,7 +6,6 @@ namespace App\Form;
 
 use App\Entity\Category;
 
-
 use App\Entity\SubCategory;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -27,14 +26,8 @@ class CategoryFormType extends AbstractType
                 'attr' => [
                     'class' => 'form-control'
                 ]
-            ])
-            ->add('subcategory', EntityType::class, [
-                'class' => SubCategory::class,
-                'choice_label' => 'name',
-                'attr' => [
-                    'class' => 'form-control'
-                ]
             ]);
+
     }
 
     public function configureOptions(OptionsResolver $resolver)

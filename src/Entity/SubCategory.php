@@ -34,24 +34,24 @@ class SubCategory
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Category", mappedBy="subcategory")
+     * @ORM\OneToMany(targetEntity="App\Entity\Room", mappedBy="subcategory")
      */
-    private $categories;
+    private $rooms;
 
     /**
-     * @return Collection|Category[]
+     * @return Collection|Room[]
      */
-    public function getCategories()
+    public function getRooms()
     {
-        return $this->categories;
+        return $this->rooms;
     }
 
     /**
      * @param mixed $categories
      */
-    public function setCategories($categories): void
+    public function setRooms($rooms): void
     {
-        $this->categories = $categories;
+        $this->rooms = $rooms;
     }
 
     /**

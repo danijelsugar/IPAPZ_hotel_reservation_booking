@@ -3,22 +3,26 @@
 
 namespace App\Controller;
 
+use App\Repository\RoomRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 
 class IndexController extends AbstractController
 {
     /**
-     * @Route("/", name="index")
+     * @Route("/", name="home")
+     * @param RoomRepository $roomRepository
+     * @return Response
      */
-    public function index()
+    public function index(RoomRepository $roomRepository)
     {
-        $a = 'Hello';
-        $p = password_hash("pero336", PASSWORD_DEFAULT);
+
+        $room = $roomRepository->getAll();
+
         return $this->render('home/index.html.twig', [
-            'a' => $a,
-            'p' => $p
+            'rooms' => $room
         ]);
     }
 
