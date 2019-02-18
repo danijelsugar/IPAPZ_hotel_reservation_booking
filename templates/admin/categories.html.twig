@@ -1,6 +1,43 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+
+    <div class="row">
+        <div class="col-12">
+            <h3>Enter new category</h3>
+            {{ form_start(categoryForm) }}
+                {{ form_row(categoryForm.name) }}
+
+                <button type="submit" class="btn btn-primary mt-3" formnovalidate>Save</button>
+                <hr>
+            {{ form_end(categoryForm) }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for category in categories %}
+                    <tr>
+                        <td>{{ category.name }}</td>
+                        <td>
+                            <a class="btn btn-dark" href="">Edit</a>
+                            <a class="btn btn-danger" href="">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-12">
             <h3>Enter new subcategory</h3>
@@ -16,55 +53,17 @@
         <div class="col-12">
             <table class="table">
                 <thead class="thead-dark">
-                    <tr>
-                        <th>Name</th>
-                        <th>Action</th>
-                    </tr>
+                <tr>
+                    <th>Name</th>
+                    <th>Action</th>
+                </tr>
                 </thead>
                 <tbody>
-                    {% for subCategory in subCategories %}
-                        <tr>
-                            <td>{{ subCategory.name }}</td>
-                            <td>
-                                <a class="btn btn-dark" href="">Edit</a>
-                                <a class="btn btn-danger" href="">Delete</a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-12">
-            <h3>Enter new category</h3>
-            {{ form_start(categoryForm) }}
-            {{ form_row(categoryForm.name) }}
-            {{ form_row(categoryForm.subcategory) }}
-            <button type="submit" class="btn btn-primary mt-3" formnovalidate>Save</button>
-            <hr>
-            {{ form_end(categoryForm) }}
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-12">
-            <table class="table">
-                <thead class="thead-dark">
+                {% for subCategory in subCategories %}
                     <tr>
-                        <th>Name</th>
-                        <th>Subcategory</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for category in categories %}
-                    <tr>
-                        <td>{{ category.name }}</td>
-                        <td>{{ category.subcategory.name }}</td>
+                        <td>{{ subCategory.name }}</td>
                         <td>
-                            <a class="btn btn-dark" href="">Edit</a>
+                            <a class="btn btn-dark" href="{{ path('edit-subcategory', {'id': subCategory.id})  }}">Edit</a>
                             <a class="btn btn-danger" href="">Delete</a>
                         </td>
                     </tr>
