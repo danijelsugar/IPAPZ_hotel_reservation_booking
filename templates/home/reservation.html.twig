@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-12">
+            {% for room in rooms %}
+                {% if room.amount != 0 %}
+                    <div class="row">
+                        <div class="col-12">
+                            <p>{{ room.category.name }} {{ room.subcategory.name }}</p>
+                        </div>
+                    </div>
+                    <div class="row room-desc">
+                        <div class="col-4">
+                            <img src="https://via.placeholder.com/150x100C/O https://placeholder.com/ " alt="">
+                        </div>
+                        <div class="col-4">
+                            <p>{{ room.description }}</p>
+                        </div>
+                        <div class="col-4">
+                            <a class="btn btn-primary" href="{{ path('book', {'id': room.id}) }}">Book</a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <p>Amount: {{ room.amount }}</p>
+                        </div>
+                    </div>
+                    <hr>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    <h1>Reservations</h1>
+
+
+
+{% endblock %}
