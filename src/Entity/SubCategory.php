@@ -16,7 +16,7 @@ class SubCategory
 
     public function __construct()
     {
-        $this->categories = new ArrayCollection();
+        $this->rooms = new ArrayCollection();
     }
 
 
@@ -47,7 +47,7 @@ class SubCategory
     }
 
     /**
-     * @param mixed $categories
+     * @param mixed $rooms
      */
     public function setRooms($rooms): void
     {
