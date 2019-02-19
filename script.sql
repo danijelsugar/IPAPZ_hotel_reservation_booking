@@ -36,3 +36,4 @@ alter table room add foreign key (category) references category(id);
 alter table subcategory add foreign key (category) references category(id);
 
 alter table reservation add foreign key (room) references room(id);
+

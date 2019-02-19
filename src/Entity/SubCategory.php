@@ -33,9 +33,7 @@ class SubCategory
      */
     private $name;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Room", mappedBy="subcategory")
-     */
+
     private $rooms;
 
     /**

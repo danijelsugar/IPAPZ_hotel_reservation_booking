@@ -25,13 +25,13 @@ class Room
     private $description;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="rooms")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Category")
      * @ORM\JoinColumn(nullable=false)
      */
     private $category;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\SubCategory", inversedBy="rooms")
+     * @ORM\ManyToOne(targetEntity="App\Entity\SubCategory")
      * @ORM\JoinColumn(nullable=false)
      */
     private $subcategory;

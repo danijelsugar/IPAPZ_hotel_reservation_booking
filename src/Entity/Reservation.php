@@ -20,8 +20,7 @@ class Reservation
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Room", inversedBy="id")
-     * @ORM\JoinColumn(referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Room")
      */
     private $room;
 

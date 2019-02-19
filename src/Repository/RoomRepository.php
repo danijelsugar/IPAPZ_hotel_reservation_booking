@@ -15,19 +15,7 @@ class RoomRepository extends ServiceEntityRepository
         parent::__construct($registry, Room::class);
     }
 
-    public function getAll()
-    {
-        return $this->createQueryBuilder('r')
-            ->getQuery()
-            ->getResult();
-    }
 
-    public function find($id, $lockMode = null, $lockVersion = null)
-    {
-        return $this->createQueryBuilder('r')
-            ->where('r.id=:id')
-            ->setParameter(':id',$id)
-            ->getQuery()
-            ->getResult();
-    }
+
+
 }
