@@ -21,4 +21,13 @@ class RoomRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function find($id, $lockMode = null, $lockVersion = null)
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.id=:id')
+            ->setParameter(':id',$id)
+            ->getQuery()
+            ->getResult();
+    }
 }

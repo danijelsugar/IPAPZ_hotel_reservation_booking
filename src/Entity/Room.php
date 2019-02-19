@@ -42,6 +42,11 @@ class Room
     private $status = 0;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $amount;
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -111,5 +116,21 @@ class Room
     public function setStatus($status): void
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAmount()
+    {
+        return $this->amount;
+    }
+
+    /**
+     * @param mixed $amount
+     */
+    public function setAmount($amount): void
+    {
+        $this->amount = $amount;
     }
 }
