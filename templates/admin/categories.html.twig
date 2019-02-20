@@ -28,7 +28,7 @@
                     <tr>
                         <td>{{ category.name }}</td>
                         <td>
-                            <a class="btn btn-dark" href="">Edit</a>
+                            <a class="btn btn-dark" href="{{ path('edit-category', {'id': category.id}) }}">Edit</a>
                             <a class="btn btn-danger" href="">Delete</a>
                         </td>
                     </tr>

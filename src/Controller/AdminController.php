@@ -88,7 +88,6 @@ class AdminController extends AbstractController
 
     /**
      * @Route("/edit-subcategory/{id}", name="edit-subcategory")
-     * Method({"GET", "POST"})
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param SubCategoryRepository $subCategoryRepository
@@ -99,8 +98,11 @@ class AdminController extends AbstractController
     $subCategoryRepository, $id)
     {
 
+        $subCategory = $subCategoryRepository->findOneBy([
+           'id' => $id
+        ]);
 
-        $form = $this->createForm(SubCategoryFormType::class);
+        $form = $this->createForm(SubCategoryFormType::class, $subCategory);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -114,13 +116,46 @@ class AdminController extends AbstractController
             ]);
         }
 
-        $subCategory = $subCategoryRepository->find($id);
 
         return $this->render('admin/edit_subcategory.html.twig', [
-           'form' => $form->createView(),
-            'subCategory' => $subCategory
+           'form' => $form->createView()
         ]);
 
+
+    }
+
+    /**
+     * @Route("/edit-category/{id}", name="edit-category")
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @param CategoryRepository $categoryRepository
+     * @param $id
+     * @return Response
+     */
+    public function editCategory(Request $request, EntityManagerInterface $entityManager, CategoryRepository
+    $categoryRepository, $id)
+    {
+        $category = $categoryRepository->findOneBy([
+            'id' => $id
+        ]);
+
+        $form = $this->createForm(CategoryFormType::class, $category);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Category $category */
+            $category = $form->getData();
+            $entityManager->persist($category);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('edit-category', [
+                'id' => $category->getId()
+            ]);
+        }
+
+        return $this->render('admin/edit_category.html.twig', [
+            'form' => $form->createView()
+        ]);
 
     }
 
