@@ -7,12 +7,13 @@
         {% if reservation.status is same as(false) %}
             <div class="row">
                 <div class="col-6">
-                    <p>Date from: {{ reservation.datefrom|date('d.m.Y') }}</p>
-                    <p>Date to: {{ reservation.dateto|date('d.m.Y') }}</p>
-                    <p>Email: {{ reservation.email }}</p>
+                    <p><strong>Date from:</strong> {{ reservation.datefrom|date('d.m.Y') }}</p>
+                    <p><strong>Date to:</strong> {{ reservation.dateto|date('d.m.Y') }}</p>
+                    <p><strong>Email:</strong> {{ reservation.email }}</p>
+                    <p><strong>Room:</strong> {{ reservation.room.category.name }} {{ reservation.room.subcategory.name }}</p>
                 </div>
-                <div class="col-6">
-                    <a class="btn btn-primary" href="{{ path('accept', {'id': reservation.id}) }}">Accept</a>
+                <div class="dec-acc col-6">
+                    <a class="btn btn-primary" href="{{ path('accept', {'id': reservation.id, 'roomid': reservation.room.id}) }}">Accept</a>
                 </div>
             </div>
             <hr>

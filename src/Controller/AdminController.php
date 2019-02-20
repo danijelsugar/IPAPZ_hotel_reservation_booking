@@ -12,6 +12,7 @@ use App\Form\RoomFormType;
 use App\Form\SubCategoryFormType;
 use App\Repository\CategoryRepository;
 use App\Repository\ReservationRepository;
+use App\Repository\RoomRepository;
 use App\Repository\SubCategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -259,14 +260,53 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("accept/{id}", name="accept")
+     * @Route("accept/{id}/{roomid}", name="accept")
      * @param EntityManagerInterface $entityManager
      * @param ReservationRepository $reservationRepository
+     * @param RoomRepository $roomRepository
      * @param $id
+     * @param $roomid
      * @return Response
      */
-    public function acceptReservation(EntityManagerInterface $entityManager, ReservationRepository $reservationRepository,
-    $id)
+    public function acceptReservation(EntityManagerInterface $entityManager, ReservationRepository
+    $reservationRepository, RoomRepository $roomRepository, $id, $roomid)
+    {
+        $reservation = $reservationRepository->findOneBy([
+            'id' => $id
+        ]);
+
+        /** @var Reservation $reservation */
+        $reservation->setStatus(1);
+        $entityManager->flush();
+
+        $room = $roomRepository->findOneBy([
+           'id' => $roomid
+        ]);
+
+        /** @var Room $room */
+        $amount = $room->getAmount();
+        $after = --$amount;
+        $room->setAmount($after);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('reservations', [
+            'reservations' => $reservation
+        ]);
+
+
+    }
+
+    /**
+     * @Route("decline/{id}/{roomid}", name="decline")
+     * @param EntityManagerInterface $entityManager
+     * @param ReservationRepository $reservationRepository
+     * @param RoomRepository $roomRepository
+     * @param $id
+     * @param $roomid
+     * @return Response
+     */
+    public function declineReservation(EntityManagerInterface $entityManager, ReservationRepository
+    $reservationRepository, RoomRepository $roomRepository, $id, $roomid)
     {
         $reservation = $reservationRepository->findOneBy([
             'id' => $id
@@ -274,10 +314,21 @@ class AdminController extends AbstractController
 
 
         /** @var Reservation $reservation */
-        $reservation->setStatus(1);
+        $reservation->setStatus(0);
         $entityManager->flush();
 
-        return $this->redirectToRoute('reservations', [
+        $room = $roomRepository->findOneBy([
+            'id' => $roomid
+        ]);
+
+        /** @var Room $room */
+        $amount = $room->getAmount();
+        $after = ++$amount;
+        $room->setAmount($after);
+
+        $entityManager->flush();
+
+        return $this->redirectToRoute('accepted', [
             'reservations' => $reservation
         ]);
 
