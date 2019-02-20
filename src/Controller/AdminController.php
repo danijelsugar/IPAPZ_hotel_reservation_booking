@@ -108,10 +108,9 @@ class AdminController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var SubCategory $subCategory */
             $subCategory = $form->getData();
-            $entityManager->persist($subCategory);
             $entityManager->flush();
 
-            return $this->redirectToRoute('edit-subcategory', [
+            return $this->redirectToRoute('create-category', [
                 'id' => $subCategory->getId()
             ]);
         }
@@ -122,6 +121,46 @@ class AdminController extends AbstractController
         ]);
 
 
+    }
+
+    /**
+     * @Route("/delete-subcategory/{id}", name="delete-subcategory")
+     * @param EntityManagerInterface $entityManager
+     * @param SubCategoryRepository $subCategoryRepository
+     * @param $id
+     * @return Response
+     */
+    public function deleteSubcategory(EntityManagerInterface $entityManager, SubCategoryRepository
+    $subCategoryRepository, $id)
+    {
+        $subCategory = $subCategoryRepository->findOneBy([
+            'id' => $id
+        ]);
+
+        $entityManager->remove($subCategory);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('create-category');
+
+    }
+
+    /**
+     * @Route("/delete-category/{id}", name="delete-category")
+     * @param EntityManagerInterface $entityManager
+     * @param CategoryRepository $categoryRepository
+     * @param $id
+     * @return Response
+     */
+    public function deleteCategory(EntityManagerInterface $entityManager, CategoryRepository $categoryRepository, $id)
+    {
+        $category = $categoryRepository->findOneBy([
+            'id' => $id
+        ]);
+
+        $entityManager->remove($category);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('create-category');
     }
 
     /**
@@ -145,10 +184,9 @@ class AdminController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var Category $category */
             $category = $form->getData();
-            $entityManager->persist($category);
             $entityManager->flush();
 
-            return $this->redirectToRoute('edit-category', [
+            return $this->redirectToRoute('create-category', [
                 'id' => $category->getId()
             ]);
         }

@@ -29,7 +29,7 @@
                         <td>{{ category.name }}</td>
                         <td>
                             <a class="btn btn-dark" href="{{ path('edit-category', {'id': category.id}) }}">Edit</a>
-                            <a class="btn btn-danger" href="">Delete</a>
+                            <a class="btn btn-danger" href="{{ path('delete-category', {'id': category.id}) }}">Delete</a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -64,7 +64,7 @@
                         <td>{{ subCategory.name }}</td>
                         <td>
                             <a class="btn btn-dark" href="{{ path('edit-subcategory', {'id': subCategory.id})  }}">Edit</a>
-                            <a class="btn btn-danger" href="">Delete</a>
+                            <a class="btn btn-danger" href="{{ path('delete-subcategory', {'id': subCategory.id}) }}">Delete</a>
                         </td>
                     </tr>
                 {% endfor %}
