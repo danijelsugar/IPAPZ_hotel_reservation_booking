@@ -7,6 +7,7 @@ use App\Entity\Category;
 use App\Entity\Reservation;
 use App\Entity\Room;
 use App\Form\ReservationFormType;
+use App\Form\RoomFormType;
 use App\Repository\RoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -32,11 +33,11 @@ class IndexController extends AbstractController
     }
 
     /**
-     * @Route("/reservations", name="reservations")
+     * @Route("/rooms", name="rooms")
      * @param RoomRepository $roomRepository
      * @return Response
      */
-    public function reservation(RoomRepository $roomRepository)
+    public function room(RoomRepository $roomRepository)
     {
         $room = $roomRepository->findAll();
 
@@ -59,15 +60,13 @@ class IndexController extends AbstractController
             $form->handleRequest($request);
 
           if ($form->isSubmitted() && $form->isValid()) {
-
+              /** @var Reservation $reservation */
               $reservation = $form->getData();
               $reservation->setRoom($room);
               $entityManager->persist($reservation);
               $entityManager->flush();
 
-              return $this->redirectToRoute('home/book.html.twig', [
-                  'id' => $room->getId()
-              ]);
+              return $this->redirectToRoute('rooms');
           }
 
 
@@ -75,6 +74,39 @@ class IndexController extends AbstractController
             'form' => $form->createView(),
             'room' => $room
         ]);
+    }
+
+    /**
+     * @Route("edit-room/{id}", name="edit-room")
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @param RoomRepository $roomRepository
+     * @param $id
+     * @return Response
+     */
+    public function editRoom(Request $request, EntityManagerInterface $entityManager, RoomRepository $roomRepository, $id)
+    {
+
+        $room = $roomRepository->findOneBy([
+            'id' => $id
+        ]);
+
+        $form = $this->createForm(RoomFormType::class, $room);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Room $room */
+            $room = $form->getData();
+            $entityManager->flush();
+
+            return $this->redirectToRoute('reservations');
+        }
+
+
+        return $this->render('home/edit_room.html.twig', [
+            'form' => $form->createView()
+        ]);
+
     }
 
 }
