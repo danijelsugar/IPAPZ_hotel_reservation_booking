@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    <h1>Reservations</h1>
     <div class="row">
         <div class="col-12">
             {% for room in rooms %}
@@ -19,6 +20,10 @@
                         </div>
                         <div class="col-4">
                             <a class="btn btn-primary" href="{{ path('book', {'id': room.id}) }}">Book</a>
+                            {% if is_granted('ROLE_USER') %}
+                                <a class="btn btn-info" href="{{ path('edit-room', {'id': room.id}) }}">Edit</a>
+                                <a class="btn btn-danger" href="">Delete</a>
+                            {% endif %}
                         </div>
                     </div>
                     <div class="row">
@@ -31,7 +36,7 @@
             {% endfor %}
         </div>
     </div>
-    <h1>Reservations</h1>
+
 
 
 

@@ -3,6 +3,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Reservation;
 use App\Entity\SubCategory;
 use App\Entity\Category;
 use App\Entity\Room;
@@ -10,6 +11,7 @@ use App\Form\CategoryFormType;
 use App\Form\RoomFormType;
 use App\Form\SubCategoryFormType;
 use App\Repository\CategoryRepository;
+use App\Repository\ReservationRepository;
 use App\Repository\SubCategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -48,42 +50,48 @@ class AdminController extends AbstractController
     public function createCategory(Request $request, EntityManagerInterface $entityManager, SubCategoryRepository
     $subCategoryRepository, CategoryRepository $categoryRepository)
     {
-        $form = $this->createForm(SubCategoryFormType::class);
+        if ($this->isGranted('IS_AUTHENTICATED_FULLY')) {
 
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
 
-            /** @var SubCategory $subCategory */
-            $subCategory = $form->getData();
-            $entityManager->persist($subCategory);
-            $entityManager->flush();
+            $form = $this->createForm(SubCategoryFormType::class);
 
-            return $this->redirectToRoute('create-category');
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+
+                /** @var SubCategory $subCategory */
+                $subCategory = $form->getData();
+                $entityManager->persist($subCategory);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('create-category');
+            }
+
+            $categoryForm = $this->createForm(CategoryFormType::class);
+            $categoryForm->handleRequest($request);
+            if ($categoryForm->isSubmitted() && $categoryForm->isValid()) {
+
+                /** @var Category $category */
+                $category = $categoryForm->getData();
+                $entityManager->persist($category);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('create-category');
+            }
+
+
+            $subCategory = $subCategoryRepository->getAll();
+            $category = $categoryRepository->getAll();
+
+            return $this->render('admin/categories.html.twig', [
+                'form' => $form->createView(),
+                'subCategories' => $subCategory,
+                'categoryForm' => $categoryForm->createView(),
+                'categories' => $category
+
+            ]);
+        } else {
+            return $this->render('404.html.twig');
         }
-
-        $categoryForm = $this->createForm(CategoryFormType::class);
-        $categoryForm->handleRequest($request);
-        if ($categoryForm->isSubmitted() && $categoryForm->isValid()) {
-
-            /** @var Category $category */
-            $category = $categoryForm->getData();
-            $entityManager->persist($category);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('create-category');
-        }
-
-
-        $subCategory = $subCategoryRepository->getAll();
-        $category = $categoryRepository->getAll();
-
-        return $this->render('admin/categories.html.twig', [
-           'form' => $form->createView(),
-           'subCategories' => $subCategory,
-           'categoryForm' => $categoryForm->createView(),
-           'categories' => $category
-
-        ]);
     }
 
     /**
@@ -145,25 +153,6 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/delete-category/{id}", name="delete-category")
-     * @param EntityManagerInterface $entityManager
-     * @param CategoryRepository $categoryRepository
-     * @param $id
-     * @return Response
-     */
-    public function deleteCategory(EntityManagerInterface $entityManager, CategoryRepository $categoryRepository, $id)
-    {
-        $category = $categoryRepository->findOneBy([
-            'id' => $id
-        ]);
-
-        $entityManager->remove($category);
-        $entityManager->flush();
-
-        return $this->redirectToRoute('create-category');
-    }
-
-    /**
      * @Route("/edit-category/{id}", name="edit-category")
      * @param Request $request
      * @param EntityManagerInterface $entityManager
@@ -198,6 +187,25 @@ class AdminController extends AbstractController
     }
 
     /**
+     * @Route("/delete-category/{id}", name="delete-category")
+     * @param EntityManagerInterface $entityManager
+     * @param CategoryRepository $categoryRepository
+     * @param $id
+     * @return Response
+     */
+    public function deleteCategory(EntityManagerInterface $entityManager, CategoryRepository $categoryRepository, $id)
+    {
+        $category = $categoryRepository->findOneBy([
+            'id' => $id
+        ]);
+
+        $entityManager->remove($category);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('create-category');
+    }
+
+    /**
      * @Route("/create-room", name="create-room")
      * @param Request $request
      * @param EntityManagerInterface $entityManager
@@ -220,6 +228,60 @@ class AdminController extends AbstractController
         return $this->render('admin/rooms.html.twig', [
             'form' => $form->createView()
         ]);
+    }
+
+    /**
+     * @Route("/reservations", name="reservations")
+     * @param ReservationRepository $reservationRepository
+     * @return Response
+     */
+    public function reservations(ReservationRepository $reservationRepository)
+    {
+        $reservation = $reservationRepository->findAll();
+
+        return $this->render('admin/admin.html.twig', [
+           'reservations' => $reservation
+        ]);
+    }
+
+    /**
+     * @Route("/accepted", name="accepted")
+     * @param ReservationRepository $reservationRepository
+     * @return Response
+     */
+    public function acceptedReservations(ReservationRepository $reservationRepository)
+    {
+        $reservation = $reservationRepository->findAll();
+
+        return $this->render('admin/accepted.html.twig', [
+            'reservations' => $reservation
+        ]);
+    }
+
+    /**
+     * @Route("accept/{id}", name="accept")
+     * @param EntityManagerInterface $entityManager
+     * @param ReservationRepository $reservationRepository
+     * @param $id
+     * @return Response
+     */
+    public function acceptReservation(EntityManagerInterface $entityManager, ReservationRepository $reservationRepository,
+    $id)
+    {
+        $reservation = $reservationRepository->findOneBy([
+            'id' => $id
+        ]);
+
+
+        /** @var Reservation $reservation */
+        $reservation->setStatus(1);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('reservations', [
+            'reservations' => $reservation
+        ]);
+
+
     }
 
     /**

@@ -21,13 +21,20 @@
                 <a class="nav-link" href="{{ path('home') }}">Home</a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="{{ path('reservations') }}">Reservations</a>
+                <a class="nav-link" href="{{ path('rooms') }}">Reservations</a>
             </li>
         </ul>
     </div>
     <div class="navbar-collapse">
         <ul class="navbar-nav ml-auto">
             {% if is_granted('ROLE_USER') %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Reservations</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{{ path('accepted') }}">Accepted</a>
+                        <a class="dropdown-item" href="{{ path('reservations') }}">Pending</a>
+                    </div>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('create-category') }}">Add category</a>
                 </li>

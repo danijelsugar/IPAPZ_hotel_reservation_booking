@@ -41,9 +41,9 @@ class Reservation
     private $email;
 
     /**
-     * @ORM\Column(type="boolean", options={"default":"0"})
+     * @ORM\Column(type="boolean")
      */
-    private $status;
+    private $status = 0;
 
     /**
      * @return mixed

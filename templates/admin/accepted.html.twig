@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <h2>Dashboard</h2>
+    {% for reservation in reservations %}
+        {% if reservation.status is same as(true) %}
+            <div class="row">
+                <div class="col-6">
+                    <p>Date from: {{ reservation.datefrom|date('d.m.Y') }}</p>
+                    <p>Date to: {{ reservation.dateto|date('d.m.Y') }}</p>
+                    <p>Email: {{ reservation.email }}</p>
+                </div>
+                <div class="col-6">
+                    <a class="btn btn-primary" href="{{ path('accept', {'id': reservation.id}) }}">Accept</a>
+                </div>
+            </div>
+            <hr>
+        {% endif %}
+    {% endfor %}
+
+
+{% endblock %}
