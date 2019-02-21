@@ -240,7 +240,7 @@ class AdminController extends AbstractController
     {
         $reservation = $reservationRepository->findAll();
 
-        return $this->render('admin/admin.html.twig', [
+        return $this->render('admin/pending.html.twig', [
            'reservations' => $reservation
         ]);
     }
@@ -308,15 +308,8 @@ class AdminController extends AbstractController
     public function declineReservation(EntityManagerInterface $entityManager, ReservationRepository
     $reservationRepository, RoomRepository $roomRepository, $id, $roomid)
     {
-        $reservation = $reservationRepository->findOneBy([
-            'id' => $id
-        ]);
 
-
-        /** @var Reservation $reservation */
-        $reservation->setStatus(0);
-        $entityManager->flush();
-
+        /** Getting room info by id and changing room amount */
         $room = $roomRepository->findOneBy([
             'id' => $roomid
         ]);
@@ -328,7 +321,16 @@ class AdminController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->redirectToRoute('accepted', [
+        /** Deleting reservation with given id */
+        $reservation = $reservationRepository->findOneBy([
+            'id' => $id
+        ]);
+
+        /** @var Reservation $reservation */
+        $entityManager->remove($reservation);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('reservations', [
             'reservations' => $reservation
         ]);
 
