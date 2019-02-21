@@ -99,7 +99,7 @@ class IndexController extends AbstractController
             $room = $form->getData();
             $entityManager->flush();
 
-            return $this->redirectToRoute('reservations');
+            return $this->redirectToRoute('rooms');
         }
 
 
