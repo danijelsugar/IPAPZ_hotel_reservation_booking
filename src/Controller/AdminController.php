@@ -32,16 +32,9 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class AdminController extends AbstractController
 {
 
-    /**
-     * @Route("/", name="home")
-     */
-    public function index()
-    {
-        return $this->render('home/index.html.twig');
-    }
 
     /**
-     * @Route("/create-category", name="create-category")
+     * @Route("/admin/create-category", name="admin/create-category")
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param CategoryRepository $categoryRepository
@@ -51,8 +44,6 @@ class AdminController extends AbstractController
     public function createCategory(Request $request, EntityManagerInterface $entityManager, SubCategoryRepository
     $subCategoryRepository, CategoryRepository $categoryRepository)
     {
-        if ($this->isGranted('IS_AUTHENTICATED_FULLY')) {
-
 
             $form = $this->createForm(SubCategoryFormType::class);
 
@@ -80,8 +71,8 @@ class AdminController extends AbstractController
             }
 
 
-            $subCategory = $subCategoryRepository->getAll();
-            $category = $categoryRepository->getAll();
+            $subCategory = $subCategoryRepository->findAll();
+            $category = $categoryRepository->findAll();
 
             return $this->render('admin/categories.html.twig', [
                 'form' => $form->createView(),
@@ -90,13 +81,11 @@ class AdminController extends AbstractController
                 'categories' => $category
 
             ]);
-        } else {
-            return $this->render('404.html.twig');
-        }
+
     }
 
     /**
-     * @Route("/edit-subcategory/{id}", name="edit-subcategory")
+     * @Route("/admin/edit-subcategory/{id}", name="admin/edit-subcategory")
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param SubCategoryRepository $subCategoryRepository
@@ -133,7 +122,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/delete-subcategory/{id}", name="delete-subcategory")
+     * @Route("/admin/delete-subcategory/{id}", name="admin/delete-subcategory")
      * @param EntityManagerInterface $entityManager
      * @param SubCategoryRepository $subCategoryRepository
      * @param $id
@@ -154,7 +143,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/edit-category/{id}", name="edit-category")
+     * @Route("/admin/edit-category/{id}", name="admin/edit-category")
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param CategoryRepository $categoryRepository
@@ -188,7 +177,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/delete-category/{id}", name="delete-category")
+     * @Route("/admin/delete-category/{id}", name="admin/delete-category")
      * @param EntityManagerInterface $entityManager
      * @param CategoryRepository $categoryRepository
      * @param $id
@@ -207,7 +196,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/create-room", name="create-room")
+     * @Route("/admin/create-room", name="admin/create-room")
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @return Response
@@ -232,7 +221,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/reservations", name="reservations")
+     * @Route("/admin/reservations", name="admin/reservations")
      * @param ReservationRepository $reservationRepository
      * @return Response
      */
@@ -246,7 +235,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/accepted", name="accepted")
+     * @Route("/admin/accepted", name="admin/accepted")
      * @param ReservationRepository $reservationRepository
      * @return Response
      */
@@ -260,7 +249,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("accept/{id}/{roomid}", name="accept")
+     * @Route("/admin/accept/{id}/{roomid}", name="admin/accept")
      * @param EntityManagerInterface $entityManager
      * @param ReservationRepository $reservationRepository
      * @param RoomRepository $roomRepository
@@ -297,7 +286,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("decline/{id}/{roomid}", name="decline")
+     * @Route("/admin/decline/{id}/{roomid}", name="admin/decline")
      * @param EntityManagerInterface $entityManager
      * @param ReservationRepository $reservationRepository
      * @param RoomRepository $roomRepository

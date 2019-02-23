@@ -13,8 +13,8 @@
                     <p><strong>Room:</strong> {{ reservation.room.category.name }} {{ reservation.room.subcategory.name }}</p>
                 </div>
                 <div class="dec-acc col-6">
-                    <a class="btn btn-primary" href="{{ path('accept', {'id': reservation.id, 'roomid': reservation.room.id}) }}">Accept</a>
-                    <a class="btn btn-warning" href="{{ path('decline', {'id': reservation.id, 'roomid': reservation.room.id}) }}">Decline</a>
+                    <a class="btn btn-primary" href="{{ path('admin/accept', {'id': reservation.id, 'roomid': reservation.room.id}) }}">Accept</a>
+                    <a class="btn btn-warning" href="{{ path('admin/decline', {'id': reservation.id, 'roomid': reservation.room.id}) }}">Decline</a>
                 </div>
             </div>
             <hr>

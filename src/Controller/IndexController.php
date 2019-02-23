@@ -8,6 +8,8 @@ use App\Entity\Reservation;
 use App\Entity\Room;
 use App\Form\ReservationFormType;
 use App\Form\RoomFormType;
+use App\Repository\EmployeeRepository;
+use App\Repository\ReservationRepository;
 use App\Repository\RoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -21,15 +23,20 @@ class IndexController extends AbstractController
 {
     /**
      * @Route("/", name="home")
-     * @param RoomRepository $roomRepository
+     * @param ReservationRepository $reservationRepository
      * @return Response
      */
-    public function index(RoomRepository $roomRepository)
+    public function index(ReservationRepository $reservationRepository, EmployeeRepository $employeeRepository)
     {
 
+        $employees = $employeeRepository->findAll();
 
+        $reservation = $reservationRepository->findAll();
 
-        return $this->render('home/index.html.twig');
+        return $this->render('home/index.html.twig', [
+            'reservations' => $reservation,
+            'employees' => $employees
+        ]);
     }
 
     /**
@@ -52,12 +59,16 @@ class IndexController extends AbstractController
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @return Response
+     * @throws \Exception
      */
-    public function book(Room $room, Request $request, EntityManagerInterface $entityManager)
+    public function book(Room $room, Request $request, EntityManagerInterface $entityManager )
     {
 
-        $form = $this->createForm(ReservationFormType::class);
-            $form->handleRequest($request);
+        $reserved = new Reservation();
+        $reserved->setDatefrom(new \DateTime());
+        $reserved->setDateto(new \DateTime());
+        $form = $this->createForm(ReservationFormType::class, $reserved);
+        $form->handleRequest($request);
 
           if ($form->isSubmitted() && $form->isValid()) {
               /** @var Reservation $reservation */
@@ -77,7 +88,7 @@ class IndexController extends AbstractController
     }
 
     /**
-     * @Route("edit-room/{id}", name="edit-room")
+     * @Route("/admin/edit-room/{id}", name="admin/edit-room")
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param RoomRepository $roomRepository

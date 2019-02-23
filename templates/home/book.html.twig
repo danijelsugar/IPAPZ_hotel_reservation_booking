@@ -1,5 +1,11 @@
 {% extends 'base.html.twig' %}
 
+
+    {% block stylesheets %}
+        {{ parent() }}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.css">
+    {% endblock %}
+
 {% block body %}
     {% for r in room %}
         <h3>{{ r.category.name }} {{ r.subcategory.name }}</h3>
@@ -9,7 +15,20 @@
         {{ form_row(form.datefrom) }}
         {{ form_row(form.dateto) }}
         {{ form_row(form.email) }}
-
         <button type="submit" class="btn btn-primary mt-3" formnovalidate>Save</button>
     {{ form_end(form) }}
+
 {% endblock %}
+
+     {% block javascripts %}
+         {{ parent() }}
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js"></script>
+         <script>
+             $(document).ready(function() {
+                 $('.js-datepicker').datepicker({
+                     orientation: 'bottom',
+                     format: 'dd.mm.yyyy.'
+                 });
+             });
+         </script>
+     {% endblock %}

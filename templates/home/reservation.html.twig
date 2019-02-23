@@ -21,7 +21,7 @@
                         <div class="col-4">
                             <a class="btn btn-primary" href="{{ path('book', {'id': room.id}) }}">Book</a>
                             {% if is_granted('ROLE_USER') %}
-                                <a class="btn btn-info" href="{{ path('edit-room', {'id': room.id}) }}">Edit</a>
+                                <a class="btn btn-info" href="{{ path('admin/edit-room', {'id': room.id}) }}">Edit</a>
                                 <a class="btn btn-danger" href="">Delete</a>
                             {% endif %}
                         </div>

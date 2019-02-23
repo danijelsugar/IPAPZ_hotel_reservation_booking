@@ -18,12 +18,16 @@ class ReservationFormType extends AbstractType
     {
         $builder
             ->add('datefrom', DateType::class, [
-                'label' => 'From date',
-                'format' => 'd-M-y'
+                'widget' => 'single_text',
+                'attr' => ['class' => 'js-datepicker'],
+                'html5' => false,
+                'format' => 'dd.MM.yyyy.'
             ])
             ->add('dateto', DateType::class, [
-                'label' => 'To date',
-                'format' => 'd-M-y'
+                'widget' => 'single_text',
+                'attr' => ['class' => 'js-datepicker'],
+                'html5' => false,
+                'format' => 'dd.MM.yyyy.'
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Email',

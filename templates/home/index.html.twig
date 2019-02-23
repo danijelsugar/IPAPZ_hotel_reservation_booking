@@ -6,10 +6,41 @@
 
     <div class="row">
         <div class="col-12">
+            {% for reservation in reservations %}
+                <p></p>
+                {{ reservation.email }}
+                {{ reservation.datefrom|date('Y.m.d') }} - {{ reservation.dateto|date('Y.m.d') }}
+                <hr>
+            {% endfor %}
             <div id='calendar'></div>
         </div>
     </div>
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('lib/moment.min.js') }}"></script>
+    <script src="{{ asset('lib/fullcalendar.js') }}"></script>
+    <script>
+        // A $( document ).ready() block.
+        $( document ).ready(function() {
+            $(function() {
 
+                // page is now ready, initialize the calendar...
+            {% for reservation in reservations %}
+                $('#calendar').fullCalendar({
+                    events: [
+                        {
+                            title  : '{{ reservation.room.category.name }} {{ reservation.room.subcategory.name }}',
+                            start  : '{{ reservation.datefrom|date('Y-m-d') }}',
+                            end    : '{{ reservation.dateto|date('Y-m-d') }}'
+                        }
+                    ]
+                })
+            {% endfor %}
+            });
+        });
+
+    </script>
+{% endblock %}
 
 
 

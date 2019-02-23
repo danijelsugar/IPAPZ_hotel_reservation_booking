@@ -32,15 +32,15 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Reservations</a>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="{{ path('accepted') }}">Accepted</a>
-                        <a class="dropdown-item" href="{{ path('reservations') }}">Pending</a>
+                        <a class="dropdown-item" href="{{ path('admin/accepted') }}">Accepted</a>
+                        <a class="dropdown-item" href="{{ path('admin/reservations') }}">Pending</a>
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('create-category') }}">Add category</a>
+                    <a class="nav-link" href="{{ path('admin/create-category') }}">Add category</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('create-room') }}">Add room</a>
+                    <a class="nav-link" href="{{ path('admin/create-room') }}">Add room</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_logout') }}">Logout</a>
@@ -69,42 +69,6 @@
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-    <script src="{{ asset('lib/moment.min.js') }}"></script>
-    <script src="{{ asset('lib/fullcalendar.js') }}"></script>
-    <script>
-        // A $( document ).ready() block.
-        $( document ).ready(function() {
-            $(function() {
-
-                // page is now ready, initialize the calendar...
-
-                $('#calendar').fullCalendar({
-                    // put your options and callbacks here
-                })
-
-            });
-        });
-
-        $('#calendar').fullCalendar({
-            events: [
-                {
-                    title  : 'event1',
-                    start  : '2019-02-02'
-                },
-                {
-                    title  : 'event2',
-                    start  : '2010-01-05',
-                    end    : '2010-01-07'
-                },
-                {
-                    title  : 'event3',
-                    start  : '2010-01-09T12:30:00',
-                    allDay : false // will make the time show
-                }
-            ]
-        });
-
-    </script>
 {% endblock %}
 </body>
 </html>
