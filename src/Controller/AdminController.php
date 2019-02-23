@@ -278,7 +278,7 @@ class AdminController extends AbstractController
         $room->setAmount($after);
         $entityManager->flush();
 
-        return $this->redirectToRoute('reservations', [
+        return $this->redirectToRoute('admin/reservations', [
             'reservations' => $reservation
         ]);
 
@@ -286,7 +286,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/admin/decline/{id}/{roomid}", name="admin/decline")
+     * @Route("/admin/cancel/{id}/{roomid}", name="admin/cancel")
      * @param EntityManagerInterface $entityManager
      * @param ReservationRepository $reservationRepository
      * @param RoomRepository $roomRepository
@@ -294,7 +294,7 @@ class AdminController extends AbstractController
      * @param $roomid
      * @return Response
      */
-    public function declineReservation(EntityManagerInterface $entityManager, ReservationRepository
+    public function cancelReservation(EntityManagerInterface $entityManager, ReservationRepository
     $reservationRepository, RoomRepository $roomRepository, $id, $roomid)
     {
 
@@ -319,7 +319,42 @@ class AdminController extends AbstractController
         $entityManager->remove($reservation);
         $entityManager->flush();
 
-        return $this->redirectToRoute('reservations', [
+        return $this->redirectToRoute('admin/reservations', [
+            'reservations' => $reservation
+        ]);
+
+
+    }
+
+    /**
+     * @Route("/admin/decline/{id}/{roomid}", name="admin/decline")
+     * @param EntityManagerInterface $entityManager
+     * @param ReservationRepository $reservationRepository
+     * @param RoomRepository $roomRepository
+     * @param $id
+     * @param $roomid
+     * @return Response
+     */
+    public function declinelReservation(EntityManagerInterface $entityManager, ReservationRepository
+    $reservationRepository, RoomRepository $roomRepository, $id, $roomid)
+    {
+
+        /** Getting room info by id and changing room amount */
+        $room = $roomRepository->findOneBy([
+            'id' => $roomid
+        ]);
+
+
+        /** Deleting reservation with given id */
+        $reservation = $reservationRepository->findOneBy([
+            'id' => $id
+        ]);
+
+        /** @var Reservation $reservation */
+        $entityManager->remove($reservation);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('admin/reservations', [
             'reservations' => $reservation
         ]);
 
