@@ -22,6 +22,7 @@
                         <th>Last name</th>
                         <th>Email</th>
                         <th>Role</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -31,6 +32,10 @@
                         <td>{{ employee.lastname }}</td>
                         <td>{{ employee.email }}</td>
                         <td>{{ employee.roles|join(', ') }}</td>
+                        <td>
+                            <a class="btn btn-info" href="{{ path('admin/edit-employee', {'id': employee.id}) }}">Edit</a>
+                            <a class="btn btn-danger" href="{{ path('admin/delete-employee', {'id': employee.id}) }}">Delete</a>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
