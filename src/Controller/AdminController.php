@@ -3,11 +3,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Employee;
 use App\Entity\Reservation;
 use App\Entity\SubCategory;
 use App\Entity\Category;
 use App\Entity\Room;
 use App\Form\CategoryFormType;
+use App\Form\EmployeeFormType;
 use App\Form\RoomFormType;
 use App\Form\SubCategoryFormType;
 use App\Repository\CategoryRepository;
@@ -21,6 +23,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 /**
@@ -67,7 +70,7 @@ class AdminController extends AbstractController
                 $entityManager->persist($category);
                 $entityManager->flush();
 
-                return $this->redirectToRoute('create-category');
+                return $this->redirectToRoute('admin/create-category');
             }
 
 
@@ -108,7 +111,7 @@ class AdminController extends AbstractController
             $subCategory = $form->getData();
             $entityManager->flush();
 
-            return $this->redirectToRoute('create-category', [
+            return $this->redirectToRoute('admin/create-category', [
                 'id' => $subCategory->getId()
             ]);
         }
@@ -138,7 +141,7 @@ class AdminController extends AbstractController
         $entityManager->remove($subCategory);
         $entityManager->flush();
 
-        return $this->redirectToRoute('create-category');
+        return $this->redirectToRoute('admin/create-category');
 
     }
 
@@ -165,7 +168,7 @@ class AdminController extends AbstractController
             $category = $form->getData();
             $entityManager->flush();
 
-            return $this->redirectToRoute('create-category', [
+            return $this->redirectToRoute('admin/create-category', [
                 'id' => $category->getId()
             ]);
         }
@@ -192,7 +195,7 @@ class AdminController extends AbstractController
         $entityManager->remove($category);
         $entityManager->flush();
 
-        return $this->redirectToRoute('create-category');
+        return $this->redirectToRoute('admin/create-category');
     }
 
     /**
@@ -212,7 +215,7 @@ class AdminController extends AbstractController
             $entityManager->persist($room);
             $entityManager->flush();
 
-            return $this->redirectToRoute('create-room');
+            return $this->redirectToRoute('admin/create-room');
         }
 
         return $this->render('admin/rooms.html.twig', [
@@ -359,6 +362,45 @@ class AdminController extends AbstractController
         ]);
 
 
+    }
+
+    /**
+     * @Route("admin/employees", name="admin/employees")
+     * @param EntityManagerInterface $entityManager
+     * @param Request $request
+     * @param UserPasswordEncoderInterface $encoder
+     * @return Response
+     */
+    public function newEmployee(EntityManagerInterface $entityManager, Request $request, UserPasswordEncoderInterface
+    $encoder)
+    {
+        $employee = new Employee();
+        $form = $this->createForm(EmployeeFormType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $employee = $form->getData();
+            $employee->setPassword(
+              $encoder->encodePassword(
+                  $employee,
+                  $form->get('password')->getData()
+              )
+            );
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($employee);
+            $entityManager->flush();
+
+
+
+            return $this->redirectToRoute('admin/employees');
+        }
+
+
+
+        return $this->render('admin/employees.html.twig', [
+            'form' => $form->createView()
+        ]);
     }
 
     /**

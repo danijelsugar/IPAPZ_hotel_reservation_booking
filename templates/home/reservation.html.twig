@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+
     <h1>Reservations</h1>
     <div class="row">
         <div class="col-12">
@@ -22,7 +23,7 @@
                             <a class="btn btn-primary" href="{{ path('book', {'id': room.id}) }}">Book</a>
                             {% if is_granted('ROLE_USER') %}
                                 <a class="btn btn-info" href="{{ path('admin/edit-room', {'id': room.id}) }}">Edit</a>
-                                <a class="btn btn-danger" href="">Delete</a>
+                                <a class="btn btn-danger" href="{{ path('admin/delete-room', {'id': room.id}) }}">Delete</a>
                             {% endif %}
                         </div>
                     </div>
