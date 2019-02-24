@@ -37,14 +37,16 @@ class Room
     private $subcategory;
 
     /**
-     * @ORM\Column(type="boolean", options={"default":0})
-     */
-    private $status = 0;
-
-    /**
      * @ORM\Column(type="integer")
      */
     private $amount;
+
+    /**
+     * @ORM\Column(type="string")
+     * @Assert\NotBlank(message="Please, upload the image.")
+     * @Assert\File(mimeTypes={ "image/jpg", "image/jpeg" })
+     */
+    private $image;
 
     /**
      * @return mixed
@@ -105,22 +107,6 @@ class Room
     /**
      * @return mixed
      */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    /**
-     * @param mixed $status
-     */
-    public function setStatus($status): void
-    {
-        $this->status = $status;
-    }
-
-    /**
-     * @return mixed
-     */
     public function getAmount()
     {
         return $this->amount;
@@ -132,5 +118,21 @@ class Room
     public function setAmount($amount): void
     {
         $this->amount = $amount;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    /**
+     * @param mixed $image
+     */
+    public function setImage($image): void
+    {
+        $this->image = $image;
     }
 }
