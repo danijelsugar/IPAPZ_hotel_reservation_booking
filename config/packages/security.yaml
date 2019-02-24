@@ -38,6 +38,9 @@ security:
     access_control:
      - { path: ^/admin/accepted, roles: ROLE_EMPLOYEE }
      - { path: ^/admin/reservations, roles: ROLE_EMPLOYEE }
+     - { path: ^/admin/accept, roles: ROLE_EMPLOYEE }
+     - { path: ^/admin/decline, roles: ROLE_EMPLOYEE }
+     - { path: ^/admin/cancel, roles: ROLE_EMPLOYEE }
      - { path: ^/admin/, roles: ROLE_ADMIN }
 
     # - { path: ^/profile, roles: ROLE_USER }
