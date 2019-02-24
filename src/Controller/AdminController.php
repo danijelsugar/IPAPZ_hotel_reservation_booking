@@ -13,6 +13,7 @@ use App\Form\EmployeeFormType;
 use App\Form\RoomFormType;
 use App\Form\SubCategoryFormType;
 use App\Repository\CategoryRepository;
+use App\Repository\EmployeeRepository;
 use App\Repository\ReservationRepository;
 use App\Repository\RoomRepository;
 use App\Repository\SubCategoryRepository;
@@ -369,17 +370,20 @@ class AdminController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @param Request $request
      * @param UserPasswordEncoderInterface $encoder
+     * @param EmployeeRepository $employeeRepository
      * @return Response
      */
     public function newEmployee(EntityManagerInterface $entityManager, Request $request, UserPasswordEncoderInterface
-    $encoder)
+    $encoder, EmployeeRepository $employeeRepository)
     {
         $employee = new Employee();
         $form = $this->createForm(EmployeeFormType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Employee $employee */
             $employee = $form->getData();
+            $employee->setRoles(array('ROLE_EMPLOYEE'));
             $employee->setPassword(
               $encoder->encodePassword(
                   $employee,
@@ -396,10 +400,11 @@ class AdminController extends AbstractController
             return $this->redirectToRoute('admin/employees');
         }
 
-
+        $employees = $employeeRepository->findAll();
 
         return $this->render('admin/employees.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'employees' => $employees
         ]);
     }
 

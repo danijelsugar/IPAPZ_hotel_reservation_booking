@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-12">
+            {{ form_start(form) }}
+                {{ form_row(form.firstname) }}
+                {{ form_row(form.lastname) }}
+                {{ form_row(form.email) }}
+                {{ form_row(form.password) }}
+                <button class="btn btn-primary" type="submit" >Add</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>First name</th>
+                        <th>Last name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for employee in employees %}
+                    <tr>
+                        <td>{{ employee.firstname }}</td>
+                        <td>{{ employee.lastname }}</td>
+                        <td>{{ employee.email }}</td>
+                        <td>{{ employee.roles|join(', ') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+
+{% endblock %}
