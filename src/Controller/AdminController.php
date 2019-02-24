@@ -17,7 +17,6 @@ use App\Repository\EmployeeRepository;
 use App\Repository\ReservationRepository;
 use App\Repository\RoomRepository;
 use App\Repository\SubCategoryRepository;
-use Doctrine\DBAL\Driver\PDOException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -377,34 +376,28 @@ class AdminController extends AbstractController
     public function newEmployee(EntityManagerInterface $entityManager, Request $request, UserPasswordEncoderInterface
     $encoder, EmployeeRepository $employeeRepository)
     {
+
         $form = $this->createForm(EmployeeFormType::class);
         $form->handleRequest($request);
-        try{
 
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Employee $employee */
+            $employee = $form->getData();
+            $employee->setRoles(array('ROLE_EMPLOYEE'));
+            $employee->setPassword(
+              $encoder->encodePassword(
+                  $employee,
+                  $form->get('password')->getData()
+              )
+            );
 
-            if ($form->isSubmitted() && $form->isValid()) {
-                /** @var Employee $employee */
-                $employee = $form->getData();
-                $employee->setRoles(array('ROLE_EMPLOYEE'));
-                $employee->setPassword(
-                    $encoder->encodePassword(
-                        $employee,
-                        $form->get('password')->getData()
-                    )
-                );
-
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($employee);
-                $entityManager->flush();
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($employee);
+            $entityManager->flush();
 
 
 
-                return $this->redirectToRoute('admin/employees');
-            }
-        } catch (PDOException $e) {
-            if ($e->errorInfo[1] == 1062) {
-
-            }
+            return $this->redirectToRoute('admin/employees');
         }
 
         $employees = $employeeRepository->findAll();
