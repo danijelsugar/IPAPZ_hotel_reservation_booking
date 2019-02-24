@@ -17,5 +17,4 @@ class RoomRepository extends ServiceEntityRepository
 
 
 
-
 }

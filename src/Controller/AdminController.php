@@ -10,6 +10,7 @@ use App\Entity\Category;
 use App\Entity\Room;
 use App\Form\CategoryFormType;
 use App\Form\EmployeeFormType;
+use App\Form\ReservationFormType;
 use App\Form\RoomFormType;
 use App\Form\SubCategoryFormType;
 use App\Repository\CategoryRepository;
@@ -45,46 +46,48 @@ class AdminController extends AbstractController
      * @param SubCategoryRepository $subCategoryRepository
      * @return Response
      */
-    public function createCategory(Request $request, EntityManagerInterface $entityManager, SubCategoryRepository
-    $subCategoryRepository, CategoryRepository $categoryRepository)
+    public function createCategory(Request $request,
+       EntityManagerInterface $entityManager,
+       SubCategoryRepository $subCategoryRepository,
+       CategoryRepository $categoryRepository)
     {
 
-            $form = $this->createForm(SubCategoryFormType::class);
+        $form = $this->createForm(SubCategoryFormType::class);
 
-            $form->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()) {
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
 
-                /** @var SubCategory $subCategory */
-                $subCategory = $form->getData();
-                $entityManager->persist($subCategory);
-                $entityManager->flush();
+            /** @var SubCategory $subCategory */
+            $subCategory = $form->getData();
+            $entityManager->persist($subCategory);
+            $entityManager->flush();
 
-                return $this->redirectToRoute('admin/create-category');
-            }
+            return $this->redirectToRoute('admin/create-category');
+        }
 
-            $categoryForm = $this->createForm(CategoryFormType::class);
-            $categoryForm->handleRequest($request);
-            if ($categoryForm->isSubmitted() && $categoryForm->isValid()) {
+        $categoryForm = $this->createForm(CategoryFormType::class);
+        $categoryForm->handleRequest($request);
+        if ($categoryForm->isSubmitted() && $categoryForm->isValid()) {
 
-                /** @var Category $category */
-                $category = $categoryForm->getData();
-                $entityManager->persist($category);
-                $entityManager->flush();
+            /** @var Category $category */
+            $category = $categoryForm->getData();
+            $entityManager->persist($category);
+            $entityManager->flush();
 
-                return $this->redirectToRoute('admin/create-category');
-            }
+            return $this->redirectToRoute('admin/create-category');
+        }
 
 
-            $subCategory = $subCategoryRepository->findAll();
-            $category = $categoryRepository->findAll();
+        $subCategory = $subCategoryRepository->findAll();
+        $category = $categoryRepository->findAll();
 
-            return $this->render('admin/categories.html.twig', [
-                'form' => $form->createView(),
-                'subCategories' => $subCategory,
-                'categoryForm' => $categoryForm->createView(),
-                'categories' => $category
+        return $this->render('admin/categories.html.twig', [
+            'form' => $form->createView(),
+            'subCategories' => $subCategory,
+            'categoryForm' => $categoryForm->createView(),
+            'categories' => $category
 
-            ]);
+        ]);
 
     }
 
@@ -96,8 +99,10 @@ class AdminController extends AbstractController
      * @param $id
      * @return Response
      */
-    public function editSubcategory(Request $request, EntityManagerInterface $entityManager, SubCategoryRepository
-    $subCategoryRepository, $id)
+    public function editSubcategory(Request $request,
+        EntityManagerInterface $entityManager,
+        SubCategoryRepository $subCategoryRepository,
+        $id)
     {
 
         $subCategory = $subCategoryRepository->findOneBy([
@@ -132,8 +137,10 @@ class AdminController extends AbstractController
      * @param $id
      * @return Response
      */
-    public function deleteSubcategory(EntityManagerInterface $entityManager, SubCategoryRepository
-    $subCategoryRepository, $id)
+    public function deleteSubcategory(
+        EntityManagerInterface $entityManager,
+        SubCategoryRepository $subCategoryRepository,
+        $id)
     {
         $subCategory = $subCategoryRepository->findOneBy([
             'id' => $id
@@ -154,8 +161,11 @@ class AdminController extends AbstractController
      * @param $id
      * @return Response
      */
-    public function editCategory(Request $request, EntityManagerInterface $entityManager, CategoryRepository
-    $categoryRepository, $id)
+    public function editCategory(
+         Request $request,
+         EntityManagerInterface $entityManager,
+         CategoryRepository $categoryRepository,
+         $id)
     {
         $category = $categoryRepository->findOneBy([
             'id' => $id
@@ -187,7 +197,10 @@ class AdminController extends AbstractController
      * @param $id
      * @return Response
      */
-    public function deleteCategory(EntityManagerInterface $entityManager, CategoryRepository $categoryRepository, $id)
+    public function deleteCategory(
+        EntityManagerInterface $entityManager,
+        CategoryRepository $categoryRepository,
+        $id)
     {
         $category = $categoryRepository->findOneBy([
             'id' => $id
@@ -261,8 +274,11 @@ class AdminController extends AbstractController
      * @param $roomid
      * @return Response
      */
-    public function acceptReservation(EntityManagerInterface $entityManager, ReservationRepository
-    $reservationRepository, RoomRepository $roomRepository, $id, $roomid)
+    public function acceptReservation(EntityManagerInterface $entityManager,
+        ReservationRepository $reservationRepository,
+        RoomRepository $roomRepository,
+        $id,
+        $roomid)
     {
         $reservation = $reservationRepository->findOneBy([
             'id' => $id
@@ -298,8 +314,12 @@ class AdminController extends AbstractController
      * @param $roomid
      * @return Response
      */
-    public function cancelReservation(EntityManagerInterface $entityManager, ReservationRepository
-    $reservationRepository, RoomRepository $roomRepository, $id, $roomid)
+    public function cancelReservation(
+        EntityManagerInterface $entityManager,
+        ReservationRepository $reservationRepository,
+        RoomRepository $roomRepository,
+        $id,
+        $roomid)
     {
 
         /** Getting room info by id and changing room amount */
@@ -339,8 +359,12 @@ class AdminController extends AbstractController
      * @param $roomid
      * @return Response
      */
-    public function declinelReservation(EntityManagerInterface $entityManager, ReservationRepository
-    $reservationRepository, RoomRepository $roomRepository, $id, $roomid)
+    public function declinelReservation(
+        EntityManagerInterface $entityManager,
+        ReservationRepository $reservationRepository,
+        RoomRepository $roomRepository,
+        $id,
+        $roomid)
     {
 
         /** Getting room info by id and changing room amount */
@@ -366,6 +390,41 @@ class AdminController extends AbstractController
     }
 
     /**
+     * @Route("/admin/edit-reservation/{id}", name="admin/edit-reservation")
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @param ReservationRepository $reservationRepository
+     * @param $id
+     * @return Response
+     */
+    public function editReservation(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        ReservationRepository $reservationRepository,
+        $id)
+    {
+        $reservation = $reservationRepository->findOneBy([
+            'id' => $id
+        ]);
+
+        $form = $this->createForm(ReservationFormType::class, $reservation);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Reservation $reservation */
+            $reservation = $form->getData();
+            $entityManager->flush();
+
+            return $this->redirectToRoute('admin/accepted');
+        }
+
+
+        return $this->render('admin/edit_reservation.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
      * @Route("admin/employees", name="admin/employees")
      * @param EntityManagerInterface $entityManager
      * @param Request $request
@@ -373,8 +432,12 @@ class AdminController extends AbstractController
      * @param EmployeeRepository $employeeRepository
      * @return Response
      */
-    public function newEmployee(EntityManagerInterface $entityManager, Request $request, UserPasswordEncoderInterface
-    $encoder, EmployeeRepository $employeeRepository)
+    public function newEmployee(
+        EntityManagerInterface $entityManager,
+        Request $request,
+        UserPasswordEncoderInterface $encoder,
+        EmployeeRepository $employeeRepository)
+
     {
 
         $form = $this->createForm(EmployeeFormType::class);
@@ -415,7 +478,10 @@ class AdminController extends AbstractController
      * @param $id
      * @return Response
      */
-    public function deleteEmployee(EntityManagerInterface $entityManager, EmployeeRepository $employeeRepository, $id)
+    public function deleteEmployee(
+        EntityManagerInterface $entityManager,
+        EmployeeRepository $employeeRepository,
+        $id)
     {
         $employee = $employeeRepository->findOneBy([
             'id' => $id
@@ -436,8 +502,12 @@ class AdminController extends AbstractController
      * @param $id
      * @return Response
      */
-    public function editEmployee(Request $request, EntityManagerInterface $entityManager, EmployeeRepository
-    $employeeRepository, UserPasswordEncoderInterface $encoder, $id)
+    public function editEmployee(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        EmployeeRepository $employeeRepository,
+        UserPasswordEncoderInterface $encoder,
+        $id)
     {
         $employee = $employeeRepository->findOneBy([
             'id' => $id

@@ -22,13 +22,13 @@
                 <a class="nav-link" href="{{ path('home') }}">Home</a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="{{ path('rooms') }}">Reservations</a>
+                <a class="nav-link" href="{{ path('rooms') }}">Rooms</a>
             </li>
         </ul>
     </div>
     <div class="navbar-collapse">
         <ul class="navbar-nav ml-auto">
-            {% if is_granted('ROLE_USER') %}
+            {% if (is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPLOYEE') ) %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Reservations</a>
                     <div class="dropdown-menu">
@@ -36,12 +36,17 @@
                         <a class="dropdown-item" href="{{ path('admin/reservations') }}">Pending</a>
                     </div>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('admin/create-category') }}">Add category</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('admin/create-room') }}">Add room</a>
-                </li>
+                {% if (is_granted('ROLE_ADMIN')) %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('admin/create-category') }}">Add category</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('admin/create-room') }}">Add room</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('admin/employees') }}">Add employee</a>
+                    </li>
+                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_logout') }}">Logout</a>
                 </li>

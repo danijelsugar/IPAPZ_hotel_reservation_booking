@@ -8,12 +8,14 @@ use App\Entity\Reservation;
 use App\Entity\Room;
 use App\Form\ReservationFormType;
 use App\Form\RoomFormType;
+use App\Form\SearchFormType;
 use App\Repository\EmployeeRepository;
 use App\Repository\ReservationRepository;
 use App\Repository\RoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,16 +28,15 @@ class IndexController extends AbstractController
      * @param ReservationRepository $reservationRepository
      * @return Response
      */
-    public function index(ReservationRepository $reservationRepository, EmployeeRepository $employeeRepository)
+    public function index(ReservationRepository $reservationRepository, RoomRepository $roomRepository)
     {
 
-        $employees = $employeeRepository->findAll();
-
+        $room = $roomRepository->findAll();
         $reservation = $reservationRepository->findAll();
 
         return $this->render('home/index.html.twig', [
             'reservations' => $reservation,
-            'employees' => $employees
+            'rooms' => $room
         ]);
     }
 
@@ -46,8 +47,9 @@ class IndexController extends AbstractController
      */
     public function room(RoomRepository $roomRepository)
     {
-        $room = $roomRepository->findAll();
 
+
+        $room = $roomRepository->findAll();
         return $this->render('home/reservation.html.twig', [
             'rooms' => $room
         ]);
@@ -119,5 +121,35 @@ class IndexController extends AbstractController
         ]);
 
     }
+
+    /**
+     * @Route("/admin/delete-room/{id}", name="admin/delete-room")
+     * @param EntityManagerInterface $entityManager
+     * @param RoomRepository $roomRepository
+     * @param ReservationRepository $reservationRepository
+     * @param $id
+     * @return Response
+     */
+    public function deleteRoom(EntityManagerInterface $entityManager, RoomRepository $roomRepository,
+    ReservationRepository $reservationRepository, $id)
+    {
+        $reservation = $reservationRepository->findAll();
+        $reservation = count($reservation);
+
+        if ($reservation === 0) {
+            $room = $roomRepository->findOneBy([
+                'id' => $id
+            ]);
+            $entityManager->remove($room);
+            $entityManager->flush();
+        }
+
+
+
+
+        return $this->redirectToRoute('rooms');
+    }
+
+
 
 }

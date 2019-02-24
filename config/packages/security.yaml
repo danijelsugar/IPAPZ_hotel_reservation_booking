@@ -41,6 +41,7 @@ security:
      - { path: ^/admin/accept, roles: ROLE_EMPLOYEE }
      - { path: ^/admin/decline, roles: ROLE_EMPLOYEE }
      - { path: ^/admin/cancel, roles: ROLE_EMPLOYEE }
+     - { path: ^/admin/edit-reservation, roles: ROLE_EMPLOYEE }
      - { path: ^/admin/, roles: ROLE_ADMIN }
 
     # - { path: ^/profile, roles: ROLE_USER }

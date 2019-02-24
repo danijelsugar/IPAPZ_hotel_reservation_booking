@@ -14,4 +14,13 @@ class ReservationRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Reservation::class);
     }
+
+    public function countReservations($id)
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.room=:id')
+            ->setParameter(':id', $id)
+            ->getQuery()
+            ->getResult();
+    }
 }
