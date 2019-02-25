@@ -47,6 +47,7 @@ class RoomFormType extends AbstractType
                 ]
             ])
             ->add('image', FileType::class, [
+                'data_class' => null,
                'label' => 'Image(JPG, JPEG)',
             ]);
     }
