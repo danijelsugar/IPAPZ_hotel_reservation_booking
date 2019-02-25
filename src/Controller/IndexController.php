@@ -133,10 +133,10 @@ class IndexController extends AbstractController
     public function deleteRoom(EntityManagerInterface $entityManager, RoomRepository $roomRepository,
     ReservationRepository $reservationRepository, $id)
     {
-        $reservation = $reservationRepository->findAll();
-        $reservation = count($reservation);
+        $reservations = $reservationRepository->countReservations($id);
+        var_dump($reservations);
 
-        if ($reservation === 0) {
+        if ($reservations == 0) {
             $room = $roomRepository->findOneBy([
                 'id' => $id
             ]);
