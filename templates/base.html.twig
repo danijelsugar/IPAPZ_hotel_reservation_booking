@@ -22,7 +22,7 @@
                 <a class="nav-link" href="{{ path('home') }}">Home</a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="{{ path('rooms') }}">Rooms</a>
+                <a class="nav-link" href="{{ path('rooms') }}">Sobe</a>
             </li>
         </ul>
     </div>
@@ -30,29 +30,30 @@
         <ul class="navbar-nav ml-auto">
             {% if (is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPLOYEE') ) %}
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Reservations</a>
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Rezervacije</a>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="{{ path('admin/accepted') }}">Accepted</a>
-                        <a class="dropdown-item" href="{{ path('admin/reservations') }}">Pending</a>
+                        <a class="dropdown-item" href="{{ path('admin/accepted') }}">Prihvaćene</a>
+                        <a class="dropdown-item" href="{{ path('admin/reservations') }}">Pristigle</a>
+                        <a class="dropdown-item" href="{{ path('admin/declined') }}">Odbijene</a>
                     </div>
                 </li>
                 {% if (is_granted('ROLE_ADMIN')) %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('admin/create-category') }}">Add category</a>
+                        <a class="nav-link" href="{{ path('admin/create-category') }}">Dodaj kategoriju</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('admin/create-room') }}">Add room</a>
+                        <a class="nav-link" href="{{ path('admin/create-room') }}">Dodaj sobu</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('admin/employees') }}">Add employee</a>
+                        <a class="nav-link" href="{{ path('admin/employees') }}">Dodaj zaposlenika</a>
                     </li>
                 {% endif %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_logout') }}">Logout</a>
+                    <a class="nav-link" href="{{ path('app_logout') }}">Odjavi se</a>
                 </li>
             {% else %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_login') }}">Login</a>
+                    <a class="nav-link" href="{{ path('app_login') }}">Prijavi se</a>
                 </li>
             {% endif %}
         </ul>

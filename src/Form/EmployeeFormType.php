@@ -26,13 +26,13 @@ class EmployeeFormType extends AbstractType
     {
         $builder
             ->add('firstname', TextType::class, [
-                'label' => 'First name',
+                'label' => 'Ime',
                 'attr' => [
                     'class' => 'form-control'
                 ]
             ])
             ->add('lastname', TextType::class, [
-                'label' => 'Last name',
+                'label' => 'Prezime',
                 'attr' => [
                     'class' => 'form-control'
                 ]
@@ -44,17 +44,18 @@ class EmployeeFormType extends AbstractType
                 ]
             ])
             ->add('password', PasswordType::class, [
+                'label' => 'Lozinka',
                 'attr' => [
                     'class' => 'form-control'
                 ],
                 'mapped' => false,
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Please enter a password'
+                        'message' => 'Unesite lozinku'
                     ]),
                     new Length([
                         'min' => 6,
-                        'minMessage' => 'Your password should be at least {{ limit }} characters',
+                        'minMessage' => 'Vaša bi lozinka trebala biti najmanje {{ limit }} znakova',
                         'max' => 4096,
                     ])
                 ]

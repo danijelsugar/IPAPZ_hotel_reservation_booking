@@ -2,8 +2,6 @@
 
 {% block body %}
 
-    <h1>Home</h1>
-
     <div class="row">
         <div class="col-12">
             <div id='calendar'></div>
@@ -28,12 +26,22 @@
                                 {
                                     title  : '{{ reservation.room.category.name }} {{ reservation.room.subcategory.name }}',
                                     start  : '{{ reservation.datefrom|date('Y-m-d') }}',
-                                    end    : '{{ reservation.dateto|date('Y-m-d') }}'
+                                    end    : '{{ reservation.dateto|date('Y-m-d') }}',
+                                    color  : '#3a87ad'
 
+                                },
+                            {% elseif (reservation.declined is same as(true) and is_granted('ROLE_ADMIN') ) %}
+                                {
+                                    title  : '{{ reservation.room.category.name }} {{ reservation.room.subcategory.name }}',
+                                    start  : '{{ reservation.datefrom|date('Y-m-d') }}',
+                                    end    : '{{ reservation.dateto|date('Y-m-d') }}',
+                                    color  : '#FFA500'
                                 },
                             {% endif %}
                         {% endfor %}
-                    ]
+                    ],
+
+
                 })
 
             });

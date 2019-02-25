@@ -46,6 +46,11 @@ class Reservation
     private $status = 0;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $declined = 0;
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -139,6 +144,22 @@ class Reservation
     public function setStatus($status): void
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDeclined()
+    {
+        return $this->declined;
+    }
+
+    /**
+     * @param mixed $declined
+     */
+    public function setDeclined($declined): void
+    {
+        $this->declined = $declined;
     }
 
 

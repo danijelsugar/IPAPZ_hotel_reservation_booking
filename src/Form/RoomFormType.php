@@ -19,13 +19,14 @@ class RoomFormType extends AbstractType
     {
         $builder
             ->add('description', TextareaType::class, [
-               'label' => 'Description',
+               'label' => 'Opis',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control'
                 ]
             ])
             ->add('category', EntityType::class, [
+                'label' => 'Kategorija',
                'class' => Category::class,
                 'attr' => [
                     'class' => 'form-control'
@@ -33,6 +34,7 @@ class RoomFormType extends AbstractType
                'choice_label' => 'name'
             ])
             ->add('subcategory', EntityType::class, [
+                'label' => 'Potkategorija',
                'class' => SubCategory::class,
                 'attr' => [
                     'class' => 'form-control'
@@ -40,7 +42,7 @@ class RoomFormType extends AbstractType
                 'choice_label' => 'name'
             ])
             ->add('amount', IntegerType::class, [
-                'label' => 'Amount',
+                'label' => 'Broj soba',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control'
@@ -48,7 +50,7 @@ class RoomFormType extends AbstractType
             ])
             ->add('image', FileType::class, [
                 'data_class' => null,
-               'label' => 'Image(JPG, JPEG)',
+               'label' => 'Slika(JPG, JPEG)',
             ]);
     }
 

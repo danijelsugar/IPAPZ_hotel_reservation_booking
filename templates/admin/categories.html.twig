@@ -4,10 +4,10 @@
 
     <div class="row">
         <div class="col-12">
-            <h3>Enter new category</h3>
+            <h3>Unesite naziv kategorije</h3>
             {{ form_start(categoryForm) }}
                 {{ form_row(categoryForm.name) }}
-                <button type="submit" class="btn btn-primary mt-3" formnovalidate>Save</button>
+                <button type="submit" class="btn btn-primary mt-3" formnovalidate>Spremi</button>
                 <hr>
             {{ form_end(categoryForm) }}
         </div>
@@ -18,8 +18,8 @@
             <table class="table">
                 <thead class="thead-dark">
                     <tr>
-                        <th>Name</th>
-                        <th>Action</th>
+                        <th>Naziv</th>
+                        <th>Akcija</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -27,8 +27,8 @@
                     <tr>
                         <td>{{ category.name }}</td>
                         <td>
-                            <a class="btn btn-dark" href="{{ path('admin/edit-category', {'id': category.id}) }}">Edit</a>
-                            <a class="btn btn-danger" href="{{ path('admin/delete-category', {'id': category.id}) }}">Delete</a>
+                            <a class="btn btn-dark" href="{{ path('admin/edit-category', {'id': category.id}) }}">Uredi</a>
+                            <a class="btn btn-danger" href="{{ path('admin/delete-category', {'id': category.id}) }}">Obriši</a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -39,10 +39,10 @@
 
     <div class="row">
         <div class="col-12">
-            <h3>Enter new subcategory</h3>
+            <h3>Unesite naziv potkategorije</h3>
             {{ form_start(form) }}
             {{ form_row(form.name) }}
-            <button type="submit" class="btn btn-primary mt-3" formnovalidate>Save</button>
+            <button type="submit" class="btn btn-primary mt-3" formnovalidate>Spremi</button>
             <hr>
             {{ form_end(form) }}
         </div>
@@ -53,8 +53,8 @@
             <table class="table">
                 <thead class="thead-dark">
                 <tr>
-                    <th>Name</th>
-                    <th>Action</th>
+                    <th>Naziv</th>
+                    <th>Akcija</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -62,8 +62,8 @@
                     <tr>
                         <td>{{ subCategory.name }}</td>
                         <td>
-                            <a class="btn btn-dark" href="{{ path('admin/edit-subcategory', {'id': subCategory.id})  }}">Edit</a>
-                            <a class="btn btn-danger" href="{{ path('admin/delete-subcategory', {'id': subCategory.id}) }}">Delete</a>
+                            <a class="btn btn-dark" href="{{ path('admin/edit-subcategory', {'id': subCategory.id})  }}">Uredi</a>
+                            <a class="btn btn-danger" href="{{ path('admin/delete-subcategory', {'id': subCategory.id}) }}">Obriši</a>
                         </td>
                     </tr>
                 {% endfor %}

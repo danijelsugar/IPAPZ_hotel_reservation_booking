@@ -78,6 +78,7 @@ class IndexController extends AbstractController
               $reservation = $form->getData();
               $reservation->setRoom($room);
               $entityManager->persist($reservation);
+              $this->addFlash('success', 'Soba rezervirana');
               $entityManager->flush();
 
               return $this->redirectToRoute('rooms');
@@ -109,8 +110,8 @@ class IndexController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Room $room
-             * @var Symfony\Component\HttpFoundation\File\UploadedFile $file
+            /**
+             * @var Room $room
              */
             $room = $form->getData();
             $file = $room->getImage();

@@ -3,14 +3,14 @@
 {% block body %}
     <div class="row">
         <div class="col-12">
-            <h3>Create new room</h3>
+            <h3>Dodajte novu sobu</h3>
             {{ form_start(form) }}
                 {{ form_row(form.description) }}
                 {{ form_row(form.category) }}
                 {{ form_row(form.subcategory) }}
                 {{ form_row(form.amount) }}
                 {{ form_row(form.image) }}
-                <button type="submit" class="btn btn-primary mt-3" formnovalidate>Save</button>
+                <button type="submit" class="btn btn-primary mt-3" formnovalidate>Spremi</button>
             {{ form_end(form) }}
         </div>
     </div>

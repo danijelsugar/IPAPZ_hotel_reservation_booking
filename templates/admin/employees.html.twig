@@ -8,7 +8,7 @@
                 {{ form_row(form.lastname) }}
                 {{ form_row(form.email) }}
                 {{ form_row(form.password) }}
-                <button class="btn btn-primary" type="submit" >Add</button>
+                <button class="btn btn-primary" type="submit" >Dodaj</button>
             {{ form_end(form) }}
         </div>
     </div>
@@ -18,11 +18,11 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>First name</th>
-                        <th>Last name</th>
+                        <th>Ime</th>
+                        <th>Prezime</th>
                         <th>Email</th>
-                        <th>Role</th>
-                        <th>Action</th>
+                        <th>Uloga</th>
+                        <th>Akcija</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -33,8 +33,8 @@
                         <td>{{ employee.email }}</td>
                         <td>{{ employee.roles|join(', ') }}</td>
                         <td>
-                            <a class="btn btn-info" href="{{ path('admin/edit-employee', {'id': employee.id}) }}">Edit</a>
-                            <a class="btn btn-danger" href="{{ path('admin/delete-employee', {'id': employee.id}) }}">Delete</a>
+                            <a class="btn btn-info" href="{{ path('admin/edit-employee', {'id': employee.id}) }}">Uredi</a>
+                            <a class="btn btn-danger" href="{{ path('admin/delete-employee', {'id': employee.id}) }}">Obriši</a>
                         </td>
                     </tr>
                     {% endfor %}

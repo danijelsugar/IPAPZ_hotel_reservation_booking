@@ -2,10 +2,8 @@
 
 {% block body %}
 
-    <h2>Rezervacije</h2>
+    <h2>Odbijene rezervacije</h2>
     {% for reservation in reservations %}
-        {% if (reservation.status is same as(false) and reservation.declined is same as(false)) %}
-            <hr>
             <div class="row">
                 <div class="col-6">
                     <p><strong>Od:</strong> {{ reservation.datefrom|date('d.m.Y') }}</p>
@@ -13,12 +11,9 @@
                     <p><strong>Email:</strong> {{ reservation.email }}</p>
                     <p><strong>Soba:</strong> {{ reservation.room.category.name }} {{ reservation.room.subcategory.name }}</p>
                 </div>
-                <div class="dec-acc col-6">
-                    <a class="btn btn-primary" href="{{ path('admin/accept', {'id': reservation.id, 'roomid': reservation.room.id}) }}">Prihvati</a>
-                    <a class="btn btn-warning" href="{{ path('admin/decline', {'id': reservation.id, 'roomid': reservation.room.id}) }}">Odbi rezervaciju</a>
-                </div>
+
             </div>
-        {% endif %}
+            <hr>
     {% endfor %}
 
 

@@ -62,6 +62,7 @@ class AdminController extends AbstractController
             /** @var SubCategory $subCategory */
             $subCategory = $form->getData();
             $entityManager->persist($subCategory);
+            $this->addFlash('success', 'Potkategorija kreirana');
             $entityManager->flush();
 
             return $this->redirectToRoute('admin/create-category');
@@ -74,6 +75,7 @@ class AdminController extends AbstractController
             /** @var Category $category */
             $category = $categoryForm->getData();
             $entityManager->persist($category);
+            $this->addFlash('success', 'Kategorija kreirana');
             $entityManager->flush();
 
             return $this->redirectToRoute('admin/create-category');
@@ -149,6 +151,7 @@ class AdminController extends AbstractController
         ]);
 
         $entityManager->remove($subCategory);
+        $this->addFlash('success', 'Potkategorija obrisana');
         $entityManager->flush();
 
         return $this->redirectToRoute('admin/create-category');
@@ -209,6 +212,7 @@ class AdminController extends AbstractController
         ]);
 
         $entityManager->remove($category);
+        $this->addFlash('success', 'Kategorija obrisana');
         $entityManager->flush();
 
         return $this->redirectToRoute('admin/create-category');
@@ -243,7 +247,7 @@ class AdminController extends AbstractController
             }
             $room->setImage($fileName);
             $entityManager->persist($room);
-            $this->addFlash('success', 'Created new room!');
+            $this->addFlash('success', 'Kreirana nova soba');
             $entityManager->flush();
 
             return $this->redirectToRoute('admin/create-room');
@@ -293,6 +297,22 @@ class AdminController extends AbstractController
     }
 
     /**
+     * @Route("/admin/declined", name="admin/declined")
+     * @param ReservationRepository $reservationRepository
+     * @return Response
+     */
+    public function declinedReservations(ReservationRepository $reservationRepository)
+    {
+        $reservation = $reservationRepository->findBy([
+            'declined' => 1
+        ]);
+
+        return $this->render('admin/declined.html.twig', [
+            'reservations' => $reservation
+        ]);
+    }
+
+    /**
      * @Route("/admin/accept/{id}/{roomid}", name="admin/accept")
      * @param EntityManagerInterface $entityManager
      * @param ReservationRepository $reservationRepository
@@ -313,6 +333,7 @@ class AdminController extends AbstractController
 
         /** @var Reservation $reservation */
         $reservation->setStatus(1);
+        $reservation->setDeclined(0);
         $entityManager->flush();
 
         $room = $roomRepository->findOneBy([
@@ -323,6 +344,7 @@ class AdminController extends AbstractController
         $amount = $room->getAmount();
         $after = --$amount;
         $room->setAmount($after);
+        $this->addFlash('success', 'Reservation accepted');
         $entityManager->flush();
 
         return $this->redirectToRoute('admin/reservations', [
@@ -368,9 +390,10 @@ class AdminController extends AbstractController
 
         /** @var Reservation $reservation */
         $entityManager->remove($reservation);
+        $this->addFlash('success', 'Rezervacija otkazana');
         $entityManager->flush();
 
-        return $this->redirectToRoute('admin/reservations', [
+        return $this->redirectToRoute('admin/accepted', [
             'reservations' => $reservation
         ]);
 
@@ -400,13 +423,14 @@ class AdminController extends AbstractController
         ]);
 
 
-        /** Deleting reservation with given id */
+
         $reservation = $reservationRepository->findOneBy([
             'id' => $id
         ]);
 
         /** @var Reservation $reservation */
-        $entityManager->remove($reservation);
+        $reservation->setDeclined(1);
+        $this->addFlash('success', 'Reservation declined');
         $entityManager->flush();
 
         return $this->redirectToRoute('admin/reservations', [
@@ -483,6 +507,7 @@ class AdminController extends AbstractController
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($employee);
+            $this->addFlash('success', 'Uspiješno kreiran novi zaposlenik');
             $entityManager->flush();
 
 
@@ -515,6 +540,7 @@ class AdminController extends AbstractController
         ]);
 
         $entityManager->remove($employee);
+        $this->addFlash('success', 'Korisnik obrisan');
         $entityManager->flush();
 
         return $this->redirectToRoute('admin/employees');

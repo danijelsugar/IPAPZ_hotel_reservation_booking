@@ -16,7 +16,7 @@ class SubCategoryFormType extends  AbstractType
     {
         $builder
             ->add('name', TextType::class , [
-               'label' => 'Name',
+               'label' => 'Naziv',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control'
