@@ -38,17 +38,41 @@ class IndexController extends AbstractController
     }
 
     /**
-     * @Route("/rooms", name="rooms")
+     * @Route("/rooms/{id}", defaults={"id"=null}, name="rooms")
      * @param RoomRepository $roomRepository
+     * @param ReservationRepository $reservationRepository
+     * @param $id
      * @return Response
      */
-    public function room(RoomRepository $roomRepository)
+    public function room(RoomRepository $roomRepository, ReservationRepository $reservationRepository, $id)
     {
 
-
+        $roomId = $id;
+        $reservations = $reservationRepository->findBy([
+            'room' => $roomId
+        ]);
         $room = $roomRepository->findAll();
         return $this->render('home/reservation.html.twig', [
+            'reservations' => $reservations,
             'rooms' => $room
+        ]);
+    }
+
+    /**
+     * @Route("room_reservations/{id}", name="room_reservations")
+     * @param ReservationRepository $reservationRepository
+     * @param $id
+     * @return Response
+     */
+    public function roomReservations(ReservationRepository $reservationRepository, $id)
+    {
+        $roomId = $id;
+        $reservations = $reservationRepository->findBy([
+            'room_id' => $roomId
+        ]);
+        var_dump($reservations);
+        return $this->render('home/reservation.html.twig', [
+            'reservations' => $reservations
         ]);
     }
 
