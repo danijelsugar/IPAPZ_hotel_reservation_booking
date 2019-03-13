@@ -36,12 +36,12 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-     - { path: ^/admin/accepted, roles: ROLE_EMPLOYEE }
-     - { path: ^/admin/reservations, roles: ROLE_EMPLOYEE }
-     - { path: ^/admin/accept, roles: ROLE_EMPLOYEE }
-     - { path: ^/admin/decline, roles: ROLE_EMPLOYEE }
-     - { path: ^/admin/cancel, roles: ROLE_EMPLOYEE }
-     - { path: ^/admin/edit-reservation, roles: ROLE_EMPLOYEE }
+     - { path: ^/admin/accepted, roles: [ROLE_EMPLOYEE, ROLE_ADMIN] }
+     - { path: ^/admin/reservations, roles: [ROLE_EMPLOYEE, ROLE_ADMIN] }
+     - { path: ^/admin/accept, roles: [ROLE_EMPLOYEE, ROLE_ADMIN] }
+     - { path: ^/admin/declined, roles: [ROLE_EMPLOYEE, ROLE_ADMIN] }
+     - { path: ^/admin/decline, roles: [ROLE_EMPLOYEE, ROLE_ADMIN] }
+     - { path: ^/admin/cancel, roles: [ROLE_EMPLOYEE, ROLE_ADMIN] }
+     - { path: ^/admin/edit-reservation, roles: [ROLE_EMPLOYEE, ROLE_ADMIN] }
      - { path: ^/admin/, roles: ROLE_ADMIN }
-
     # - { path: ^/profile, roles: ROLE_USER }

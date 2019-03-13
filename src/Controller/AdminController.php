@@ -10,6 +10,7 @@ use App\Entity\Category;
 use App\Entity\Room;
 use App\Form\CategoryFormType;
 use App\Form\EmployeeFormType;
+use App\Form\OrderByFormType;
 use App\Form\ReservationFormType;
 use App\Form\RoomFormType;
 use App\Form\SubCategoryFormType;
@@ -271,14 +272,34 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/reservations", name="admin/reservations")
      * @param ReservationRepository $reservationRepository
+     * @param Request $request
      * @return Response
      */
-    public function reservations(ReservationRepository $reservationRepository)
+    public function reservations(ReservationRepository $reservationRepository, Request $request)
     {
-        $reservation = $reservationRepository->findAll();
+        $orderForm = $this->createForm(OrderByFormType::class);
+        $orderForm->handleRequest($request);
+
+        if ($orderForm->isSubmitted() && $orderForm->isValid()) {
+            $choice = $orderForm->getData();
+            switch ($choice['orderby']) {
+                case 1:
+                    $c = 'datefrom';
+                    break;
+                case 2:
+                    $c = 'email';
+                    break;
+                case 3:
+                    $c = 'room';
+                    break;
+            }
+            $reservation = $reservationRepository->findBy([], [$c => 'ASC']);
+        } else
+            $reservation = $reservationRepository->findAll();
 
         return $this->render('admin/pending.html.twig', [
-           'reservations' => $reservation
+           'reservations' => $reservation,
+            'orderForm' => $orderForm->createView()
         ]);
     }
 
@@ -289,10 +310,12 @@ class AdminController extends AbstractController
      */
     public function acceptedReservations(ReservationRepository $reservationRepository)
     {
+
+
         $reservation = $reservationRepository->findAll();
 
         return $this->render('admin/accepted.html.twig', [
-            'reservations' => $reservation
+            'reservations' => $reservation,
         ]);
     }
 

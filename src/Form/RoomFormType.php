@@ -41,13 +41,6 @@ class RoomFormType extends AbstractType
                 ],
                 'choice_label' => 'name'
             ])
-            ->add('amount', IntegerType::class, [
-                'label' => 'Broj soba',
-                'required' => false,
-                'attr' => [
-                    'class' => 'form-control'
-                ]
-            ])
             ->add('image', FileType::class, [
                 'data_class' => null,
                'label' => 'Slika(JPG, JPEG)',

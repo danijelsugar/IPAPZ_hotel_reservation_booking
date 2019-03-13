@@ -3,19 +3,15 @@
 
 namespace App\Controller;
 
-use App\Entity\Category;
 use App\Entity\Reservation;
 use App\Entity\Room;
 use App\Form\ReservationFormType;
 use App\Form\RoomFormType;
 use App\Form\SearchFormType;
-use App\Repository\EmployeeRepository;
 use App\Repository\ReservationRepository;
 use App\Repository\RoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

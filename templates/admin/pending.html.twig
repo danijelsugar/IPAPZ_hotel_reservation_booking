@@ -3,23 +3,52 @@
 {% block body %}
 
     <h2>Rezervacije</h2>
-    {% for reservation in reservations %}
-        {% if (reservation.status is same as(false) and reservation.declined is same as(false)) %}
-            <hr>
             <div class="row">
-                <div class="col-6">
-                    <p><strong>Od:</strong> {{ reservation.datefrom|date('d.m.Y') }}</p>
-                    <p><strong>Do:</strong> {{ reservation.dateto|date('d.m.Y') }}</p>
-                    <p><strong>Email:</strong> {{ reservation.email }}</p>
-                    <p><strong>Soba:</strong> {{ reservation.room.category.name }} {{ reservation.room.subcategory.name }}</p>
-                </div>
-                <div class="dec-acc col-6">
-                    <a class="btn btn-primary" href="{{ path('admin/accept', {'id': reservation.id, 'roomid': reservation.room.id}) }}">Prihvati</a>
-                    <a class="btn btn-warning" href="{{ path('admin/decline', {'id': reservation.id, 'roomid': reservation.room.id}) }}">Odbi rezervaciju</a>
+                <div class="col-12">
+                        {{ form_start(orderForm) }}
+                            {{ form_row(orderForm.orderby) }}
+                        {{ form_end(orderForm) }}
                 </div>
             </div>
-        {% endif %}
-    {% endfor %}
+            <div class="row">
+                <div class="col-12">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <td>Od</td>
+                                <td>Do</td>
+                                <td>Email</td>
+                                <td>Soba</td>
+                                <td>Akcija</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reservation in reservations %}
+                                {% if (reservation.status is same as(false) and reservation.declined is same as(false)) %}
+                                    <tr>
+                                        <td>{{ reservation.datefrom|date('d.m.Y') }}</td>
+                                        <td>{{ reservation.dateto|date('d.m.Y') }}</td>
+                                        <td>{{ reservation.email }}</td>
+                                        <td>{{ reservation.room.category.name }} {{ reservation.room.subcategory.name }}</td>
+                                        <td>
+                                            <a class="btn btn-primary" href="{{ path('admin/accept', {'id': reservation.id, 'roomid': reservation.room.id}) }}">Prihvati</a>
+                                            <a class="btn btn-warning" href="{{ path('admin/decline', {'id': reservation.id, 'roomid': reservation.room.id}) }}">Odbi rezervaciju</a>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
+{% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $('#order_by_form_orderby').change(function(){
+            $(this).closest('form').trigger('submit');
+        });
+    </script>
 {% endblock %}

@@ -37,11 +37,6 @@ class Room
     private $subcategory;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $amount;
-
-    /**
      * @ORM\Column(type="string")
      * @Assert\NotBlank(message="Please, upload the image.")
      * @Assert\File(mimeTypes={ "image/jpg", "image/jpeg" })
@@ -102,22 +97,6 @@ class Room
     public function setSubcategory($subcategory): void
     {
         $this->subcategory = $subcategory;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getAmount()
-    {
-        return $this->amount;
-    }
-
-    /**
-     * @param mixed $amount
-     */
-    public function setAmount($amount): void
-    {
-        $this->amount = $amount;
     }
 
     /**
