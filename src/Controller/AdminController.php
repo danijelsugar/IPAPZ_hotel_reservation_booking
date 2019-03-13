@@ -364,9 +364,6 @@ class AdminController extends AbstractController
         ]);
 
         /** @var Room $room */
-        $amount = $room->getAmount();
-        $after = --$amount;
-        $room->setAmount($after);
         $this->addFlash('success', 'Reservation accepted');
         $entityManager->flush();
 
