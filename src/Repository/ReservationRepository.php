@@ -31,6 +31,7 @@ class ReservationRepository extends ServiceEntityRepository
             ->select('re')
             ->where('re.room = :roomid')
             ->andWhere('re.status = true')
+            ->andWhere('re.declined = false')
             ->setParameter('roomid', $roomid)
             ->getQuery()
             ->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
