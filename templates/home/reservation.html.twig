@@ -20,7 +20,7 @@
                         </div>
                         <div class="col-3">
                             <!-- Button trigger modal -->
-                            <a href="{{ path("room_reservations", {"id": room.id}) }}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                            <a href="{{ path("rooms", {"id": room.id}) }}" id="{{ room.id }}" type="button" class="btn btn-primary roomid">
                                 Pogledaj dostupnost sobe
                             </a>
 
@@ -70,25 +70,31 @@
 
             $(function() {
 
-                // page is now ready, initialize the calendar...
-
-                $('#calendar').fullCalendar({
-                    eventLimit: true,
-                    events: [
-                        {% for reservation in reservations %}
-                            {% if reservation.status is same as(true) %}
-                                {
-                                    title  : '{{ reservation.room.category.name }} {{ reservation.room.subcategory.name }}',
-                                    start  : '{{ reservation.datefrom|date('Y-m-d') }}',
-                                    end    : '{{ reservation.dateto|date('Y-m-d') }}',
-                                    color  : 'red'
-                                },
-                            {% endif %}
-                        {% endfor %}
-                    ],
-
-
-                })
+                $('.roomid').click(function(e) {
+                    e.preventDefault();
+                   var roomId = ($(this).attr('id'));
+                   $.ajax({
+                      url:'{{ (path('room_reservations')) }}',
+                      type: 'POST',
+                      data: {'id': roomId},
+                      success: function (response) {
+                          var events = [];
+                          for (var i=0;i<response.length;i++) {
+                            events[i] = {};
+                            events[i].title = 'soba';
+                            events[i].start = response[i].datefrom.date;
+                            events[i].end = response[i].dateto.date;
+                            events[i].color = 'red';
+                          }
+                          $('#calendar').fullCalendar({
+                              eventLimit: true,
+                              events: events
+                          });
+                          $("#calendar").fullCalendar('render');
+                          $('#exampleModal').modal('show');
+                      }
+                   });
+                });
 
             });
 

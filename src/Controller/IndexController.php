@@ -13,6 +13,7 @@ use App\Repository\RoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -38,6 +39,31 @@ class IndexController extends AbstractController
     }
 
     /**
+     * @Route("/booking", name="booking")
+     * @param EntityManagerInterface $entityManager
+     * @param Request $request
+     * @return Response
+     * @throws \Exception
+     */
+    public function booking(EntityManagerInterface $entityManager, Request $request)
+    {
+
+        $booking = new Reservation();
+        $booking->setDatefrom(new \DateTime());
+        $booking->setDateto(new \DateTime());
+        $form = $this->createForm(ReservationFormType::class, $booking);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $reservation = $form->getData();
+            var_dump($reservation);
+        }
+
+        return $this->render('home/booking.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
      * @Route("/rooms/{id}", defaults={"id"=null}, name="rooms")
      * @param RoomRepository $roomRepository
      * @param ReservationRepository $reservationRepository
@@ -59,21 +85,20 @@ class IndexController extends AbstractController
     }
 
     /**
-     * @Route("room_reservations/{id}", name="room_reservations")
+     * @Route("room_reservations", name="room_reservations")
      * @param ReservationRepository $reservationRepository
-     * @param $id
+     * @param Request $request
      * @return Response
      */
-    public function roomReservations(ReservationRepository $reservationRepository, $id)
+    public function roomReservations(ReservationRepository $reservationRepository, Request $request)
     {
-        $roomId = $id;
-        $reservations = $reservationRepository->findBy([
-            'room_id' => $roomId
-        ]);
-        var_dump($reservations);
+        $roomId = $request->request->get('id');
+        $reservations = $reservationRepository->findAllArray($roomId);
+        return new JsonResponse($reservations);
+        /*
         return $this->render('home/reservation.html.twig', [
             'reservations' => $reservations
-        ]);
+        ]);*/
     }
 
     /**

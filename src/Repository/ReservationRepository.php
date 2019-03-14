@@ -24,4 +24,15 @@ class ReservationRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    public function findAllArray($roomid)
+    {
+        return $this->createQueryBuilder('re')
+            ->select('re')
+            ->where('re.room = :roomid')
+            ->andWhere('re.status = true')
+            ->setParameter('roomid', $roomid)
+            ->getQuery()
+            ->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+    }
 }
