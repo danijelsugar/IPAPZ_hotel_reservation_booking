@@ -26,10 +26,7 @@ class OrderByFormType extends AbstractType
                'Naziv sobe' => 3
            ],
            'label' => 'Sortiraj po',
-            'expanded' => false,
-            'attr' => [
-                'class' => 'form-control'
-            ],
+            'expanded' => true,
             'placeholder' => 'Sortiraj'
 
         ]);
