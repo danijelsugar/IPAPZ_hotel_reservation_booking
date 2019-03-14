@@ -359,11 +359,7 @@ class AdminController extends AbstractController
         $reservation->setDeclined(0);
         $entityManager->flush();
 
-        $room = $roomRepository->findOneBy([
-           'id' => $roomid
-        ]);
 
-        /** @var Room $room */
         $this->addFlash('success', 'Reservation accepted');
         $entityManager->flush();
 
@@ -378,30 +374,17 @@ class AdminController extends AbstractController
      * @Route("/admin/cancel/{id}/{roomid}", name="admin/cancel")
      * @param EntityManagerInterface $entityManager
      * @param ReservationRepository $reservationRepository
-     * @param RoomRepository $roomRepository
      * @param $id
-     * @param $roomid
      * @return Response
      */
     public function cancelReservation(
         EntityManagerInterface $entityManager,
         ReservationRepository $reservationRepository,
-        RoomRepository $roomRepository,
-        $id,
-        $roomid)
+        $id)
     {
 
-        /** Getting room info by id and changing room amount */
-        $room = $roomRepository->findOneBy([
-            'id' => $roomid
-        ]);
 
-        /** @var Room $room */
-        $amount = $room->getAmount();
-        $after = ++$amount;
-        $room->setAmount($after);
 
-        $entityManager->flush();
 
         /** Deleting reservation with given id */
         $reservation = $reservationRepository->findOneBy([
@@ -409,7 +392,8 @@ class AdminController extends AbstractController
         ]);
 
         /** @var Reservation $reservation */
-        $entityManager->remove($reservation);
+        $reservation->setStatus(0);
+        $reservation->setDeclined(1);
         $this->addFlash('success', 'Rezervacija otkazana');
         $entityManager->flush();
 
