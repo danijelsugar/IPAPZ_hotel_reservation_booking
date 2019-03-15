@@ -6,6 +6,7 @@ namespace App\Form;
 
 use App\Entity\Reservation;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -29,11 +30,16 @@ class ReservationFormType extends AbstractType
                 'html5' => false,
                 'format' => 'dd.MM.yyyy.'
             ])
-            ->add('email', EmailType::class, [
-                'label' => 'Email',
-                'attr' => [
-                    'class' => 'form-control'
-                ]
+            ->add('personNum', ChoiceType::class, [
+                'mapped' => false,
+                'choices' => [
+                    '1' => 1,
+                    '2' => 2,
+                    '3' => 3
+                ],
+                'label' => 'Broj osoba',
+                'expanded' => true,
+
             ]);
 
     }
