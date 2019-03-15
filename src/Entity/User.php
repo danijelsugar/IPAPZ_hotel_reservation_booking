@@ -9,12 +9,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\EmployeeRepository")
  * @UniqueEntity("email")
  */
-class User
+class Employee implements UserInterface
 {
-
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -166,6 +165,5 @@ class User
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
     }
-
 
 }
