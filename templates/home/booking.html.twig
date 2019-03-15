@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2>booking</h2>
+
+    {{ form_start(form) }}
+        {{ form_row(form.datefrom) }}
+        {{ form_row(form.dateto) }}
+        {{ form_row(form.personNum) }}
+        <button type="submit" class="btn btn-primary mt-3" formnovalidate>Save</button>
+        {{ form_rest(form) }}
+    {{ form_start(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.js-datepicker').datepicker({
+                orientation: 'bottom',
+                format: 'dd.mm.yyyy.'
+            });
+        });
+    </script>
+{% endblock %}

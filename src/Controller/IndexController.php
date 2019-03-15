@@ -39,23 +39,35 @@ class IndexController extends AbstractController
     }
 
     /**
-     * @Route("/booking", name="booking")
+     * @Route("/booking/{room}", defaults={"room"= null}, name="booking")
      * @param EntityManagerInterface $entityManager
      * @param Request $request
+     * @param $room
      * @return Response
      * @throws \Exception
      */
-    public function booking(EntityManagerInterface $entityManager, Request $request)
+    public function booking(EntityManagerInterface $entityManager, Request $request, $room)
     {
 
+        $user = $this->getUser();
         $booking = new Reservation();
         $booking->setDatefrom(new \DateTime());
         $booking->setDateto(new \DateTime());
         $form = $this->createForm(ReservationFormType::class, $booking);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Reservation $reservation */
+            $choice = $form->get('personNum')->getData();
             $reservation = $form->getData();
-            var_dump($reservation);
+            $reservation->setUser($user);
+            $entityManager->persist($reservation);
+            $entityManager->flush();
+            $resId = $reservation->getId();
+            return $this->redirectToRoute('rooms',[
+                'choice' => $choice,
+                'reservation' => $resId
+            ]);
+
         }
 
         return $this->render('home/booking.html.twig', [
@@ -64,24 +76,48 @@ class IndexController extends AbstractController
     }
 
     /**
-     * @Route("/rooms/{id}", defaults={"id"=null}, name="rooms")
+     * @Route("/rooms/{choice}/{reservation}", name="rooms")
      * @param RoomRepository $roomRepository
-     * @param ReservationRepository $reservationRepository
-     * @param $id
+     * @param $choice
+     * @param $reservation
      * @return Response
      */
-    public function room(RoomRepository $roomRepository, ReservationRepository $reservationRepository, $id)
+    public function room(RoomRepository $roomRepository, $choice, $reservation)
     {
 
-        $roomId = $id;
-        $reservations = $reservationRepository->findBy([
-            'room' => $roomId
+        $resId = $reservation;
+        $room = $roomRepository->findBy([
+            'capacity' => $choice
         ]);
-        $room = $roomRepository->findAll();
         return $this->render('home/reservation.html.twig', [
-            'reservations' => $reservations,
-            'rooms' => $room
+            'rooms' => $room,
+            'reservation' => $resId
         ]);
+    }
+
+    /**
+     * @Route("finish_reservation/{room}/{reservation}", name="finish_reservation")
+     * @param ReservationRepository $reservationRepository
+     * @param EntityManagerInterface $entityManager
+     * @param $room
+     * @param $reservation
+     * @return Response
+     */
+    public function finishReservation(ReservationRepository $reservationRepository, RoomRepository $roomRepository, EntityManagerInterface $entityManager, $room, $reservation)
+    {
+        $res = $reservationRepository->findOneBy([
+           'id' => $reservation
+        ]);
+
+        $room = $roomRepository->findOneBy([
+            'id' => $room
+        ]);
+        $res->setRoom($room);
+        $this->addFlash('success', 'Soba rezervirana');
+        $entityManager->flush();
+
+
+        return $this->redirectToRoute('home');
     }
 
     /**
@@ -95,10 +131,6 @@ class IndexController extends AbstractController
         $roomId = $request->request->get('id');
         $reservations = $reservationRepository->findAllArray($roomId);
         return new JsonResponse($reservations);
-        /*
-        return $this->render('home/reservation.html.twig', [
-            'reservations' => $reservations
-        ]);*/
     }
 
     /**

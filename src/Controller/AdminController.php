@@ -3,19 +3,19 @@
 
 namespace App\Controller;
 
-use App\Entity\Employee;
+use App\Entity\User;
 use App\Entity\Reservation;
 use App\Entity\SubCategory;
 use App\Entity\Category;
 use App\Entity\Room;
 use App\Form\CategoryFormType;
-use App\Form\EmployeeFormType;
+use App\Form\UserFormType;
 use App\Form\OrderByFormType;
 use App\Form\ReservationFormType;
 use App\Form\RoomFormType;
 use App\Form\SubCategoryFormType;
 use App\Repository\CategoryRepository;
-use App\Repository\EmployeeRepository;
+use App\Repository\UserRepository;
 use App\Repository\ReservationRepository;
 use App\Repository\RoomRepository;
 use App\Repository\SubCategoryRepository;
@@ -357,11 +357,15 @@ class AdminController extends AbstractController
         /** @var Reservation $reservation */
         $reservation->setStatus(1);
         $reservation->setDeclined(0);
-        $entityManager->flush();
 
-
+        $room = $roomRepository->findOneBy([
+          'id' => $roomid
+        ]);
+        /** @var Room $room */
+        $room->setStatus(1);
         $this->addFlash('success', 'Reservation accepted');
         $entityManager->flush();
+
 
         return $this->redirectToRoute('admin/reservations', [
             'reservations' => $reservation
@@ -484,33 +488,33 @@ class AdminController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @param Request $request
      * @param UserPasswordEncoderInterface $encoder
-     * @param EmployeeRepository $employeeRepository
+     * @param UserRepository $userRepository
      * @return Response
      */
     public function newEmployee(
         EntityManagerInterface $entityManager,
         Request $request,
         UserPasswordEncoderInterface $encoder,
-        EmployeeRepository $employeeRepository)
+        UserRepository $userRepository)
 
     {
 
-        $form = $this->createForm(EmployeeFormType::class);
+        $form = $this->createForm(UserFormType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Employee $employee */
-            $employee = $form->getData();
-            $employee->setRoles(array('ROLE_EMPLOYEE'));
-            $employee->setPassword(
+            /** @var User $user */
+            $user = $form->getData();
+            $user->setRoles(array('ROLE_EMPLOYEE'));
+            $user->setPassword(
               $encoder->encodePassword(
-                  $employee,
+                  $user,
                   $form->get('password')->getData()
               )
             );
 
             $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($employee);
+            $entityManager->persist($user);
             $this->addFlash('success', 'Uspiješno kreiran novi zaposlenik');
             $entityManager->flush();
 
@@ -519,7 +523,7 @@ class AdminController extends AbstractController
             return $this->redirectToRoute('admin/employees');
         }
 
-        $employees = $employeeRepository->findAll();
+        $employees = $userRepository->findAll();
 
         return $this->render('admin/employees.html.twig', [
             'form' => $form->createView(),
@@ -530,13 +534,13 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/delete-employee/{id}", name="admin/delete-employee")
      * @param EntityManagerInterface $entityManager
-     * @param EmployeeRepository $employeeRepository
+     * @param UserRepository $employeeRepository
      * @param $id
      * @return Response
      */
     public function deleteEmployee(
         EntityManagerInterface $entityManager,
-        EmployeeRepository $employeeRepository,
+        UserRepository $employeeRepository,
         $id)
     {
         $employee = $employeeRepository->findOneBy([
@@ -554,7 +558,7 @@ class AdminController extends AbstractController
      * @Route("/admin/edit-employee/{id}", name="admin/edit-employee")
      * @param Request $request
      * @param EntityManagerInterface $entityManager
-     * @param EmployeeRepository $employeeRepository
+     * @param UserRepository $employeeRepository
      * @param UserPasswordEncoderInterface $encoder
      * @param $id
      * @return Response
@@ -562,7 +566,7 @@ class AdminController extends AbstractController
     public function editEmployee(
         Request $request,
         EntityManagerInterface $entityManager,
-        EmployeeRepository $employeeRepository,
+        UserRepository $employeeRepository,
         UserPasswordEncoderInterface $encoder,
         $id)
     {
@@ -570,11 +574,11 @@ class AdminController extends AbstractController
             'id' => $id
         ]);
 
-        $form = $this->createForm(EmployeeFormType::class, $employee);
+        $form = $this->createForm(UserFormType::class, $employee);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Employee $employee */
+            /** @var User $employee */
             $employee = $form->getData();
             $employee->setRoles(array('ROLE_EMPLOYEE'));
             $employee->setPassword(
@@ -595,6 +599,48 @@ class AdminController extends AbstractController
 
 
         return $this->render('admin/edit_employee.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/register", name="register")
+     * @param EntityManagerInterface $entityManager
+     * @param Request $request
+     * @param UserPasswordEncoderInterface $encoder
+     * @return Response
+     */
+    public function register(
+        EntityManagerInterface $entityManager,
+        Request $request,
+        UserPasswordEncoderInterface $encoder)
+    {
+
+        $form = $this->createForm(UserFormType::class);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var User $employee */
+            $employee = $form->getData();
+            $employee->setRoles(array('ROLE_USER'));
+            $employee->setPassword(
+                $encoder->encodePassword(
+                    $employee,
+                    $form->get('password')->getData()
+                )
+            );
+
+            $entityManager->persist($employee);
+            $this->addFlash('success', 'Uspiješno ste se registrirali');
+            $entityManager->flush();
+
+            return $this->redirectToRoute('register');
+        }
+
+
+
+        return $this->render('home/register.html.twig', [
             'form' => $form->createView()
         ]);
     }

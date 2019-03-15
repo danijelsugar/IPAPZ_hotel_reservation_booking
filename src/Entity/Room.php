@@ -49,6 +49,11 @@ class Room
     private $capacity;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $status = 0;
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -134,5 +139,21 @@ class Room
     public function getCapacity()
     {
         return $this->capacity;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param mixed $status
+     */
+    public function setStatus($status): void
+    {
+        $this->status = $status;
     }
 }
