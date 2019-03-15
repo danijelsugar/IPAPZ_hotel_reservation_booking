@@ -44,6 +44,11 @@ class Room
     private $image;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $capacity;
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -113,5 +118,21 @@ class Room
     public function setImage($image): void
     {
         $this->image = $image;
+    }
+
+    /**
+     * @param mixed $capacity
+     */
+    public function setCapacity($capacity): void
+    {
+        $this->capacity = $capacity;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCapacity()
+    {
+        return $this->capacity;
     }
 }

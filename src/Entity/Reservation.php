@@ -35,12 +35,6 @@ class Reservation
     private $dateto;
 
     /**
-     * @ORM\Column(type="string", length=180)
-     * @Assert\NotBlank()
-     */
-    private $email;
-
-    /**
      * @ORM\Column(type="boolean")
      */
     private $status = 0;
@@ -49,6 +43,12 @@ class Reservation
      * @ORM\Column(type="boolean")
      */
     private $declined = 0;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="reservation")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $user;
 
     /**
      * @return mixed
@@ -117,22 +117,6 @@ class Reservation
     /**
      * @return mixed
      */
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    /**
-     * @param mixed $email
-     */
-    public function setEmail($email): void
-    {
-        $this->email = $email;
-    }
-
-    /**
-     * @return mixed
-     */
     public function getStatus()
     {
         return $this->status;
@@ -160,6 +144,18 @@ class Reservation
     public function setDeclined($declined): void
     {
         $this->declined = $declined;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
     }
 
 
