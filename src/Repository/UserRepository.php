@@ -3,15 +3,15 @@
 
 namespace App\Repository;
 
-use App\Entity\Employee;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 
-class EmployeeRepository extends ServiceEntityRepository
+class UserRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, Employee::class);
+        parent::__construct($registry, User::class);
     }
 }
