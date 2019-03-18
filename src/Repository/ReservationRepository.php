@@ -25,6 +25,22 @@ class ReservationRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    public function reservationNum($dateFrom,$dateTo,$roomId)
+    {
+        return (int) $this->createQueryBuilder('r')
+            ->select('count(r.room)')
+            ->where('r.datefrom=:datefrom')
+            ->andWhere('r.dateto=:dateto')
+            ->andWhere('r.room=:roomId')
+            ->orWhere('r.datefrom=:datefrom')
+            ->orWhere('r.dateto=:dateto')
+            ->setParameter(':datefrom', $dateFrom)
+            ->setParameter(':dateto', $dateTo)
+            ->setParameter(':roomId', $roomId)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     public function findAllArray($roomid)
     {
         return $this->createQueryBuilder('re')

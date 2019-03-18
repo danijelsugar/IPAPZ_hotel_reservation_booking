@@ -1,12 +1,13 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    <h3>{{ message }}</h3>
+    <a class="btn btn-primary" href="{{ path('booking') }}">Nazad</a>
     <h1>Slobodne sobe</h1>
     <div class="row">
         <div class="col-12">
             {% if rooms is not empty %}
                 {% for room in rooms %}
-                    {% if (room.status is same as(true)) %}
                         <div class="row">
                             <div class="col-12">
                                 <p>{{ room.category.name }} {{ room.subcategory.name }}</p>
@@ -46,7 +47,9 @@
                                 </div>
                             </div>
                             <div class="col-3">
-                                <a class="btn btn-primary" href="{{ path('finish_reservation', {'room': room.id,'reservation': reservation}) }}">Rezerviraj</a>
+                                {% if (is_granted('ROLE_USER')) %}
+                                    <a class="btn btn-primary" href="{{ path('finish_reservation', {'room': room.id}) }}">Rezerviraj</a>
+                                {% endif %}
                                 {% if is_granted('ROLE_ADMIN') %}
                                     <a class="btn btn-info" href="{{ path('admin/edit-room', {'id': room.id}) }}">Uredi</a>
                                     <a class="btn btn-danger" href="{{ path('admin/delete-room', {'id': room.id}) }}">Obriši</a>
@@ -54,9 +57,6 @@
                             </div>
                         </div>
                         <hr>
-                    {% else %}
-
-                    {% endif %}
                 {% endfor %}
             {% else %}
                 <h1>Nema dostupnih soba</h1>

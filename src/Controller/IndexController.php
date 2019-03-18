@@ -7,7 +7,6 @@ use App\Entity\Reservation;
 use App\Entity\Room;
 use App\Form\ReservationFormType;
 use App\Form\RoomFormType;
-use App\Form\SearchFormType;
 use App\Repository\ReservationRepository;
 use App\Repository\RoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,6 +15,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 
 
@@ -24,6 +24,7 @@ class IndexController extends AbstractController
     /**
      * @Route("/", name="home")
      * @param ReservationRepository $reservationRepository
+     * @param RoomRepository $roomRepository
      * @return Response
      */
     public function index(ReservationRepository $reservationRepository, RoomRepository $roomRepository)
@@ -40,33 +41,28 @@ class IndexController extends AbstractController
 
     /**
      * @Route("/booking/{room}", defaults={"room"= null}, name="booking")
-     * @param EntityManagerInterface $entityManager
      * @param Request $request
-     * @param $room
      * @return Response
      * @throws \Exception
      */
-    public function booking(EntityManagerInterface $entityManager, Request $request, $room)
+    public function booking(Request $request)
     {
 
-        $user = $this->getUser();
+        $session = new Session();
+
         $booking = new Reservation();
         $booking->setDatefrom(new \DateTime());
         $booking->setDateto(new \DateTime());
         $form = $this->createForm(ReservationFormType::class, $booking);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Reservation $reservation */
             $choice = $form->get('personNum')->getData();
-            $reservation = $form->getData();
-            $reservation->setUser($user);
-            $entityManager->persist($reservation);
-            $entityManager->flush();
-            $resId = $reservation->getId();
-            return $this->redirectToRoute('rooms',[
-                'choice' => $choice,
-                'reservation' => $resId
-            ]);
+            $dateFrom = $form->get('datefrom')->getData();
+            $dateTo = $form->get('dateto')->getData();
+            $session->set('people', $choice);
+            $session->set('datefrom', $dateFrom);
+            $session->set('dateto', $dateTo);
+            return $this->redirectToRoute('rooms');
 
         }
 
@@ -76,45 +72,63 @@ class IndexController extends AbstractController
     }
 
     /**
-     * @Route("/rooms/{choice}/{reservation}", name="rooms")
+     * @Route("/rooms", name="rooms")
      * @param RoomRepository $roomRepository
-     * @param $choice
-     * @param $reservation
      * @return Response
      */
-    public function room(RoomRepository $roomRepository, $choice, $reservation)
+    public function room(RoomRepository $roomRepository)
     {
 
-        $resId = $reservation;
+        $session = new Session();
+        if (isset($_GET['message'])) {
+            $message = $_GET['message'];
+        } else {
+            $message = '';
+        }
         $room = $roomRepository->findBy([
-            'capacity' => $choice
+            'capacity' => $session->get('people')
         ]);
         return $this->render('home/reservation.html.twig', [
             'rooms' => $room,
-            'reservation' => $resId
+            'message' => $message
         ]);
     }
 
     /**
-     * @Route("finish_reservation/{room}/{reservation}", name="finish_reservation")
-     * @param ReservationRepository $reservationRepository
+     * @Route("finish_reservation/{room}", name="finish_reservation")
+     * @param RoomRepository $roomRepository
      * @param EntityManagerInterface $entityManager
+     * @param ReservationRepository $reservationRepository
      * @param $room
-     * @param $reservation
      * @return Response
      */
-    public function finishReservation(ReservationRepository $reservationRepository, RoomRepository $roomRepository, EntityManagerInterface $entityManager, $room, $reservation)
+    public function finishReservation(RoomRepository $roomRepository, EntityManagerInterface $entityManager, ReservationRepository $reservationRepository, $room)
     {
-        $res = $reservationRepository->findOneBy([
-           'id' => $reservation
-        ]);
 
+        $session = new Session();
+        $user = $this->getUser();
+        $dateFrom = $session->get('datefrom');
+        $dateTo = $session->get('dateto');
         $room = $roomRepository->findOneBy([
             'id' => $room
         ]);
-        $res->setRoom($room);
-        $this->addFlash('success', 'Soba rezervirana');
-        $entityManager->flush();
+        $res = $reservationRepository->reservationNum($dateFrom,$dateTo,$room);
+        if ($res === 0) {
+            /** @var Reservation $reservation */
+            $reservation = new Reservation();
+            $reservation->setRoom($room);
+            $reservation->setUser($user);
+            $reservation->setDatefrom($dateFrom);
+            $reservation->setDateto($dateTo);
+            $entityManager->persist($reservation);
+            $this->addFlash('success', 'Soba rezervirana');
+            $entityManager->flush();
+        } else {
+            return $this->redirectToRoute('rooms', [
+                'message' => 'Soba nije dostupna na taj datum molimo vas odaberite drugi'
+            ]);
+        }
+
 
 
         return $this->redirectToRoute('home');
@@ -131,41 +145,6 @@ class IndexController extends AbstractController
         $roomId = $request->request->get('id');
         $reservations = $reservationRepository->findAllArray($roomId);
         return new JsonResponse($reservations);
-    }
-
-    /**
-     * @Route("/book/{id}", name="book")
-     * @param Room $room
-     * @param Request $request
-     * @param EntityManagerInterface $entityManager
-     * @return Response
-     * @throws \Exception
-     */
-    public function book(Room $room, Request $request, EntityManagerInterface $entityManager )
-    {
-
-        $reserved = new Reservation();
-        $reserved->setDatefrom(new \DateTime());
-        $reserved->setDateto(new \DateTime());
-        $form = $this->createForm(ReservationFormType::class, $reserved);
-        $form->handleRequest($request);
-
-          if ($form->isSubmitted() && $form->isValid()) {
-              /** @var Reservation $reservation */
-              $reservation = $form->getData();
-              $reservation->setRoom($room);
-              $entityManager->persist($reservation);
-              $this->addFlash('success', 'Soba rezervirana');
-              $entityManager->flush();
-
-              return $this->redirectToRoute('rooms');
-          }
-
-
-        return $this->render('home/book.html.twig', [
-            'form' => $form->createView(),
-            'room' => $room
-        ]);
     }
 
     /**
