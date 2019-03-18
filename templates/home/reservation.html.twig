@@ -17,7 +17,7 @@
                             <div class="col-3">
                                 <img width="200" height="150" src="../../../../../uploads/image/{{ room.image }}" alt="">
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                                 <p>{{ room.description }}</p>
                             </div>
                             <div class="col-3">
@@ -46,9 +46,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-3">
+                            <div class="col-4">
                                 {% if (is_granted('ROLE_USER')) %}
                                     <a class="btn btn-primary" href="{{ path('finish_reservation', {'room': room.id}) }}">Rezerviraj</a>
+                                    <a class="btn btn-primary" href="">Ostavi recenziju</a>
+                                    <a class="btn btn-primary" href="">Recenzije</a>
                                 {% endif %}
                                 {% if is_granted('ROLE_ADMIN') %}
                                     <a class="btn btn-info" href="{{ path('admin/edit-room', {'id': room.id}) }}">Uredi</a>

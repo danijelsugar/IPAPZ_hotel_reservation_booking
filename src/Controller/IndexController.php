@@ -125,7 +125,7 @@ class IndexController extends AbstractController
             $entityManager->flush();
         } else {
             return $this->redirectToRoute('rooms', [
-                'message' => 'Soba nije dostupna na taj datum molimo vas odaberite drugi'
+                'message' => 'Soba nije dostupna u tome terminu molimo vas odaberite drugi termin'
             ]);
         }
 
@@ -217,7 +217,6 @@ class IndexController extends AbstractController
     {
         $reservations = $reservationRepository->countReservations($id);
 
-
         if ($reservations == 0) {
             $room = $roomRepository->findOneBy([
                 'id' => $id
@@ -226,12 +225,6 @@ class IndexController extends AbstractController
             $entityManager->flush();
         }
 
-
-
-
         return $this->redirectToRoute('rooms');
     }
-
-
-
 }
