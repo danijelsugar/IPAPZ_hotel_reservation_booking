@@ -227,4 +227,21 @@ class IndexController extends AbstractController
 
         return $this->redirectToRoute('rooms');
     }
+
+    /**
+     * @Route("user-reservations", name="user-reservations")
+     * @param ReservationRepository $reservationRepository
+     * @return Response
+     */
+    public function userReservations(ReservationRepository $reservationRepository)
+    {
+        $user = $user = $this->getUser();
+
+        $reservation = $reservationRepository->findBy([
+           'user' => $user
+        ]);
+        return $this->render('home/user_reservations.html.twig', [
+            'reservations' => $reservation
+        ]);
+    }
 }

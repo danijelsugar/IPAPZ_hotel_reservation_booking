@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -52,6 +54,16 @@ class Room
      * @ORM\Column(type="boolean")
      */
     private $status = 0;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Review", mappedBy="room", orphanRemoval=true)
+     */
+    private $reviews;
+
+    public function __construct()
+    {
+        $this->reviews = new ArrayCollection();
+    }
 
     /**
      * @return mixed
@@ -155,5 +167,36 @@ class Room
     public function setStatus($status): void
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return Collection|Review[]
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): self
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews[] = $review;
+            $review->setRoom($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(Review $review): self
+    {
+        if ($this->reviews->contains($review)) {
+            $this->reviews->removeElement($review);
+            // set the owning side to null (unless already changed)
+            if ($review->getRoom() === $this) {
+                $review->setRoom(null);
+            }
+        }
+
+        return $this;
     }
 }
