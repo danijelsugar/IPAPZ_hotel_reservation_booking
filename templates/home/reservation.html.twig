@@ -87,6 +87,7 @@
                       data: {'id': roomId},
                       success: function (response) {
                           var events = [];
+                          $('#calendar').fullCalendar('destroy');
                           for (var i=0;i<response.length;i++) {
                             events[i] = {};
                             events[i].title = 'soba';
