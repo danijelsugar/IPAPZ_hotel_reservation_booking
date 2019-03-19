@@ -4,10 +4,13 @@
 namespace App\Controller;
 
 use App\Entity\Reservation;
+use App\Entity\Review;
 use App\Entity\Room;
 use App\Form\ReservationFormType;
+use App\Form\ReviewFromType;
 use App\Form\RoomFormType;
 use App\Repository\ReservationRepository;
+use App\Repository\ReviewRepository;
 use App\Repository\RoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -232,16 +235,76 @@ class IndexController extends AbstractController
      * @Route("user-reservations", name="user-reservations")
      * @param ReservationRepository $reservationRepository
      * @return Response
+     * @throws \Exception
      */
     public function userReservations(ReservationRepository $reservationRepository)
     {
         $user = $user = $this->getUser();
+        $current = new \DateTime('today');
 
         $reservation = $reservationRepository->findBy([
            'user' => $user
         ]);
         return $this->render('home/user_reservations.html.twig', [
-            'reservations' => $reservation
+            'reservations' => $reservation,
+            'current' => $current
         ]);
+    }
+
+    /**
+     * @Route("leave-review/{id}", name="leave-review")
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @param $id
+     * @param ReservationRepository $reservationRepository
+     * @return Response
+     */
+    public function leaveReview(Request $request, EntityManagerInterface $entityManager, $id, ReservationRepository $reservationRepository)
+    {
+
+        $form = $this->createForm(ReviewFromType::class);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $room = $reservationRepository->find($id);
+            $room = $room->getRoom();
+            /** @var Review $review */
+            $user = $this->getUser();
+            $review = $form->getData();
+            $review->setUser($user);
+            $review->setRoom($room);
+            $entityManager->persist($review);
+            $this->addFlash('success', 'Recenzija uspiješno kreirana');
+            $entityManager->flush();
+
+            return $this->redirectToRoute('user-reservations');
+
+        }
+
+
+        return $this->render('home/new_review.html.twig', [
+            'form' => $form->createView()
+        ]);
+
+    }
+
+    /**
+     * @Route("room-reviews/{room}", name="room-reviews")
+     * @param ReviewRepository $reviewRepository
+     * @param $room
+     * @return Response
+     */
+    public function roomReviews(ReviewRepository $reviewRepository, $room)
+    {
+
+        $reviews = $reviewRepository->findBy([
+            'room' => $room
+        ]);
+
+        return $this->render('home/room_reviews.html.twig', [
+            'reviews' => $reviews
+        ]);
+
     }
 }

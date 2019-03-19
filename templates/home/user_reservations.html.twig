@@ -1,29 +1,36 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>hello</h1>
-
-        <table class="table">
-            <thead>
-                <tr>
-                    <td>Ime i prezime</td>
-                    <td>Soba</td>
-                    <td>Od</td>
-                    <td>Do</td>
-                </tr>
-            </thead>
-            <tbody>
-            {% for reservation in reservations %}
-                <tr>
-                    <td>{{ reservation.user.fullname }}</td>
-                    <td>{{ reservation.room.category.name }}</td>
-                    <td>{{ reservation.datefrom|date('d.m.Y') }}</td>
-                    <td>{{ reservation.dateto|date('d.m.Y') }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-
-        <br>
-
+    <table class="table">
+        <thead>
+            <tr>
+                <td>Ime i prezime</td>
+                <td>Soba</td>
+                <td>Od</td>
+                <td>Do</td>
+                <td>Status</td>
+                <td>Recenzija</td>
+            </tr>
+        </thead>
+        <tbody>
+        {% for reservation in reservations %}
+            <tr>
+                <td>{{ reservation.user.fullname }}</td>
+                <td>{{ reservation.room.category.name }}</td>
+                <td>{{ reservation.datefrom|date('d.m.Y') }}</td>
+                <td>{{ reservation.dateto|date('d.m.Y') }}</td>
+                {% if (reservation.status) is same as(true) %}
+                    <td>Prihvaćeno</td>
+                {% else %}
+                    <td>Na ćekanju</td>
+                {% endif %}
+                {% if (reservation.dateto == current and reservation.status is same as(true))  %}
+                    <td><a class="btn btn-primary" href="{{ path('leave-review',{'id':reservation.id}) }}">Ostavite recenziju</a></td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
