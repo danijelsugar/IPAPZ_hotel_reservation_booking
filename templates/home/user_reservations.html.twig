@@ -10,6 +10,7 @@
                 <td>Do</td>
                 <td>Status</td>
                 <td>Recenzija</td>
+                <td>Promijeni</td>
             </tr>
         </thead>
         <tbody>
@@ -29,6 +30,7 @@
                 {% else %}
                     <td></td>
                 {% endif %}
+                <td><a class="btn btn-primary" href="{{ path('edit-reservation', {'id': reservation.id}) }}">Promijeni</a></td>
             </tr>
         {% endfor %}
         </tbody>
