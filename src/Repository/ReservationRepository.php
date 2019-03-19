@@ -3,7 +3,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Category;
 use App\Entity\Reservation;
+use App\Entity\Room;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -67,5 +70,21 @@ class ReservationRepository extends ServiceEntityRepository
             ->setParameter('roomid', $roomid)
             ->getQuery()
             ->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+    }
+
+    public function orderReservations($condition)
+    {
+        return $this->createQueryBuilder('r')
+            ->select('r.id, r.datefrom,r.dateto,c.name,u.email')
+            ->innerJoin(User::class, 'u', 'r.user=u.id')
+            ->innerJoin(Room::class, 'ro', 'r.room=ro.id')
+            ->innerJoin(Category::class, 'c', 'ro.category=c.id')
+            ->groupBy('r.id, r.datefrom,r.dateto,u.email,c.dame')
+            ->add('orderBy', ':condition ASC')
+            ->setParameter(':condition', $condition)
+            ->getQuery()
+            ->getResult();
+
+
     }
 }

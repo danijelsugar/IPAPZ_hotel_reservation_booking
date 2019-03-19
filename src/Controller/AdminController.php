@@ -287,13 +287,13 @@ class AdminController extends AbstractController
                     $c = 'datefrom';
                     break;
                 case 2:
-                    $c = 'email';
+                    $c = 'user';
                     break;
                 case 3:
                     $c = 'room';
                     break;
             }
-            $reservation = $reservationRepository->findBy([], [$c => 'ASC']);
+            $reservation = $reservationRepository->orderReservations($c);
         } else
             $reservation = $reservationRepository->findAll();
 
