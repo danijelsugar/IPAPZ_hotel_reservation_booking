@@ -138,6 +138,58 @@ class IndexController extends AbstractController
     }
 
     /**
+     * @Route("edit-reservation/{id}", name="edit-reservation")
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @param ReservationRepository $reservationRepository
+     * @param $id
+     * @return Response
+     */
+    public function editReservation(Request $request, EntityManagerInterface $entityManager, ReservationRepository $reservationRepository, $id)
+    {
+
+        if (isset($_GET['message'])) {
+            $message = $_GET['message'];
+        } else {
+            $message = '';
+        }
+
+        $reservation = $reservationRepository->findOneBy([
+            'id' => $id
+        ]);
+
+        $form = $this->createForm(ReservationFormType::class, $reservation);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Reservation $reservation */
+            $reservation = $form->getData();
+            $dateFrom = $reservation->getDatefrom();
+            $dateTo = $reservation->getDateto();
+            $room = $reservation->getRoom();
+            $res = $reservationRepository->editReservationNum($dateFrom,$dateTo,$room,$id);
+
+            if ($res === 0) {
+                $this->addFlash('success', 'Rezervacija promijenjena');
+                $entityManager->flush();
+            } else {
+                return $this->redirectToRoute('edit-reservation', [
+                    'id' => $id,
+                    'message' => 'Soba nije dostupna u tome terminu molimo vas odaberite drugi termin'
+                ]);
+            }
+
+        }
+
+        return $this->render('home/edit_reservation.html.twig', [
+            'form' => $form->createView(),
+            'message' => $message
+        ]);
+
+    }
+
+    /**
      * @Route("room_reservations", name="room_reservations")
      * @param ReservationRepository $reservationRepository
      * @param Request $request
@@ -239,6 +291,7 @@ class IndexController extends AbstractController
      */
     public function userReservations(ReservationRepository $reservationRepository)
     {
+
         $user = $user = $this->getUser();
         $current = new \DateTime('today');
 
