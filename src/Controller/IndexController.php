@@ -78,9 +78,10 @@ class IndexController extends AbstractController
     /**
      * @Route("/rooms", name="rooms")
      * @param RoomRepository $roomRepository
+     * @param ReservationRepository $reservationRepository
      * @return Response
      */
-    public function room(RoomRepository $roomRepository)
+    public function room(RoomRepository $roomRepository, ReservationRepository $reservationRepository)
     {
 
         $session = new Session();
@@ -92,8 +93,29 @@ class IndexController extends AbstractController
         $room = $roomRepository->findBy([
             'capacity' => $session->get('people')
         ]);
+        $dateFrom = $session->get('datefrom');
+        $dateTo = $session->get('dateto');
+        $roomsArray = [];
+        foreach ($room as $r) {
+            $roomId = $r->getId();
+            $reservation = $reservationRepository->reservationNum($dateFrom,$dateTo,$roomId);
+            if ($reservation === 0) {
+                $roomsArray[] = $roomId;
+            } else {
+                continue;
+            }
+        }
+        var_dump($roomsArray);
+        if (empty($roomsArray)) {
+            $message = 'No rooms available';
+        } else {
+            $rooms = $roomRepository->findBy([
+                'id' => $roomsArray
+            ]);
+        }
+
         return $this->render('home/reservation.html.twig', [
-            'rooms' => $room,
+            'rooms' => $rooms,
             'message' => $message
         ]);
     }

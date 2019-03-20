@@ -20,11 +20,6 @@ class Reservation
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Room")
-     */
-    private $room;
-
-    /**
      * @ORM\Column(type="datetime")
      */
     private $datefrom;
@@ -51,6 +46,12 @@ class Reservation
     private $user;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Room", inversedBy="reservations")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $room;
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -64,22 +65,6 @@ class Reservation
     public function setId($id): void
     {
         $this->id = $id;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getRoom()
-    {
-        return $this->room;
-    }
-
-    /**
-     * @param mixed $room
-     */
-    public function setRoom($room): void
-    {
-        $this->room = $room;
     }
 
     /**
@@ -154,6 +139,18 @@ class Reservation
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getRoom(): ?Room
+    {
+        return $this->room;
+    }
+
+    public function setRoom(?Room $room): self
+    {
+        $this->room = $room;
 
         return $this;
     }
