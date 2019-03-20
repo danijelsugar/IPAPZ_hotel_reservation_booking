@@ -35,6 +35,7 @@ class ReservationRepository extends ServiceEntityRepository
             ->where('r.datefrom between :datefrom and :dateto')
             ->orWhere('r.dateto between :datefrom and :dateto')
             ->orWhere('r.datefrom <= :datefrom and r.dateto >= :dateto')
+            ->andWhere('r.status=1')
             ->andWhere('r.room=:roomId')
             ->setParameter(':datefrom', $dateFrom)
             ->setParameter(':dateto', $dateTo)
@@ -75,13 +76,12 @@ class ReservationRepository extends ServiceEntityRepository
     public function orderReservations($condition)
     {
         return $this->createQueryBuilder('r')
-            ->select('r.id, r.datefrom,r.dateto,c.name,u.email')
-            ->innerJoin(User::class, 'u', 'r.user=u.id')
-            ->innerJoin(Room::class, 'ro', 'r.room=ro.id')
-            ->innerJoin(Category::class, 'c', 'ro.category=c.id')
-            ->groupBy('r.id, r.datefrom,r.dateto,u.email,c.dame')
-            ->add('orderBy', ':condition ASC')
-            ->setParameter(':condition', $condition)
+            ->select('r.id, r.datefrom,r.dateto,ro.id,c.name,u.email,r.status,r.declined')
+            ->join(User::class, 'u', 'r.user=u.id')
+            ->join(Room::class, 'ro', 'r.room=ro.id')
+            ->join(Category::class, 'c', 'ro.category=c.id')
+            ->groupBy('r.id, r.datefrom,r.dateto,ro.id,u.email,c.name,r.status,r.declined')
+            ->orderBy($condition, 'asc')
             ->getQuery()
             ->getResult();
 

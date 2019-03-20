@@ -279,23 +279,25 @@ class AdminController extends AbstractController
     {
         $orderForm = $this->createForm(OrderByFormType::class);
         $orderForm->handleRequest($request);
-
+        $choice = $request->request->get('choice');
         if ($orderForm->isSubmitted() && $orderForm->isValid()) {
             $choice = $orderForm->getData();
             switch ($choice['orderby']) {
                 case 1:
-                    $c = 'datefrom';
+                    $condition = 'r.datefrom';
                     break;
                 case 2:
-                    $c = 'user';
+                    $condition = 'u.email';
                     break;
                 case 3:
-                    $c = 'room';
+                    $condition = 'c.name';
                     break;
             }
-            $reservation = $reservationRepository->orderReservations($c);
-        } else
+            $reservation = $reservationRepository->orderReservations($condition);
+        } else {
             $reservation = $reservationRepository->findAll();
+        }
+
 
         return $this->render('admin/pending.html.twig', [
            'reservations' => $reservation,

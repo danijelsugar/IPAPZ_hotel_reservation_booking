@@ -27,8 +27,7 @@ class OrderByFormType extends AbstractType
            ],
            'label' => 'Sortiraj po',
             'expanded' => true,
-            'placeholder' => 'Sortiraj'
-
+            'placeholder' => 'Sortiraj',
         ]);
     }
 

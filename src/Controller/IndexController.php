@@ -65,6 +65,7 @@ class IndexController extends AbstractController
             $session->set('people', $choice);
             $session->set('datefrom', $dateFrom);
             $session->set('dateto', $dateTo);
+
             return $this->redirectToRoute('rooms');
 
         }
@@ -128,7 +129,7 @@ class IndexController extends AbstractController
             $entityManager->flush();
         } else {
             return $this->redirectToRoute('rooms', [
-                'message' => 'Soba nije dostupna u tome terminu molimo vas odaberite drugi termin'
+                'message' => 'Soba nije dostupna u tome terminu molimo vas odaberite drugi termin. U kalendaru možete pogledati dostupne termine'
             ]);
         }
 

@@ -5,9 +5,9 @@
     <h2>Rezervacije</h2>
             <div class="row">
                 <div class="col-12">
-                        {{ form_start(orderForm) }}
+
                             {{ form_row(orderForm.orderby) }}
-                        {{ form_end(orderForm) }}
+
                 </div>
             </div>
             <div class="row">
@@ -47,8 +47,23 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        $('#order_by_form_orderby').change(function(){
-            $(this).closest('form').trigger('submit');
+
+
+        $('input:radio').click(function(e) {
+            e.preventDefault();
+            var value = $('input:radio:checked').val();
+            console.log(value);
+            $.ajax({
+                url:'{{ (path('admin/reservations')) }}',
+                type: 'POST',
+                data: {'choice': value},
+                success: function (response) {
+
+                }
+            });
         });
+
+
+
     </script>
 {% endblock %}
