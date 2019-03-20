@@ -52,7 +52,7 @@
         $('input:radio').click(function(e) {
             e.preventDefault();
             var value = $('input:radio:checked').val();
-            console.log(value);
+
             $.ajax({
                 url:'{{ (path('admin/reservations')) }}',
                 type: 'POST',
