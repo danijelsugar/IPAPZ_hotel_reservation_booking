@@ -74,5 +74,4 @@ class Category
     {
         $this->name = $name;
     }
-
 }

@@ -10,7 +10,6 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
-
 class ReservationRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
@@ -28,9 +27,9 @@ class ReservationRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    public function reservationNum($dateFrom,$dateTo,$roomId)
+    public function reservationNum($dateFrom, $dateTo, $roomId)
     {
-        return (int) $this->createQueryBuilder('r')
+        return (int)$this->createQueryBuilder('r')
             ->select('count(r.room)')
             ->where('r.datefrom between :datefrom and :dateto')
             ->orWhere('r.dateto between :datefrom and :dateto')
@@ -44,9 +43,9 @@ class ReservationRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    public function editReservationNum($dateFrom,$dateTo,$roomId,$id)
+    public function editReservationNum($dateFrom, $dateTo, $roomId, $id)
     {
-        return (int) $this->createQueryBuilder('r')
+        return (int)$this->createQueryBuilder('r')
             ->select('count(r.room)')
             ->where('r.datefrom between :datefrom and :dateto')
             ->orWhere('r.dateto between :datefrom and :dateto')
@@ -84,7 +83,5 @@ class ReservationRepository extends ServiceEntityRepository
             ->orderBy($condition, 'asc')
             ->getQuery()
             ->getResult();
-
-
     }
 }

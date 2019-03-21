@@ -20,46 +20,56 @@ class RoomFormType extends AbstractType
     {
         $builder
             ->add(
-                'description', TextareaType::class, [
-                'label' => 'Opis',
-                'required' => false,
-                'attr' => [
-                    'class' => 'form-control'
-                ]
-                ]
-            )
-            ->add(
-                'category', EntityType::class, [
-                'label' => 'Kategorija',
-                'class' => Category::class,
-                'attr' => [
-                    'class' => 'form-control'
-                ],
-                'choice_label' => 'name'
+                'description',
+                TextareaType::class,
+                [
+                    'label' => 'Opis',
+                    'required' => false,
+                    'attr' => [
+                        'class' => 'form-control'
+                    ]
                 ]
             )
             ->add(
-                'subcategory', EntityType::class, [
-                'label' => 'Potkategorija',
-                'class' => SubCategory::class,
-                'attr' => [
-                    'class' => 'form-control'
-                ],
-                'choice_label' => 'name'
+                'category',
+                EntityType::class,
+                [
+                    'label' => 'Kategorija',
+                    'class' => Category::class,
+                    'attr' => [
+                        'class' => 'form-control'
+                    ],
+                    'choice_label' => 'name'
                 ]
             )
             ->add(
-                'image', FileType::class, [
-                'data_class' => null,
-                'label' => 'Slika(JPG, JPEG)',
+                'subcategory',
+                EntityType::class,
+                [
+                    'label' => 'Potkategorija',
+                    'class' => SubCategory::class,
+                    'attr' => [
+                        'class' => 'form-control'
+                    ],
+                    'choice_label' => 'name'
                 ]
             )
             ->add(
-                'capacity', NumberType::class, [
-                'label' => 'Kapacitet sobe',
-                'attr' => [
-                    'class' => 'form-control'
+                'image',
+                FileType::class,
+                [
+                    'data_class' => null,
+                    'label' => 'Slika(JPG, JPEG)',
                 ]
+            )
+            ->add(
+                'capacity',
+                NumberType::class,
+                [
+                    'label' => 'Kapacitet sobe',
+                    'attr' => [
+                        'class' => 'form-control'
+                    ]
                 ]
             );
     }
@@ -68,7 +78,7 @@ class RoomFormType extends AbstractType
     {
         $resolver->setDefaults(
             [
-            'data_class' => Room::class
+                'data_class' => Room::class
             ]
         );
     }

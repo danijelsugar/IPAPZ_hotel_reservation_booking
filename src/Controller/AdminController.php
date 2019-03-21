@@ -30,13 +30,13 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
-
 /**
  * Class AdminController
  *
  * @package App\Controller
  *
- * Security annotation on login will throw 403 and on register route we use redirect to route. Both examples are correct.
+ * Security annotation on login will throw 403 and on register route
+ * we use redirect to route. Both examples are correct.
  */
 class AdminController extends AbstractController
 {
@@ -44,13 +44,14 @@ class AdminController extends AbstractController
 
     /**
      * @Route("/admin/create-category", name="admin/create-category")
-     * @param                           Request                $request
+     * @param                           Request $request
      * @param                           EntityManagerInterface $entityManager
-     * @param                           CategoryRepository     $categoryRepository
-     * @param                           SubCategoryRepository  $subCategoryRepository
+     * @param                           CategoryRepository $categoryRepository
+     * @param                           SubCategoryRepository $subCategoryRepository
      * @return                          Response
      */
-    public function createCategory(Request $request,
+    public function createCategory(
+        Request $request,
         EntityManagerInterface $entityManager,
         SubCategoryRepository $subCategoryRepository,
         CategoryRepository $categoryRepository
@@ -62,8 +63,8 @@ class AdminController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             /**
- * @var SubCategory $subCategory 
-*/
+             * @var SubCategory $subCategory
+             */
             $subCategory = $form->getData();
             $entityManager->persist($subCategory);
             $this->addFlash('success', 'Potkategorija kreirana');
@@ -77,8 +78,8 @@ class AdminController extends AbstractController
         if ($categoryForm->isSubmitted() && $categoryForm->isValid()) {
 
             /**
- * @var Category $category 
-*/
+             * @var Category $category
+             */
             $category = $categoryForm->getData();
             $entityManager->persist($category);
             $this->addFlash('success', 'Kategorija kreirana');
@@ -92,26 +93,27 @@ class AdminController extends AbstractController
         $category = $categoryRepository->findAll();
 
         return $this->render(
-            'admin/categories.html.twig', [
-            'form' => $form->createView(),
-            'subCategories' => $subCategory,
-            'categoryForm' => $categoryForm->createView(),
-            'categories' => $category
+            'admin/categories.html.twig',
+            [
+                'form' => $form->createView(),
+                'subCategories' => $subCategory,
+                'categoryForm' => $categoryForm->createView(),
+                'categories' => $category
 
             ]
         );
-
     }
 
     /**
      * @Route("/admin/edit-subcategory/{id}", name="admin/edit-subcategory")
-     * @param                                 Request                $request
+     * @param                                 Request $request
      * @param                                 EntityManagerInterface $entityManager
-     * @param                                 SubCategoryRepository  $subCategoryRepository
+     * @param                                 SubCategoryRepository $subCategoryRepository
      * @param                                 $id
      * @return                                Response
      */
-    public function editSubcategory(Request $request,
+    public function editSubcategory(
+        Request $request,
         EntityManagerInterface $entityManager,
         SubCategoryRepository $subCategoryRepository,
         $id
@@ -119,7 +121,7 @@ class AdminController extends AbstractController
 
         $subCategory = $subCategoryRepository->findOneBy(
             [
-            'id' => $id
+                'id' => $id
             ]
         );
 
@@ -128,32 +130,32 @@ class AdminController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             /**
- * @var SubCategory $subCategory 
-*/
+             * @var SubCategory $subCategory
+             */
             $subCategory = $form->getData();
             $entityManager->flush();
 
             return $this->redirectToRoute(
-                'admin/create-category', [
-                'id' => $subCategory->getId()
+                'admin/create-category',
+                [
+                    'id' => $subCategory->getId()
                 ]
             );
         }
 
 
         return $this->render(
-            'admin/edit_subcategory.html.twig', [
-            'form' => $form->createView()
+            'admin/edit_subcategory.html.twig',
+            [
+                'form' => $form->createView()
             ]
         );
-
-
     }
 
     /**
      * @Route("/admin/delete-subcategory/{id}", name="admin/delete-subcategory")
      * @param                                   EntityManagerInterface $entityManager
-     * @param                                   SubCategoryRepository  $subCategoryRepository
+     * @param                                   SubCategoryRepository $subCategoryRepository
      * @param                                   $id
      * @return                                  Response
      */
@@ -164,7 +166,7 @@ class AdminController extends AbstractController
     ) {
         $subCategory = $subCategoryRepository->findOneBy(
             [
-            'id' => $id
+                'id' => $id
             ]
         );
 
@@ -173,14 +175,13 @@ class AdminController extends AbstractController
         $entityManager->flush();
 
         return $this->redirectToRoute('admin/create-category');
-
     }
 
     /**
      * @Route("/admin/edit-category/{id}", name="admin/edit-category")
-     * @param                              Request                $request
+     * @param                              Request $request
      * @param                              EntityManagerInterface $entityManager
-     * @param                              CategoryRepository     $categoryRepository
+     * @param                              CategoryRepository $categoryRepository
      * @param                              $id
      * @return                             Response
      */
@@ -192,7 +193,7 @@ class AdminController extends AbstractController
     ) {
         $category = $categoryRepository->findOneBy(
             [
-            'id' => $id
+                'id' => $id
             ]
         );
 
@@ -201,30 +202,31 @@ class AdminController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             /**
- * @var Category $category 
-*/
+             * @var Category $category
+             */
             $category = $form->getData();
             $entityManager->flush();
 
             return $this->redirectToRoute(
-                'admin/create-category', [
-                'id' => $category->getId()
+                'admin/create-category',
+                [
+                    'id' => $category->getId()
                 ]
             );
         }
 
         return $this->render(
-            'admin/edit_category.html.twig', [
-            'form' => $form->createView()
+            'admin/edit_category.html.twig',
+            [
+                'form' => $form->createView()
             ]
         );
-
     }
 
     /**
      * @Route("/admin/delete-category/{id}", name="admin/delete-category")
      * @param                                EntityManagerInterface $entityManager
-     * @param                                CategoryRepository     $categoryRepository
+     * @param                                CategoryRepository $categoryRepository
      * @param                                $id
      * @return                               Response
      */
@@ -235,7 +237,7 @@ class AdminController extends AbstractController
     ) {
         $category = $categoryRepository->findOneBy(
             [
-            'id' => $id
+                'id' => $id
             ]
         );
 
@@ -248,7 +250,7 @@ class AdminController extends AbstractController
 
     /**
      * @Route("/admin/create-room", name="admin/create-room")
-     * @param                       Request                $request
+     * @param                       Request $request
      * @param                       EntityManagerInterface $entityManager
      * @return                      Response
      */
@@ -264,7 +266,7 @@ class AdminController extends AbstractController
 
             $room = $form->getData();
             $file = $room->getImage();
-            $fileName = $this->generateUniqueFileName().'.'.$file->guessExtension();
+            $fileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
             try {
                 $file->move(
                     $this->getParameter('image_directory'),
@@ -282,8 +284,9 @@ class AdminController extends AbstractController
         }
 
         return $this->render(
-            'admin/rooms.html.twig', [
-            'form' => $form->createView()
+            'admin/rooms.html.twig',
+            [
+                'form' => $form->createView()
             ]
         );
     }
@@ -301,7 +304,7 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/reservations", name="admin/reservations")
      * @param                        ReservationRepository $reservationRepository
-     * @param                        Request               $request
+     * @param                        Request $request
      * @return                       Response
      */
     public function reservations(ReservationRepository $reservationRepository, Request $request)
@@ -311,30 +314,30 @@ class AdminController extends AbstractController
 
         $choice = $request->request->get('choice');
 
-            $condition = 'datefrom';
-            switch ($choice) {
-        case 1:
-            $condition = 'datefrom';
-            break;
-        case 2:
-            $condition = 'u.email';
-            break;
-        case 3:
-            $condition = 'c.name';
-            break;
-            }
-            $reservation = $reservationRepository->findBy([], [$condition => 'ASC']);
+        $condition = 'datefrom';
+        switch ($choice) {
+            case 1:
+                $condition = 'datefrom';
+                break;
+            case 2:
+                $condition = 'u.email';
+                break;
+            case 3:
+                $condition = 'c.name';
+                break;
+        }
+        $reservation = $reservationRepository->findBy([], [$condition => 'ASC']);
 
-            //$reservation = $reservationRepository->findAll();
+        //$reservation = $reservationRepository->findAll();
 
 
-
-            return $this->render(
-                'admin/pending.html.twig', [
+        return $this->render(
+            'admin/pending.html.twig',
+            [
                 'reservations' => $reservation,
                 'orderForm' => $orderForm->createView()
-                ]
-            );
+            ]
+        );
     }
 
     /**
@@ -349,8 +352,9 @@ class AdminController extends AbstractController
         $reservation = $reservationRepository->findAll();
 
         return $this->render(
-            'admin/accepted.html.twig', [
-            'reservations' => $reservation,
+            'admin/accepted.html.twig',
+            [
+                'reservations' => $reservation,
             ]
         );
     }
@@ -364,13 +368,14 @@ class AdminController extends AbstractController
     {
         $reservation = $reservationRepository->findBy(
             [
-            'declined' => 1
+                'declined' => 1
             ]
         );
 
         return $this->render(
-            'admin/declined.html.twig', [
-            'reservations' => $reservation
+            'admin/declined.html.twig',
+            [
+                'reservations' => $reservation
             ]
         );
     }
@@ -378,13 +383,14 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/accept/{id}/{roomid}", name="admin/accept")
      * @param                                EntityManagerInterface $entityManager
-     * @param                                ReservationRepository  $reservationRepository
-     * @param                                RoomRepository         $roomRepository
+     * @param                                ReservationRepository $reservationRepository
+     * @param                                RoomRepository $roomRepository
      * @param                                $id
      * @param                                $roomid
      * @return                               Response
      */
-    public function acceptReservation(EntityManagerInterface $entityManager,
+    public function acceptReservation(
+        EntityManagerInterface $entityManager,
         ReservationRepository $reservationRepository,
         RoomRepository $roomRepository,
         $id,
@@ -392,42 +398,41 @@ class AdminController extends AbstractController
     ) {
         $reservation = $reservationRepository->findOneBy(
             [
-            'id' => $id
+                'id' => $id
             ]
         );
 
         /**
- * @var Reservation $reservation 
-*/
+         * @var Reservation $reservation
+         */
         $reservation->setStatus(1);
         $reservation->setDeclined(0);
 
         $room = $roomRepository->findOneBy(
             [
-            'id' => $roomid
+                'id' => $roomid
             ]
         );
         /**
- * @var Room $room 
-*/
+         * @var Room $room
+         */
         $room->setStatus(1);
         $this->addFlash('success', 'Reservation accepted');
         $entityManager->flush();
 
 
         return $this->redirectToRoute(
-            'admin/reservations', [
-            'reservations' => $reservation
+            'admin/reservations',
+            [
+                'reservations' => $reservation
             ]
         );
-
-
     }
 
     /**
      * @Route("/admin/cancel/{id}/{roomid}", name="admin/cancel")
      * @param                                EntityManagerInterface $entityManager
-     * @param                                ReservationRepository  $reservationRepository
+     * @param                                ReservationRepository $reservationRepository
      * @param                                $id
      * @return                               Response
      */
@@ -438,39 +443,36 @@ class AdminController extends AbstractController
     ) {
 
 
-
-
         /**
- * Deleting reservation with given id 
-*/
+         * Deleting reservation with given id
+         */
         $reservation = $reservationRepository->findOneBy(
             [
-            'id' => $id
+                'id' => $id
             ]
         );
 
         /**
- * @var Reservation $reservation 
-*/
+         * @var Reservation $reservation
+         */
         $reservation->setStatus(0);
         $reservation->setDeclined(1);
         $this->addFlash('success', 'Rezervacija otkazana');
         $entityManager->flush();
 
         return $this->redirectToRoute(
-            'admin/accepted', [
-            'reservations' => $reservation
+            'admin/accepted',
+            [
+                'reservations' => $reservation
             ]
         );
-
-
     }
 
     /**
      * @Route("/admin/decline/{id}/{roomid}", name="admin/decline")
      * @param                                 EntityManagerInterface $entityManager
-     * @param                                 ReservationRepository  $reservationRepository
-     * @param                                 RoomRepository         $roomRepository
+     * @param                                 ReservationRepository $reservationRepository
+     * @param                                 RoomRepository $roomRepository
      * @param                                 $id
      * @param                                 $roomid
      * @return                                Response
@@ -484,43 +486,41 @@ class AdminController extends AbstractController
     ) {
 
         /**
- * Getting room info by id and changing room amount 
-*/
+         * Getting room info by id and changing room amount
+         */
         $room = $roomRepository->findOneBy(
             [
-            'id' => $roomid
+                'id' => $roomid
             ]
         );
-
 
 
         $reservation = $reservationRepository->findOneBy(
             [
-            'id' => $id
+                'id' => $id
             ]
         );
 
         /**
- * @var Reservation $reservation 
-*/
+         * @var Reservation $reservation
+         */
         $reservation->setDeclined(1);
         $this->addFlash('success', 'Reservation declined');
         $entityManager->flush();
 
         return $this->redirectToRoute(
-            'admin/reservations', [
-            'reservations' => $reservation
+            'admin/reservations',
+            [
+                'reservations' => $reservation
             ]
         );
-
-
     }
 
     /**
      * @Route("/admin/edit-reservation/{id}", name="admin/edit-reservation")
-     * @param                                 Request                $request
+     * @param                                 Request $request
      * @param                                 EntityManagerInterface $entityManager
-     * @param                                 ReservationRepository  $reservationRepository
+     * @param                                 ReservationRepository $reservationRepository
      * @param                                 $id
      * @return                                Response
      */
@@ -532,7 +532,7 @@ class AdminController extends AbstractController
     ) {
         $reservation = $reservationRepository->findOneBy(
             [
-            'id' => $id
+                'id' => $id
             ]
         );
 
@@ -541,8 +541,8 @@ class AdminController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             /**
- * @var Reservation $reservation 
-*/
+             * @var Reservation $reservation
+             */
             $reservation = $form->getData();
             $entityManager->flush();
 
@@ -551,18 +551,19 @@ class AdminController extends AbstractController
 
 
         return $this->render(
-            'admin/edit_reservation.html.twig', [
-            'form' => $form->createView()
+            'admin/edit_reservation.html.twig',
+            [
+                'form' => $form->createView()
             ]
         );
     }
 
     /**
      * @Route("admin/employees", name="admin/employees")
-     * @param                    EntityManagerInterface       $entityManager
-     * @param                    Request                      $request
+     * @param                    EntityManagerInterface $entityManager
+     * @param                    Request $request
      * @param                    UserPasswordEncoderInterface $encoder
-     * @param                    UserRepository               $userRepository
+     * @param                    UserRepository $userRepository
      * @return                   Response
      */
     public function newEmployee(
@@ -578,8 +579,8 @@ class AdminController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             /**
- * @var User $user 
-*/
+             * @var User $user
+             */
             $user = $form->getData();
             $user->setRoles(array('ROLE_EMPLOYEE'));
             $user->setPassword(
@@ -595,16 +596,16 @@ class AdminController extends AbstractController
             $entityManager->flush();
 
 
-
             return $this->redirectToRoute('admin/employees');
         }
 
         $employees = $userRepository->findAll();
 
         return $this->render(
-            'admin/employees.html.twig', [
-            'form' => $form->createView(),
-            'employees' => $employees
+            'admin/employees.html.twig',
+            [
+                'form' => $form->createView(),
+                'employees' => $employees
             ]
         );
     }
@@ -612,7 +613,7 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/delete-employee/{id}", name="admin/delete-employee")
      * @param                                EntityManagerInterface $entityManager
-     * @param                                UserRepository         $employeeRepository
+     * @param                                UserRepository $employeeRepository
      * @param                                $id
      * @return                               Response
      */
@@ -623,7 +624,7 @@ class AdminController extends AbstractController
     ) {
         $employee = $employeeRepository->findOneBy(
             [
-            'id' => $id
+                'id' => $id
             ]
         );
 
@@ -636,9 +637,9 @@ class AdminController extends AbstractController
 
     /**
      * @Route("/admin/edit-employee/{id}", name="admin/edit-employee")
-     * @param                              Request                      $request
-     * @param                              EntityManagerInterface       $entityManager
-     * @param                              UserRepository               $employeeRepository
+     * @param                              Request $request
+     * @param                              EntityManagerInterface $entityManager
+     * @param                              UserRepository $employeeRepository
      * @param                              UserPasswordEncoderInterface $encoder
      * @param                              $id
      * @return                             Response
@@ -652,7 +653,7 @@ class AdminController extends AbstractController
     ) {
         $employee = $employeeRepository->findOneBy(
             [
-            'id' => $id
+                'id' => $id
             ]
         );
 
@@ -661,8 +662,8 @@ class AdminController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             /**
- * @var User $employee 
-*/
+             * @var User $employee
+             */
             $employee = $form->getData();
             $employee->setRoles(array('ROLE_EMPLOYEE'));
             $employee->setPassword(
@@ -677,22 +678,22 @@ class AdminController extends AbstractController
             $entityManager->flush();
 
 
-
             return $this->redirectToRoute('admin/employees');
         }
 
 
         return $this->render(
-            'admin/edit_employee.html.twig', [
-            'form' => $form->createView()
+            'admin/edit_employee.html.twig',
+            [
+                'form' => $form->createView()
             ]
         );
     }
 
     /**
      * @Route("/register", name="register")
-     * @param              EntityManagerInterface       $entityManager
-     * @param              Request                      $request
+     * @param              EntityManagerInterface $entityManager
+     * @param              Request $request
      * @param              UserPasswordEncoderInterface $encoder
      * @return             Response
      */
@@ -708,8 +709,8 @@ class AdminController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             /**
- * @var User $employee 
-*/
+             * @var User $employee
+             */
             $employee = $form->getData();
             $employee->setRoles(array('ROLE_USER'));
             $employee->setPassword(
@@ -727,10 +728,10 @@ class AdminController extends AbstractController
         }
 
 
-
         return $this->render(
-            'home/register.html.twig', [
-            'form' => $form->createView()
+            'home/register.html.twig',
+            [
+                'form' => $form->createView()
             ]
         );
     }
@@ -756,6 +757,5 @@ class AdminController extends AbstractController
      */
     public function logout()
     {
-
     }
 }

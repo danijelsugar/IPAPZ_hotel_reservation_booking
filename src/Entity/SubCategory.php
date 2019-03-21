@@ -75,6 +75,4 @@ class SubCategory
     {
         $this->name = $name;
     }
-
-
 }

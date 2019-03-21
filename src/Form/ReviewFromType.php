@@ -2,7 +2,6 @@
 
 namespace App\Form;
 
-
 use App\Entity\Review;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -18,31 +17,33 @@ class ReviewFromType extends AbstractType
 
         $builder
             ->add(
-                'text', TextareaType::class, [
-                'label' => 'Text',
-                'attr' => [
-                    'class' => 'form-control'
-                ]
+                'text',
+                TextareaType::class,
+                [
+                    'label' => 'Text',
+                    'attr' => [
+                        'class' => 'form-control'
+                    ]
                 ]
             )
             ->add(
-                'rating', NumberType::class, [
-                'label' => 'Ocijena',
-                'attr' => [
-                    'class' => 'form-control'
-                ]
+                'rating',
+                NumberType::class,
+                [
+                    'label' => 'Ocijena',
+                    'attr' => [
+                        'class' => 'form-control'
+                    ]
                 ]
             );
-
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
             [
-            'data_class' => Review::class
+                'data_class' => Review::class
             ]
         );
     }
-
 }

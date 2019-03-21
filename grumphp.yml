@@ -11,7 +11,11 @@ parameters:
             report: full
             report_width: ~
             whitelist_patterns:
-                - /^src\/(.*)/
+                - /^src\/Controller\/(.*)/
+                - /^src\/Entity\/(.*)/
+                - /^src\/Form\/(.*)/
+                - /^src\/Repository\/(.*)/
+                - /^src\/Security\/(.*)/
             encoding: ~
             ignore_patterns: []
             sniffs: []

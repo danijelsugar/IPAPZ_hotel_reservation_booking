@@ -8,7 +8,6 @@
 
 namespace App\Form;
 
-
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -20,15 +19,17 @@ class OrderByFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
-            'orderby', ChoiceType::class, [
-            'choices' => [
-               'Datum' => 1,
-               'Email' => 2,
-               'Naziv sobe' => 3
-            ],
-            'label' => 'Sortiraj po',
-            'expanded' => true,
-            'placeholder' => 'Sortiraj',
+            'orderby',
+            ChoiceType::class,
+            [
+                'choices' => [
+                    'Datum' => 1,
+                    'Email' => 2,
+                    'Naziv sobe' => 3
+                ],
+                'label' => 'Sortiraj po',
+                'expanded' => true,
+                'placeholder' => 'Sortiraj',
             ]
         );
     }
@@ -37,5 +38,4 @@ class OrderByFormType extends AbstractType
     {
         $resolver->setDefault('required', false);
     }
-
 }
