@@ -314,17 +314,18 @@ class AdminController extends AbstractController
 
         $choice = $request->request->get('choice');
 
-        $condition = 'datefrom';
         switch ($choice) {
             case 1:
                 $condition = 'datefrom';
                 break;
             case 2:
-                $condition = 'u.email';
+                $condition = 'user';
                 break;
             case 3:
-                $condition = 'c.name';
+                $condition = 'room';
                 break;
+            default:
+                $condition = 'datefrom';
         }
         $reservation = $reservationRepository->findBy([], [$condition => 'ASC']);
 

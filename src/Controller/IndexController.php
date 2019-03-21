@@ -107,12 +107,11 @@ class IndexController extends AbstractController
             $reservation = $reservationRepository->reservationNum($dateFrom, $dateTo, $roomId);
             if ($reservation === 0) {
                 $roomsArray[] = $roomId;
-            } else {
-                continue;
             }
         }
         var_dump($roomsArray);
         if (empty($roomsArray)) {
+            $rooms = '';
             $message = 'No rooms available';
         } else {
             $rooms = $roomRepository->findBy(

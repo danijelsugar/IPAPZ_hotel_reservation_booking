@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h3>{{ message }}</h3>
     <a class="btn btn-primary" href="{{ path('booking') }}">Nazad</a>
     <h1>Slobodne sobe</h1>
     <div class="row">
@@ -60,7 +59,7 @@
                         <hr>
                 {% endfor %}
             {% else %}
-                <h1>Nema dostupnih soba</h1>
+                <h1>{{ message }}</h1>
             {% endif %}
         </div>
     </div>
