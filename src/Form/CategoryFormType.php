@@ -18,20 +18,24 @@ class CategoryFormType extends AbstractType
     {
 
         $builder
-            ->add('name', TextType::class, [
+            ->add(
+                'name', TextType::class, [
                 'label' => 'Naziv',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control'
                 ]
-            ]);
+                ]
+            );
 
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
+        $resolver->setDefaults(
+            [
             'data_class' => Category::class
-        ]);
+            ]
+        );
     }
 }

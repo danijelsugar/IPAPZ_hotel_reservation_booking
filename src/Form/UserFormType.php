@@ -20,25 +20,32 @@ class UserFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('firstname', TextType::class, [
+            ->add(
+                'firstname', TextType::class, [
                 'label' => 'Ime',
                 'attr' => [
                     'class' => 'form-control'
                 ]
-            ])
-            ->add('lastname', TextType::class, [
+                ]
+            )
+            ->add(
+                'lastname', TextType::class, [
                 'label' => 'Prezime',
                 'attr' => [
                     'class' => 'form-control'
                 ]
-            ])
-            ->add('email', EmailType::class, [
+                ]
+            )
+            ->add(
+                'email', EmailType::class, [
                 'label' => 'Email',
                 'attr' => [
                     'class' => 'form-control'
                 ]
-            ])
-            ->add('password', RepeatedType::class, [
+                ]
+            )
+            ->add(
+                'password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'label' => 'Lozinka',
                 'attr' => [
@@ -46,22 +53,29 @@ class UserFormType extends AbstractType
                 ],
                 'mapped' => false,
                 'constraints' => [
-                    new NotBlank([
+                    new NotBlank(
+                        [
                         'message' => 'Unesite lozinku'
-                    ]),
-                    new Length([
+                        ]
+                    ),
+                    new Length(
+                        [
                         'min' => 6,
                         'minMessage' => 'Vaša bi lozinka trebala biti najmanje {{ limit }} znakova',
                         'max' => 4096,
-                    ])
+                        ]
+                    )
                 ]
-            ]);
+                ]
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
+        $resolver->setDefaults(
+            [
             'data_class' => User::class
-        ]);
+            ]
+        );
     }
 }

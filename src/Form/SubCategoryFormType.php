@@ -15,20 +15,24 @@ class SubCategoryFormType extends  AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', TextType::class , [
-               'label' => 'Naziv',
+            ->add(
+                'name', TextType::class, [
+                'label' => 'Naziv',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control'
                 ]
-            ]);
+                ]
+            );
 
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-           'data_class' => SubCategory::class
-        ]);
+        $resolver->setDefaults(
+            [
+            'data_class' => SubCategory::class
+            ]
+        );
     }
 }

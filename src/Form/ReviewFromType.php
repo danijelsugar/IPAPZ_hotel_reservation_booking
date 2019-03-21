@@ -17,26 +17,32 @@ class ReviewFromType extends AbstractType
     {
 
         $builder
-            ->add('text', TextareaType::class, [
+            ->add(
+                'text', TextareaType::class, [
                 'label' => 'Text',
                 'attr' => [
                     'class' => 'form-control'
                 ]
-            ])
-            ->add('rating', NumberType::class, [
-               'label' => 'Ocijena',
+                ]
+            )
+            ->add(
+                'rating', NumberType::class, [
+                'label' => 'Ocijena',
                 'attr' => [
                     'class' => 'form-control'
                 ]
-            ]);
+                ]
+            );
 
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
+        $resolver->setDefaults(
+            [
             'data_class' => Review::class
-        ]);
+            ]
+        );
     }
 
 }

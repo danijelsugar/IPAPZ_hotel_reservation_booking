@@ -27,3 +27,6 @@ Hotel reservation booking
 * svakoj sobi se moze dodjeliti pokemon
 * rest api za dani broj sobe dobiva se json sa svim podatcima sobe
 * po potvrđenoj rezervaciji salje se mail korisniku sa kreiranim pdf-om
+
+phpcs src
+phpcbf src

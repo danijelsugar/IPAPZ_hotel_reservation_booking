@@ -18,19 +18,24 @@ class ReservationFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('datefrom', DateType::class, [
+            ->add(
+                'datefrom', DateType::class, [
                 'widget' => 'single_text',
                 'attr' => ['class' => 'js-datepicker'],
                 'html5' => false,
                 'format' => 'dd.MM.yyyy.'
-            ])
-            ->add('dateto', DateType::class, [
+                ]
+            )
+            ->add(
+                'dateto', DateType::class, [
                 'widget' => 'single_text',
                 'attr' => ['class' => 'js-datepicker'],
                 'html5' => false,
                 'format' => 'dd.MM.yyyy.'
-            ])
-            ->add('personNum', ChoiceType::class, [
+                ]
+            )
+            ->add(
+                'personNum', ChoiceType::class, [
                 'mapped' => false,
                 'choices' => [
                     '1' => 1,
@@ -40,14 +45,17 @@ class ReservationFormType extends AbstractType
                 'label' => 'Broj osoba',
                 'expanded' => true,
 
-            ]);
+                ]
+            );
 
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
+        $resolver->setDefaults(
+            [
             'data_class' => Reservation::class
-        ]);
+            ]
+        );
     }
 }

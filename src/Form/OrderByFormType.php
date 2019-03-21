@@ -19,16 +19,18 @@ class OrderByFormType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('orderby', ChoiceType::class, [
-           'choices' => [
+        $builder->add(
+            'orderby', ChoiceType::class, [
+            'choices' => [
                'Datum' => 1,
                'Email' => 2,
                'Naziv sobe' => 3
-           ],
-           'label' => 'Sortiraj po',
+            ],
+            'label' => 'Sortiraj po',
             'expanded' => true,
             'placeholder' => 'Sortiraj',
-        ]);
+            ]
+        );
     }
 
     public function configureOptions(OptionsResolver $resolver)

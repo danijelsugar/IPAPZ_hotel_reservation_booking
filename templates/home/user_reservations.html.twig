@@ -25,7 +25,7 @@
                 {% else %}
                     <td>Na ćekanju</td>
                 {% endif %}
-                {% if (reservation.dateto == current and reservation.status is same as(true))  %}
+                {% if (reservation.dateto <= current and reservation.status is same as(true))  %}
                     <td><a class="btn btn-primary" href="{{ path('leave-review',{'id':reservation.id}) }}">Ostavite recenziju</a></td>
                 {% else %}
                     <td></td>

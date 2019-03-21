@@ -41,7 +41,7 @@ class Room
     /**
      * @ORM\Column(type="string")
      * @Assert\NotBlank(message="Please, upload the image.")
-     * @Assert\File(mimeTypes={ "image/jpg", "image/jpeg" })
+     * @Assert\File(mimeTypes={          "image/jpg", "image/jpeg" })
      */
     private $image;
 

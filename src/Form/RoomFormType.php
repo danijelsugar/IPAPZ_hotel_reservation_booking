@@ -19,45 +19,57 @@ class RoomFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('description', TextareaType::class, [
-               'label' => 'Opis',
+            ->add(
+                'description', TextareaType::class, [
+                'label' => 'Opis',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control'
                 ]
-            ])
-            ->add('category', EntityType::class, [
+                ]
+            )
+            ->add(
+                'category', EntityType::class, [
                 'label' => 'Kategorija',
-               'class' => Category::class,
-                'attr' => [
-                    'class' => 'form-control'
-                ],
-               'choice_label' => 'name'
-            ])
-            ->add('subcategory', EntityType::class, [
-                'label' => 'Potkategorija',
-               'class' => SubCategory::class,
+                'class' => Category::class,
                 'attr' => [
                     'class' => 'form-control'
                 ],
                 'choice_label' => 'name'
-            ])
-            ->add('image', FileType::class, [
+                ]
+            )
+            ->add(
+                'subcategory', EntityType::class, [
+                'label' => 'Potkategorija',
+                'class' => SubCategory::class,
+                'attr' => [
+                    'class' => 'form-control'
+                ],
+                'choice_label' => 'name'
+                ]
+            )
+            ->add(
+                'image', FileType::class, [
                 'data_class' => null,
-               'label' => 'Slika(JPG, JPEG)',
-            ])
-            ->add('capacity', NumberType::class, [
+                'label' => 'Slika(JPG, JPEG)',
+                ]
+            )
+            ->add(
+                'capacity', NumberType::class, [
                 'label' => 'Kapacitet sobe',
                 'attr' => [
                     'class' => 'form-control'
                 ]
-            ]);
+                ]
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
+        $resolver->setDefaults(
+            [
             'data_class' => Room::class
-        ]);
+            ]
+        );
     }
 }

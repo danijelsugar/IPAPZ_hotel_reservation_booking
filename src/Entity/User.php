@@ -43,7 +43,7 @@ class User implements UserInterface
     private $email;
 
     /**
-     * @var string The hashed password
+     * @var                       string The hashed password
      * @ORM\Column(type="string")
      */
     private $password;

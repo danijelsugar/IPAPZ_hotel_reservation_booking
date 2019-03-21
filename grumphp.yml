@@ -1,0 +1,20 @@
+# grumphp.yml
+parameters:
+    bin_dir: "./vendor/bin"
+    git_dir: "."
+    hooks_dir: ~
+    hooks_preset: local
+    tasks:
+        phpcs:
+            standard: [PSR2]
+            tab_width: ~
+            report: full
+            report_width: ~
+            whitelist_patterns:
+                - /^src\/(.*)/
+            encoding: ~
+            ignore_patterns: []
+            sniffs: []
+            triggered_by: [php]
+    testsuites: []
+    extensions: []
