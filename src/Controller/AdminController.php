@@ -312,24 +312,27 @@ class AdminController extends AbstractController
         $orderForm = $this->createForm(OrderByFormType::class);
         $orderForm->handleRequest($request);
 
-        $choice = $request->request->get('choice');
-
-        switch ($choice) {
-            case 1:
-                $condition = 'datefrom';
-                break;
-            case 2:
-                $condition = 'user';
-                break;
-            case 3:
-                $condition = 'room';
-                break;
-            default:
-                $condition = 'datefrom';
+        if ($orderForm->isSubmitted() && $orderForm->isValid()) {
+            $choice = $orderForm->getData();
+            switch ($choice['orderby']) {
+                case 1:
+                    $condition = 'r.datefrom';
+                    break;
+                case 2:
+                    $condition = 'u.email';
+                    break;
+                case 3:
+                    $condition = 'c.name';
+                    break;
+            }
+        } else {
+            $condition = 'r.datefrom';
         }
-        $reservation = $reservationRepository->findBy([], [$condition => 'ASC']);
 
-        //$reservation = $reservationRepository->findAll();
+
+        $reservation = $reservationRepository->orderReservations($condition);
+
+
 
 
         return $this->render(

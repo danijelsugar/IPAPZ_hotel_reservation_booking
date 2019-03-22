@@ -5,8 +5,9 @@
     <h2>Rezervacije</h2>
             <div class="row">
                 <div class="col-12">
-
+                    {{ form_start(orderForm) }}
                             {{ form_row(orderForm.orderby) }}
+                    {{ form_end(orderForm) }}
 
                 </div>
             </div>
@@ -28,11 +29,11 @@
                                     <tr>
                                         <td>{{ reservation.datefrom|date('d.m.Y') }}</td>
                                         <td>{{ reservation.dateto|date('d.m.Y') }}</td>
-                                        <td>{{ reservation.user.email }}</td>
-                                        <td>{{ reservation.room.category.name }} {{ reservation.room.subcategory.name }}</td>
+                                        <td>{{ reservation.email }}</td>
+                                        <td>{{ reservation.name }}</td>
                                         <td>
-                                            <a class="btn btn-primary" href="{{ path('admin/accept', {'id': reservation.id, 'roomid': reservation.room.id}) }}">Prihvati</a>
-                                            <a class="btn btn-warning" href="{{ path('admin/decline', {'id': reservation.id, 'roomid': reservation.room.id}) }}">Odbi rezervaciju</a>
+                                            <a class="btn btn-primary" href="{{ path('admin/accept', {'id': reservation.id, 'roomid': reservation.room}) }}">Prihvati</a>
+                                            <a class="btn btn-warning" href="{{ path('admin/decline', {'id': reservation.id, 'roomid': reservation.room}) }}">Odbi rezervaciju</a>
                                         </td>
                                     </tr>
                                 {% endif %}
@@ -48,8 +49,11 @@
     {{ parent() }}
     <script>
 
+        $('#order_by_form_orderby').change(function(){
+            $(this).closest('form').trigger('submit');
+        });
 
-        $('input:radio').click(function(e) {
+        /*$('input:radio').click(function(e) {
             e.preventDefault();
             var value = $('input:radio:checked').val();
 
@@ -61,7 +65,7 @@
 
                 }
             });
-        });
+        });*/
 
 
 

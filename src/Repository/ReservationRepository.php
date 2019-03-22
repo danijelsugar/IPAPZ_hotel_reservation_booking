@@ -9,6 +9,7 @@ use App\Entity\Room;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\Query\Expr;
 
 class ReservationRepository extends ServiceEntityRepository
 {
@@ -75,10 +76,25 @@ class ReservationRepository extends ServiceEntityRepository
     public function orderReservations($condition)
     {
         return $this->createQueryBuilder('r')
-            ->select('r.id, r.datefrom,r.dateto,ro.id,c.name,u.email,r.status,r.declined')
-            ->join(User::class, 'u', 'r.user=u.id')
-            ->join(Room::class, 'ro', 'r.room=ro.id')
-            ->join(Category::class, 'c', 'ro.category=c.id')
+            ->select('r.id, r.datefrom,r.dateto,ro.id as room,c.name,u.email,r.status,r.declined')
+            ->join(
+                User::class,
+                'u',
+                Expr\Join::WITH,
+                'r.user=u.id'
+            )
+            ->join(
+                Room::class,
+                'ro',
+                Expr\Join::WITH,
+                'r.room=ro.id'
+            )
+            ->join(
+                Category::class,
+                'c',
+                Expr\Join::WITH,
+                'ro.category=c.id'
+            )
             ->groupBy('r.id, r.datefrom,r.dateto,ro.id,u.email,c.name,r.status,r.declined')
             ->orderBy($condition, 'asc')
             ->getQuery()
