@@ -2,10 +2,13 @@
 
 {% block body %}
     <a class="btn btn-primary" href="{{ path('booking') }}">Nazad</a>
-    <h1>Slobodne sobe</h1>
+    <h1>Sobe</h1>
+    <p><strong>Pretražuju se sobe u periodu od {{ dateFrom|date('d.m.Y') }} do {{ dateTo|date('d.m.Y') }}</strong></p>
+    <h3>{{ message }}</h3>
+
     <div class="row">
         <div class="col-12">
-            {% if rooms is not empty %}
+
                 {% for room in rooms %}
                         <div class="row">
                             <div class="col-12">
@@ -58,9 +61,6 @@
                         </div>
                         <hr>
                 {% endfor %}
-            {% else %}
-                <h1>{{ message }}</h1>
-            {% endif %}
         </div>
     </div>
 

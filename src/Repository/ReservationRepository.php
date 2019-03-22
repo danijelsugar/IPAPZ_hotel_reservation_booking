@@ -100,4 +100,21 @@ class ReservationRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function getClosest($dateFromMinus, $dateFromPlus, $dateToMinus, $dateToPlus, $roomId)
+    {
+        return $this->createQueryBuilder('r')
+            ->select('count(r.room)')
+            ->where('r.datefrom > :dateFromMinus and r.datefrom < :dateFromPlus')
+            ->andWhere('r.dateto > :dateToMinus and r.dateto < :dateToPlus')
+            ->andWhere('r.room=:roomId')
+            ->andWhere('r.status=1')
+            ->setParameter('dateFromMinus', $dateFromMinus)
+            ->setParameter('dateFromPlus', $dateFromPlus)
+            ->setParameter('dateToMinus', $dateToMinus)
+            ->setParameter('dateToPlus', $dateToPlus)
+            ->setParameter('roomId', $roomId)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

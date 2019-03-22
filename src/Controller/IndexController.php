@@ -13,6 +13,8 @@ use App\Repository\ReservationRepository;
 use App\Repository\ReviewRepository;
 use App\Repository\RoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\ORMException;
+use Doctrine\ORM\ORMInvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,6 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 class IndexController extends AbstractController
 {
@@ -109,10 +112,37 @@ class IndexController extends AbstractController
                 $roomsArray[] = $roomId;
             }
         }
-        var_dump($roomsArray);
+        //var_dump($roomsArray);
         if (empty($roomsArray)) {
-            $rooms = '';
-            $message = 'No rooms available';
+            $message = 'Nema dostupnih soba u tome terminu. Na kalendaru možete viditi kada je pojedina soba dostupna';
+            $dateFromMinus =  clone $dateFrom;
+            $dateFromMinus = $dateFromMinus->modify('-5 days');
+            $dateFromPlus = clone $dateFrom;
+            $dateFromPlus = $dateFromPlus->modify('+5 days');
+            $dateToMinus = clone $dateTo;
+            $dateToMinus = $dateToMinus->modify('-5 days');
+            $dateToPlus = clone $dateTo;
+            $dateToPlus = $dateToPlus->modify('+5 days');
+            foreach ($room as $r) {
+                $roomId = $r->getId();
+                $reservation = $reservationRepository->getClosest(
+                    $dateFromMinus,
+                    $dateFromPlus,
+                    $dateToMinus,
+                    $dateToPlus,
+                    $roomId
+                );
+                if ($reservation != 0) {
+                    $roomsArray[] = $roomId;
+                }
+            }
+            $rooms = $roomRepository->findBy(
+                [
+                    'id' => $roomsArray
+                ]
+            );
+            var_dump($roomsArray);
+//            where $dateFrom-5 < $date > $datefrom +5
         } else {
             $rooms = $roomRepository->findBy(
                 [
@@ -125,7 +155,9 @@ class IndexController extends AbstractController
             'home/reservation.html.twig',
             [
                 'rooms' => $rooms,
-                'message' => $message
+                'message' => $message,
+                'dateFrom' => $dateFrom,
+                'dateTo' => $dateTo
             ]
         );
     }
@@ -407,9 +439,14 @@ class IndexController extends AbstractController
             $review = $form->getData();
             $review->setUser($user);
             $review->setRoom($room);
-            $entityManager->persist($review);
-            $this->addFlash('success', 'Recenzija uspiješno kreirana');
-            $entityManager->flush();
+            try {
+                $entityManager->persist($review);
+                $this->addFlash('success', 'Recenzija uspiješno kreirana');
+                $entityManager->flush();
+            } catch (ORMException | ORMInvalidArgumentException $exception) {
+                $this->addFlash('success', 'Something went wrong');
+            }
+
 
             return $this->redirectToRoute('user-reservations');
         }
