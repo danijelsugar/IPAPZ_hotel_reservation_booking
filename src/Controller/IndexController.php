@@ -4,8 +4,6 @@
 namespace App\Controller;
 
 use App\Entity\Reservation;
-use App\Entity\Review;
-use App\Entity\Room;
 use App\Form\ReservationFormType;
 use App\Form\ReviewFromType;
 use App\Form\RoomFormType;
@@ -19,18 +17,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Constraints\DateTime;
 
 class IndexController extends AbstractController
 {
     /**
-     * @Route("/", name="home")
+     * @Symfony\Component\Routing\Annotation\Route("/", name="home")
      * @param      ReservationRepository $reservationRepository
      * @param      RoomRepository $roomRepository
-     * @return     Response
+     * @return     \Symfony\Component\HttpFoundation\Response
      */
     public function index(ReservationRepository $reservationRepository, RoomRepository $roomRepository)
     {
@@ -48,9 +43,9 @@ class IndexController extends AbstractController
     }
 
     /**
-     * @Route("/booking/{room}", defaults={"room"= null}, name="booking")
+     * @Symfony\Component\Routing\Annotation\Route("/booking/{room}", defaults={"room"= null}, name="booking")
      * @param                    Request $request
-     * @return                   Response
+     * @return                   \Symfony\Component\HttpFoundation\Response
      * @throws                   \Exception
      */
     public function booking(Request $request)
@@ -83,10 +78,10 @@ class IndexController extends AbstractController
     }
 
     /**
-     * @Route("/rooms", name="rooms")
+     * @Symfony\Component\Routing\Annotation\Route("/rooms", name="rooms")
      * @param           RoomRepository $roomRepository
      * @param           ReservationRepository $reservationRepository
-     * @return          Response
+     * @return          \Symfony\Component\HttpFoundation\Response
      */
     public function room(RoomRepository $roomRepository, ReservationRepository $reservationRepository)
     {
@@ -97,6 +92,7 @@ class IndexController extends AbstractController
         } else {
             $message = '';
         }
+
         $room = $roomRepository->findBy(
             [
                 'capacity' => $session->get('people')
@@ -112,7 +108,7 @@ class IndexController extends AbstractController
                 $roomsArray[] = $roomId;
             }
         }
-        //var_dump($roomsArray);
+
         if (empty($roomsArray)) {
             $message = 'Nema dostupnih soba u tome terminu. Na kalendaru možete viditi kada je pojedina soba dostupna';
             $dateFromMinus =  clone $dateFrom;
@@ -136,13 +132,12 @@ class IndexController extends AbstractController
                     $roomsArray[] = $roomId;
                 }
             }
+
             $rooms = $roomRepository->findBy(
                 [
                     'id' => $roomsArray
                 ]
             );
-            var_dump($roomsArray);
-//            where $dateFrom-5 < $date > $datefrom +5
         } else {
             $rooms = $roomRepository->findBy(
                 [
@@ -163,12 +158,12 @@ class IndexController extends AbstractController
     }
 
     /**
-     * @Route("finish_reservation/{room}", name="finish_reservation")
+     * @Symfony\Component\Routing\Annotation\Route("finish_reservation/{room}", name="finish_reservation")
      * @param                              RoomRepository $roomRepository
      * @param                              EntityManagerInterface $entityManager
      * @param                              ReservationRepository $reservationRepository
      * @param                              $room
-     * @return                             Response
+     * @return                             \Symfony\Component\HttpFoundation\Response
      */
     public function finishReservation(
         RoomRepository $roomRepository,
@@ -189,7 +184,7 @@ class IndexController extends AbstractController
         $res = $reservationRepository->reservationNum($dateFrom, $dateTo, $room);
         if ($res === 0) {
             /**
-             * @var Reservation $reservation
+             * @var \App\Entity\Reservation $reservation
              */
             $reservation = new Reservation();
             $reservation->setRoom($room);
@@ -214,12 +209,12 @@ class IndexController extends AbstractController
     }
 
     /**
-     * @Route("edit-reservation/{id}", name="edit-reservation")
+     * @Symfony\Component\Routing\Annotation\Route("edit-reservation/{id}", name="edit-reservation")
      * @param                          Request $request
      * @param                          EntityManagerInterface $entityManager
      * @param                          ReservationRepository $reservationRepository
      * @param                          $id
-     * @return                         Response
+     * @return                         \Symfony\Component\HttpFoundation\Response
      */
     public function editReservation(
         Request $request,
@@ -246,7 +241,7 @@ class IndexController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             /**
-             * @var Reservation $reservation
+             * @var \App\Entity\Reservation $reservation
              */
             $reservation = $form->getData();
             $dateFrom = $reservation->getDatefrom();
@@ -278,10 +273,10 @@ class IndexController extends AbstractController
     }
 
     /**
-     * @Route("room_reservations", name="room_reservations")
+     * @Symfony\Component\Routing\Annotation\Route("room_reservations", name="room_reservations")
      * @param                      ReservationRepository $reservationRepository
      * @param                      Request $request
-     * @return                     Response
+     * @return                     \Symfony\Component\HttpFoundation\Response
      */
     public function roomReservations(ReservationRepository $reservationRepository, Request $request)
     {
@@ -291,12 +286,12 @@ class IndexController extends AbstractController
     }
 
     /**
-     * @Route("/admin/edit-room/{id}", name="admin/edit-room")
+     * @Symfony\Component\Routing\Annotation\Route("/admin/edit-room/{id}", name="admin/edit-room")
      * @param                          Request $request
      * @param                          EntityManagerInterface $entityManager
      * @param                          RoomRepository $roomRepository
      * @param                          $id
-     * @return                         Response
+     * @return                         \Symfony\Component\HttpFoundation\Response
      */
     public function editRoom(
         Request $request,
@@ -316,7 +311,7 @@ class IndexController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             /**
-             * @var Room $room
+             * @var \App\Entity\Room $room
              */
             $room = $form->getData();
             $file = $room->getImage();
@@ -329,6 +324,7 @@ class IndexController extends AbstractController
             } catch (FileException $e) {
                 // ... handle exception if something happens during file upload
             }
+
             $room->setImage($fileName);
 
             $entityManager->flush();
@@ -356,12 +352,12 @@ class IndexController extends AbstractController
     }
 
     /**
-     * @Route("/admin/delete-room/{id}", name="admin/delete-room")
+     * @Symfony\Component\Routing\Annotation\Route("/admin/delete-room/{id}", name="admin/delete-room")
      * @param                            EntityManagerInterface $entityManager
      * @param                            RoomRepository $roomRepository
      * @param                            ReservationRepository $reservationRepository
      * @param                            $id
-     * @return                           Response
+     * @return                           \Symfony\Component\HttpFoundation\Response
      */
     public function deleteRoom(
         EntityManagerInterface $entityManager,
@@ -385,9 +381,9 @@ class IndexController extends AbstractController
     }
 
     /**
-     * @Route("user-reservations", name="user-reservations")
+     * @Symfony\Component\Routing\Annotation\Route("user-reservations", name="user-reservations")
      * @param                      ReservationRepository $reservationRepository
-     * @return                     Response
+     * @return                     \Symfony\Component\HttpFoundation\Response
      * @throws                     \Exception
      */
     public function userReservations(ReservationRepository $reservationRepository)
@@ -411,12 +407,12 @@ class IndexController extends AbstractController
     }
 
     /**
-     * @Route("leave-review/{id}", name="leave-review")
+     * @Symfony\Component\Routing\Annotation\Route("leave-review/{id}", name="leave-review")
      * @param                      Request $request
      * @param                      EntityManagerInterface $entityManager
      * @param                      $id
      * @param                      ReservationRepository $reservationRepository
-     * @return                     Response
+     * @return                     \Symfony\Component\HttpFoundation\Response
      */
     public function leaveReview(
         Request $request,
@@ -433,7 +429,7 @@ class IndexController extends AbstractController
             $room = $reservationRepository->find($id);
             $room = $room->getRoom();
             /**
-             * @var Review $review
+             * @var \App\Entity\Review $review
              */
             $user = $this->getUser();
             $review = $form->getData();
@@ -461,10 +457,10 @@ class IndexController extends AbstractController
     }
 
     /**
-     * @Route("room-reviews/{room}", name="room-reviews")
+     * @Symfony\Component\Routing\Annotation\Route("room-reviews/{room}", name="room-reviews")
      * @param                        ReviewRepository $reviewRepository
      * @param                        $room
-     * @return                       Response
+     * @return                       \Symfony\Component\HttpFoundation\Response
      */
     public function roomReviews(ReviewRepository $reviewRepository, $room)
     {

@@ -3,51 +3,51 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\User as User;
+use App\Entity\Room as Room;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\ReservationRepository")
+ * @Doctrine\ORM\Mapping\Entity(repositoryClass="App\Repository\ReservationRepository")
  */
 class Reservation
 {
 
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @Doctrine\ORM\Mapping\Id()
+     * @Doctrine\ORM\Mapping\GeneratedValue()
+     * @Doctrine\ORM\Mapping\Column(type="integer")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @Doctrine\ORM\Mapping\Column(type="datetime")
      */
     private $datefrom;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @Doctrine\ORM\Mapping\Column(type="datetime")
      */
     private $dateto;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @Doctrine\ORM\Mapping\Column(type="boolean")
      */
     private $status = 0;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @Doctrine\ORM\Mapping\Column(type="boolean")
      */
     private $declined = 0;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="reservation")
-     * @ORM\JoinColumn(nullable=false)
+     * @Doctrine\ORM\Mapping\ManyToOne(targetEntity="App\Entity\User", inversedBy="reservation")
+     * @Doctrine\ORM\Mapping\JoinColumn(nullable=false)
      */
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Room", inversedBy="reservations")
-     * @ORM\JoinColumn(nullable=false)
+     * @Doctrine\ORM\Mapping\ManyToOne(targetEntity="App\Entity\Room", inversedBy="reservations")
+     * @Doctrine\ORM\Mapping\JoinColumn(nullable=false)
      */
     private $room;
 

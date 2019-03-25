@@ -8,7 +8,7 @@ use App\Entity\SubCategory;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -67,6 +67,15 @@ class RoomFormType extends AbstractType
                 NumberType::class,
                 [
                     'label' => 'Kapacitet sobe',
+                    'attr' => [
+                        'class' => 'form-control'
+                    ]
+                ]
+            )->add(
+                'cost',
+                MoneyType::class,
+                [
+                    'label' => 'Cijena sobe po danu',
                     'attr' => [
                         'class' => 'form-control'
                     ]

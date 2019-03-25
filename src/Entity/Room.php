@@ -4,66 +4,71 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\Review as Review;
+use App\Entity\Reservation as Reservation;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\RoomRepository")
+ * @Doctrine\ORM\Mapping\Entity(repositoryClass="App\Repository\RoomRepository")
  */
 class Room
 {
 
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @Doctrine\ORM\Mapping\Id()
+     * @Doctrine\ORM\Mapping\GeneratedValue()
+     * @Doctrine\ORM\Mapping\Column(type="integer")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="text")
-     * @Assert\NotBlank()
+     * @Doctrine\ORM\Mapping\Column(type="text")
+     * @Symfony\Component\Validator\Constraints\NotBlank()
      */
     private $description;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Category")
-     * @ORM\JoinColumn(nullable=false)
+     * @Doctrine\ORM\Mapping\ManyToOne(targetEntity="App\Entity\Category")
+     * @Doctrine\ORM\Mapping\JoinColumn(nullable=false)
      */
     private $category;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\SubCategory")
-     * @ORM\JoinColumn(nullable=false)
+     * @Doctrine\ORM\Mapping\ManyToOne(targetEntity="App\Entity\SubCategory")
+     * @Doctrine\ORM\Mapping\JoinColumn(nullable=false)
      */
     private $subcategory;
 
     /**
-     * @ORM\Column(type="string")
-     * @Assert\NotBlank(message="Please, upload the image.")
-     * @Assert\File(mimeTypes={          "image/jpg", "image/jpeg" })
+     * @Doctrine\ORM\Mapping\Column(type="string")
+     * @Symfony\Component\Validator\Constraints\NotBlank(message="Please, upload the image.")
+     * @Symfony\Component\Validator\Constraints\File(mimeTypes={          "image/jpg", "image/jpeg" })
      */
     private $image;
 
     /**
-     * @ORM\Column(type="integer")
+     * @Doctrine\ORM\Mapping\Column(type="integer")
      */
     private $capacity;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @Doctrine\ORM\Mapping\Column(type="boolean")
      */
     private $status = 0;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Review", mappedBy="room", orphanRemoval=true)
+     * @Doctrine\ORM\Mapping\OneToMany(targetEntity="App\Entity\Review", mappedBy="room", orphanRemoval=true)
      */
     private $reviews;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Reservation", mappedBy="room", orphanRemoval=true)
+     * @Doctrine\ORM\Mapping\OneToMany(targetEntity="App\Entity\Reservation", mappedBy="room", orphanRemoval=true)
      */
     private $reservations;
+
+    /**
+     * @Doctrine\ORM\Mapping\Column(type="decimal", scale=2)
+     */
+    private $cost;
 
     public function __construct()
     {
@@ -235,5 +240,21 @@ class Room
         }
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCost()
+    {
+        return $this->cost;
+    }
+
+    /**
+     * @param mixed $cost
+     */
+    public function setCost($cost): void
+    {
+        $this->cost = $cost;
     }
 }
