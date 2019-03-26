@@ -56,9 +56,15 @@ class User implements UserInterface
      */
     private $reservation;
 
+    /**
+     * @@Doctrine\ORM\Mapping\OneToMany(targetEntity="App\Entity\Transaction", mappedBy="user", orphanRemoval=true)
+     */
+    private $transactions;
+
     public function __construct()
     {
         $this->reservation = new ArrayCollection();
+        $this->transactions = new ArrayCollection();
     }
 
     public function getFullName()
@@ -201,6 +207,37 @@ class User implements UserInterface
             // set the owning side to null (unless already changed)
             if ($reservation->getUser() === $this) {
                 $reservation->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Transaction[]
+     */
+    public function getTransactions(): Collection
+    {
+        return $this->transactions;
+    }
+
+    public function addTransaction(Transaction $transaction): self
+    {
+        if (!$this->transactions->contains($transaction)) {
+            $this->transactions[] = $transaction;
+            $transaction->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransaction(Transaction $transaction): self
+    {
+        if ($this->transactions->contains($transaction)) {
+            $this->transactions->removeElement($transaction);
+            // set the owning side to null (unless already changed)
+            if ($transaction->getUser() === $this) {
+                $transaction->setUser(null);
             }
         }
 

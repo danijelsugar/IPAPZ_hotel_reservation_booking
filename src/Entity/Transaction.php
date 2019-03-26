@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use App\Entity\Room as Room;
+use App\Entity\User as User;
+
 /**
  * @Doctrine\ORM\Mapping\Entity(repositoryClass="App\Repository\TransactionRepository")
  */
@@ -39,7 +42,7 @@ class Transaction
     /**
      * @Doctrine\ORM\Mapping\Column(type="datetime", nullable=true)
      */
-    private $choosenAt;
+    private $chosenAt;
 
     /**
      * @Doctrine\ORM\Mapping\Column(type="datetime", nullable=true)
@@ -99,16 +102,25 @@ class Transaction
         return $this;
     }
 
-    public function getChoosenAt(): ?\DateTimeInterface
+    public function getChosenAt(): ?\DateTimeInterface
     {
-        return $this->choosenAt;
+        return $this->chosenAt;
     }
 
-    public function setChoosenAt(?\DateTimeInterface $choosenAt): self
+    public function setChosenAt(?\DateTimeInterface $chosenAt): self
     {
-        $this->choosenAt = $choosenAt;
+        $this->chosenAt = $chosenAt;
 
         return $this;
+    }
+
+    /**
+     * @\Doctrine\ORM\Mapping\PrePersist()
+     * @throws \Exception
+     */
+    public function onPrePersistChosenAt()
+    {
+        $this->chosenAt = new \DateTime('now');
     }
 
     public function getPaidAt(): ?\DateTimeInterface
@@ -121,5 +133,14 @@ class Transaction
         $this->paidAt = $paidAt;
 
         return $this;
+    }
+
+    /**
+     * @\Doctrine\ORM\Mapping\PrePersist()
+     * @throws \Exception
+     */
+    public function onPrePersistPaidAt()
+    {
+        $this->paidAt = new \DateTime('now');
     }
 }

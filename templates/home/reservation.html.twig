@@ -1,14 +1,21 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    {% if (message != '') %}
+        <div class="alert alert-warning">
+            <h3>{{ message }}</h3>
+        </div>
+    {% endif %}
     <a class="btn btn-primary" href="{{ path('booking') }}">Nazad</a>
     <h1>Sobe</h1>
     <p><strong>Pretražuju se sobe u periodu od {{ dateFrom|date('d.m.Y') }} do {{ dateTo|date('d.m.Y') }}</strong></p>
-    <h3>{{ message }}</h3>
+    <h3>{{ alert }}</h3>
+
+
+
 
     <div class="row">
         <div class="col-12">
-
                 {% for room in rooms %}
                         <div class="row">
                             <div class="col-12">
@@ -21,6 +28,7 @@
                             </div>
                             <div class="col-2">
                                 <p>{{ room.description }}</p>
+                                <p>{{ room.cost }} $</p>
                             </div>
                             <div class="col-3">
                                 <!-- Button trigger modal -->
@@ -50,7 +58,7 @@
                             </div>
                             <div class="col-4">
                                 {% if (is_granted('ROLE_USER')) %}
-                                    <a class="btn btn-primary" href="{{ path('finish_reservation', {'room': room.id}) }}">Rezerviraj</a>
+                                    <a class="btn btn-primary" href="{{ path('paypal-pay', {'id': room.id}) }}">Plačanje PayPal-om</a>
                                     <a class="btn btn-primary" href="{{ path('room-reviews', {'room': room.id}) }}">Recenzije</a>
                                 {% endif %}
                                 {% if is_granted('ROLE_ADMIN') %}

@@ -110,7 +110,7 @@ class IndexController extends AbstractController
         }
 
         if (empty($roomsArray)) {
-            $message = 'Nema dostupnih soba u tome terminu. Na kalendaru možete viditi kada je pojedina soba dostupna';
+            $alert = 'Prikazuje se par uskoro dostupnih soba';
             $dateFromMinus =  clone $dateFrom;
             $dateFromMinus = $dateFromMinus->modify('-5 days');
             $dateFromPlus = clone $dateFrom;
@@ -139,6 +139,7 @@ class IndexController extends AbstractController
                 ]
             );
         } else {
+            $alert= '';
             $rooms = $roomRepository->findBy(
                 [
                     'id' => $roomsArray
@@ -151,6 +152,7 @@ class IndexController extends AbstractController
             [
                 'rooms' => $rooms,
                 'message' => $message,
+                'alert' => $alert,
                 'dateFrom' => $dateFrom,
                 'dateTo' => $dateTo
             ]
@@ -196,11 +198,7 @@ class IndexController extends AbstractController
             $entityManager->flush();
         } else {
             return $this->redirectToRoute(
-                'rooms',
-                [
-                    'message' => 'Soba nije dostupna u tome terminu molimo vas 
-                    odaberite drugi termin. U kalendaru možete pogledati dostupne termine'
-                ]
+                'rooms'
             );
         }
 
