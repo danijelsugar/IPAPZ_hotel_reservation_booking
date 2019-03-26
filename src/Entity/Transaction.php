@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Entity\Room as Room;
 use App\Entity\User as User;
+use App\Entity\Reservation as Reservation;
 
 /**
  * @Doctrine\ORM\Mapping\Entity(repositoryClass="App\Repository\TransactionRepository")

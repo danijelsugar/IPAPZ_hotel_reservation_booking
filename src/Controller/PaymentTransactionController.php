@@ -185,15 +185,18 @@ class PaymentTransactionController extends AbstractController
         $dompdf = new Dompdf($pdfOptions);
 
         // Retrieve the HTML generated in twig file
-        $html = $this->renderView('invoice/pdf.html.twig', [
-            'title' => "Welcome to our PDF Test",
-            'room' => $room,
-            'invoice' => $transaction,
-            'user' => $this->getUser()
-        ]);
+        $html = $this->renderView(
+            'invoice/pdf.html.twig',
+            [
+                'title' => "Welcome to our PDF Test",
+                'room' => $room,
+                'invoice' => $transaction,
+                'user' => $this->getUser()
+            ]
+        );
 
         $pdfName = date('Y') . $transaction->getId() . $this->getUser()->getId() . '.pdf';
-        var_dump($this->getUser()->getId());
+
         $transaction->setTransactionId($pdfName);
         $entityManager->persist($transaction);
         $entityManager->flush();
