@@ -35,7 +35,7 @@ class Transaction
     private $method;
 
     /**
-     * @Doctrine\ORM\Mapping\Column(type="string", length=255)
+     * @Doctrine\ORM\Mapping\Column(type="string", length=255, nullable=true)
      */
     private $transactionId;
 
@@ -48,6 +48,12 @@ class Transaction
      * @Doctrine\ORM\Mapping\Column(type="datetime", nullable=true)
      */
     private $paidAt;
+
+    /**
+     * @@Doctrine\ORM\Mapping\ManyToOne(targetEntity="App\Entity\Reservation")
+     * @@Doctrine\ORM\Mapping\JoinColumn(nullable=false)
+     */
+    private $reservation;
 
     public function getId(): ?int
     {
@@ -142,5 +148,17 @@ class Transaction
     public function onPrePersistPaidAt()
     {
         $this->paidAt = new \DateTime('now');
+    }
+
+    public function getReservation(): ?Reservation
+    {
+        return $this->reservation;
+    }
+
+    public function setReservation(?Reservation $reservation): self
+    {
+        $this->reservation = $reservation;
+
+        return $this;
     }
 }

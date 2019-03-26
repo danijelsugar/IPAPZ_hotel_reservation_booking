@@ -469,28 +469,14 @@ class AdminController extends AbstractController
      * @Symfony\Component\Routing\Annotation\Route("/admin/decline/{id}/{roomid}", name="admin/decline")
      * @param                                 EntityManagerInterface $entityManager
      * @param                                 ReservationRepository $reservationRepository
-     * @param                                 RoomRepository $roomRepository
      * @param                                 $id
-     * @param                                 $roomid
      * @return                                Response
      */
     public function declinelReservation(
         EntityManagerInterface $entityManager,
         ReservationRepository $reservationRepository,
-        RoomRepository $roomRepository,
-        $id,
-        $roomid
+        $id
     ) {
-
-        /**
-         * Getting room info by id and changing room amount
-         */
-        $room = $roomRepository->findOneBy(
-            [
-                'id' => $roomid
-            ]
-        );
-
 
         $reservation = $reservationRepository->findOneBy(
             [

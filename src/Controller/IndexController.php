@@ -92,7 +92,6 @@ class IndexController extends AbstractController
         } else {
             $message = '';
         }
-
         $room = $roomRepository->findBy(
             [
                 'capacity' => $session->get('people')

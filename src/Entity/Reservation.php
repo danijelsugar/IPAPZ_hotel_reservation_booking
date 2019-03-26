@@ -52,6 +52,11 @@ class Reservation
     private $room;
 
     /**
+     * @Doctrine\ORM\Mapping\Column(type="string", length=255)
+     */
+    private $paymentMethod;
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -153,5 +158,21 @@ class Reservation
         $this->room = $room;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPaymentMethod()
+    {
+        return $this->paymentMethod;
+    }
+
+    /**
+     * @param mixed $paymentMethod
+     */
+    public function setPaymentMethod($paymentMethod): void
+    {
+        $this->paymentMethod = $paymentMethod;
     }
 }

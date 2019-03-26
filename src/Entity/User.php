@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Security\Core\User\UserInterface;
 use App\Entity\Reservation as Reservation;
+use App\Entity\Transaction as Transaction;
 
 /**
  * @Doctrine\ORM\Mapping\Entity(repositoryClass="App\Repository\UserRepository")

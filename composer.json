@@ -6,6 +6,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "braintree/braintree_php": "^3.39",
+        "dompdf/dompdf": "^0.8.3",
         "paypal/rest-api-sdk-php": "*",
         "sensio/framework-extra-bundle": "^5.2",
         "symfony/apache-pack": "^1.0",

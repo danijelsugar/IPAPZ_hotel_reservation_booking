@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <title>Invoice</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+</head>
+{% block body %}
+    <h2>Invoice</h2>
+    <h4>User:</h4>
+    <p>{{ user.fullName }}</p><br>
+    <h4>Room:</h4>
+    <p>{{ room.category.name }}</p>
+
+{% endblock %}

@@ -11,6 +11,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 class PaymentTransactionController extends AbstractController
 {
@@ -38,7 +40,6 @@ class PaymentTransactionController extends AbstractController
             $gateway = self::gateway();
             $totalDays = $session->get('dateto')->diff($session->get('datefrom'));
             $totalCost = $room->getCost() * $totalDays->days;
-            var_dump($totalCost);
 
             return $this->render(
                 'paypal/paypal.html.twig',
@@ -92,26 +93,23 @@ class PaymentTransactionController extends AbstractController
             return $this->redirectToRoute('rooms');
         }
 
-        $user = $this->getUser();
-        $dateFrom = $session->get('datefrom');
-        $dateTo = $session->get('dateto');
-
         /**
          * @var \App\Entity\Reservation $reservation
          */
         $reservation = new Reservation();
         $reservation->setRoom($room);
-        $reservation->setUser($user);
+        $reservation->setUser($this->getUser());
         $reservation->setDatefrom($dateFrom);
         $reservation->setDateto($dateTo);
+        $reservation->setPaymentMethod('Paypal');
         $entityManager->persist($reservation);
 
         /**
          * @var \App\Entity\Transaction $trans
          */
         $trans = new Transaction();
-        $trans->setUser($reservation->getUser());
-        $trans->setRoom($reservation->getRoom());
+        $trans->setUser($this->getUser());
+        $trans->setRoom($room);
         $trans->setTransactionId($transaction->id);
         $trans->setMethod('Paypal');
         $trans->onPrePersistChosenAt();
@@ -136,5 +134,85 @@ class PaymentTransactionController extends AbstractController
             ]
         );
         return $gateway;
+    }
+
+    /**
+     * @Symfony\Component\Routing\Annotation\Route("/transaction/invoice-payment/{id}", name="invoice-payment")
+     * @param Room $room
+     * @param EntityManagerInterface $entityManager
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
+     */
+    public function invoicePayment(Room $room, EntityManagerInterface $entityManager)
+    {
+        $session = new Session();
+        $dateFrom = $session->get('datefrom');
+        $dateTo = $session->get('dateto');
+
+        $reservation = new Reservation();
+        $reservation->setRoom($room);
+        $reservation->setUser($this->getUser());
+        $reservation->setDatefrom($dateFrom);
+        $reservation->setDateto($dateTo);
+        $reservation->setPaymentMethod('Invoice');
+        $entityManager->persist($reservation);
+
+        $trans = new Transaction();
+        $trans->setUser($this->getUser());
+        $trans->setRoom($room);
+        $trans->setMethod('Invoice');
+        $trans->onPrePersistChosenAt();
+        $entityManager->persist($trans);
+        $entityManager->flush();
+
+        self:$this->createPdf($room, $trans, $entityManager);
+        $this->addFlash('success', 'Uspiješno ste platili poduzećem');
+        return $this->redirectToRoute('rooms');
+    }
+
+    /**
+     * @param Room $room
+     * @param Transaction $transaction
+     * @param EntityManagerInterface $entityManager
+     */
+    public function createPdf(Room $room, Transaction $transaction, EntityManagerInterface $entityManager)
+    {
+        // Configure Dompdf
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'Arial');
+
+        // Instantiate Dompdf with options
+        $dompdf = new Dompdf($pdfOptions);
+
+        // Retrieve the HTML generated in twig file
+        $html = $this->renderView('invoice/pdf.html.twig', [
+            'title' => "Welcome to our PDF Test",
+            'room' => $room,
+            'invoice' => $transaction,
+            'user' => $this->getUser()
+        ]);
+
+        $pdfName = date('Y') . $transaction->getId() . $this->getUser()->getId() . '.pdf';
+        var_dump($this->getUser()->getId());
+        $transaction->setTransactionId($pdfName);
+        $entityManager->persist($transaction);
+        $entityManager->flush();
+
+        // Load HTML to Dompdf
+        $dompdf->loadHtml($html);
+
+        // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
+        $dompdf->setPaper('A4', 'portrait');
+
+        // Render the HTML as PDF
+        $dompdf->render();
+
+        $output = $dompdf->output();
+
+        $publicDirectory = '../public/uploads/invoice';
+
+        $pdfFilePath = $publicDirectory . $pdfName;
+
+        file_put_contents($pdfFilePath, $output);
     }
 }
