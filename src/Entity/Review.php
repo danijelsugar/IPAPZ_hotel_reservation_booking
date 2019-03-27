@@ -2,39 +2,40 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
+use \App\Entity\User as User;
+use \App\Entity\Room as Room;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\ReviewRepository")
+ * @Doctrine\ORM\Mapping\Entity(repositoryClass="App\Repository\ReviewRepository")
  */
 class Review
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @Doctrine\ORM\Mapping\Id()
+     * @Doctrine\ORM\Mapping\GeneratedValue()
+     * @Doctrine\ORM\Mapping\Column(type="integer")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @Doctrine\ORM\Mapping\Column(type="string", length=255)
      */
     private $text;
 
     /**
-     * @ORM\Column(type="integer")
+     * @Doctrine\ORM\Mapping\Column(type="integer")
      */
     private $rating;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
-     * @ORM\JoinColumn(nullable=false)
+     * @Doctrine\ORM\Mapping\ManyToOne(targetEntity="App\Entity\User")
+     * @Doctrine\ORM\Mapping\JoinColumn(nullable=false)
      */
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Room", inversedBy="reviews")
-     * @ORM\JoinColumn(nullable=false)
+     * @Doctrine\ORM\Mapping\ManyToOne(targetEntity="App\Entity\Room", inversedBy="reviews")
+     * @Doctrine\ORM\Mapping\JoinColumn(nullable=false)
      */
     private $room;
 
