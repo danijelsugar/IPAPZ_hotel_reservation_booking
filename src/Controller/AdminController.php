@@ -3,6 +3,7 @@
 
 namespace App\Controller;
 
+use App\Entity\PaymentMethod;
 use App\Form\CategoryFormType;
 use App\Form\UserFormType;
 use App\Form\OrderByFormType;
@@ -10,6 +11,7 @@ use App\Form\ReservationFormType;
 use App\Form\RoomFormType;
 use App\Form\SubCategoryFormType;
 use App\Repository\CategoryRepository;
+use App\Repository\PaymentMethodRepository;
 use App\Repository\TransactionRepository;
 use App\Repository\UserRepository;
 use App\Repository\ReservationRepository;
@@ -707,6 +709,74 @@ class AdminController extends AbstractController
         $response->headers->set('Pragma', 'no-cache');
         $response->headers->set('Expires', '0');
         return $response;
+    }
+
+    /**
+     * @Symfony\Component\Routing\Annotation\Route("/admin/payment-methods", name="admin/payment-methods")
+     * @param PaymentMethodRepository $paymentMethodRepository
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function paymentMethods(PaymentMethodRepository $paymentMethodRepository)
+    {
+
+        $methods = $paymentMethodRepository->findAll();
+
+        return $this->render(
+            'admin/payment_methods.html.twig',
+            [
+                'methods' => $methods
+            ]
+        );
+    }
+
+    /**
+     * @Symfony\Component\Routing\Annotation\Route("/admin/disable-payment-method/{id}", name="admin/disable-payment-method")
+     * @param $id
+     * @param PaymentMethodRepository $paymentMethodRepository
+     * @param EntityManagerInterface $entityManager
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function disablePaymentMethod(
+        $id,
+        PaymentMethodRepository $paymentMethodRepository,
+        EntityManagerInterface $entityManager
+    ) {
+        $method = $paymentMethodRepository->findOneBy(
+            [
+                'id' => $id
+            ]
+        );
+        $method->setEnabled(0);
+        $entityManager->flush();
+
+        return $this->redirectToRoute(
+            'admin/payment-methods'
+        );
+    }
+
+    /**
+     * @Symfony\Component\Routing\Annotation\Route("/admin/enable-payment-method/{id}", name="admin/enable-payment-method")
+     * @param $id
+     * @param PaymentMethodRepository $paymentMethodRepository
+     * @param EntityManagerInterface $entityManager
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function enablePaymentMethod(
+        $id,
+        PaymentMethodRepository $paymentMethodRepository,
+        EntityManagerInterface $entityManager
+    ) {
+        $method = $paymentMethodRepository->findOneBy(
+            [
+                'id' => $id
+            ]
+        );
+        $method->setEnabled(1);
+        $entityManager->flush();
+
+        return $this->redirectToRoute(
+            'admin/payment-methods'
+        );
     }
 
     /**

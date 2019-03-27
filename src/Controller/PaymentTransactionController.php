@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Reservation;
 use App\Entity\Room;
 use App\Entity\Transaction;
+use App\Repository\PaymentMethodRepository;
 use App\Repository\ReservationRepository;
 use App\Repository\RoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,10 +23,31 @@ class PaymentTransactionController extends AbstractController
      * @param Room $room
      * @param RoomRepository $roomRepository
      * @param ReservationRepository $reservationRepository
+     * @param PaymentMethodRepository $paymentMethodRepository
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function payPalShow(Room $room, RoomRepository $roomRepository, ReservationRepository $reservationRepository)
-    {
+    public function payPalShow(
+        Room $room,
+        RoomRepository $roomRepository,
+        ReservationRepository $reservationRepository,
+        PaymentMethodRepository $paymentMethodRepository
+    ) {
+
+        $method = $paymentMethodRepository->findOneBy(
+            [
+                'method' => 'Paypal'
+            ]
+        );
+        $status = $method->getEnabled();
+
+        if (!$status) {
+            return $this->redirectToRoute(
+                'rooms',
+                [
+                    'message' => 'Plaćanje paypalom je onemogućeno'
+                ]
+            );
+        }
 
         $session = new Session();
         $dateFrom = $session->get('datefrom');
@@ -141,11 +163,32 @@ class PaymentTransactionController extends AbstractController
      * @Symfony\Component\Routing\Annotation\Route("/transaction/invoice-payment/{id}", name="invoice-payment")
      * @param Room $room
      * @param EntityManagerInterface $entityManager
+     * @param PaymentMethodRepository $paymentMethodRepository
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
-    public function invoicePayment(Room $room, EntityManagerInterface $entityManager)
-    {
+    public function invoicePayment(
+        Room $room,
+        EntityManagerInterface $entityManager,
+        PaymentMethodRepository $paymentMethodRepository
+    ) {
+
+        $method = $paymentMethodRepository->findOneBy(
+            [
+                'method' => 'Poduzeće'
+            ]
+        );
+        $status = $method->getEnabled();
+
+        if (!$status) {
+            return $this->redirectToRoute(
+                'rooms',
+                [
+                    'message' => 'Plaćanje poduzećem je onemogućeno'
+                ]
+            );
+        }
+
         $session = new Session();
         $dateFrom = $session->get('datefrom');
         $dateTo = $session->get('dateto');
