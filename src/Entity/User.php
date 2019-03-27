@@ -5,62 +5,67 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\Reservation as Reservation;
+use App\Entity\Transaction as Transaction;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- * @UniqueEntity("email")
+ * @Doctrine\ORM\Mapping\Entity(repositoryClass="App\Repository\UserRepository")
+ * @Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity("email")
  */
 class User implements UserInterface
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @Doctrine\ORM\Mapping\Id()
+     * @Doctrine\ORM\Mapping\GeneratedValue()
+     * @Doctrine\ORM\Mapping\Column(type="integer")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string")
-     * @Assert\NotBlank()
+     * @Doctrine\ORM\Mapping\Column(type="string")
+     * @Symfony\Component\Validator\Constraints\NotBlank()
      */
     private $firstname;
 
     /**
-     * @ORM\Column(type="string")
-     * @Assert\NotBlank()
+     * @Doctrine\ORM\Mapping\Column(type="string")
+     * @Symfony\Component\Validator\Constraints\NotBlank()
      */
     private $lastname;
 
     /**
-     * @ORM\Column(type="string", length=180, unique=true)
-     * @Assert\NotBlank()
-     * @Assert\Email()
+     * @Doctrine\ORM\Mapping\Column(type="string", length=180, unique=true)
+     * @Symfony\Component\Validator\Constraints\NotBlank()
+     * @Symfony\Component\Validator\Constraints\Email()
      */
     private $email;
 
     /**
      * @var                       string The hashed password
-     * @ORM\Column(type="string")
+     * @Doctrine\ORM\Mapping\Column(type="string")
      */
     private $password;
 
     /**
-     * @ORM\Column(type="json")
+     * @Doctrine\ORM\Mapping\Column(type="json")
      */
     private $roles;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Reservation", mappedBy="user", orphanRemoval=true)
+     * @Doctrine\ORM\Mapping\OneToMany(targetEntity="App\Entity\Reservation", mappedBy="user", orphanRemoval=true)
      */
     private $reservation;
+
+    /**
+     * @@Doctrine\ORM\Mapping\OneToMany(targetEntity="App\Entity\Transaction", mappedBy="user", orphanRemoval=true)
+     */
+    private $transactions;
 
     public function __construct()
     {
         $this->reservation = new ArrayCollection();
+        $this->transactions = new ArrayCollection();
     }
 
     public function getFullName()
@@ -203,6 +208,37 @@ class User implements UserInterface
             // set the owning side to null (unless already changed)
             if ($reservation->getUser() === $this) {
                 $reservation->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Transaction[]
+     */
+    public function getTransactions(): Collection
+    {
+        return $this->transactions;
+    }
+
+    public function addTransaction(Transaction $transaction): self
+    {
+        if (!$this->transactions->contains($transaction)) {
+            $this->transactions[] = $transaction;
+            $transaction->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransaction(Transaction $transaction): self
+    {
+        if ($this->transactions->contains($transaction)) {
+            $this->transactions->removeElement($transaction);
+            // set the owning side to null (unless already changed)
+            if ($transaction->getUser() === $this) {
+                $transaction->setUser(null);
             }
         }
 

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <title>Invoice</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <style>
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 12px;
+        }
+    </style>
+</head>
+{% block body %}
+    <div class="row">
+        <div class="col-12">
+            <h2>Račun</h2>
+            <h4>Korisnik:</h4>
+            <p>{{ user.fullName }}</p><br>
+            <h4>Soba:</h4>
+            <p>{{ room.category.name }} {{ room.subcategory.name }}</p>
+            <h4>Informacije o rezervaciji</h4>
+            <p>Od: {{ reservation.datefrom|date('d.m.Y') }}</p>
+            <p>Do: {{ reservation.dateto|date('d.m.Y') }}</p>
+            <h4>Ukupna cijena: {{ amount }}€</h4>
+        </div>
+    </div>
+
+
+{% endblock %}

@@ -76,7 +76,7 @@ class ReservationRepository extends ServiceEntityRepository
     public function orderReservations($condition)
     {
         return $this->createQueryBuilder('r')
-            ->select('r.id, r.datefrom,r.dateto,ro.id as room,c.name,u.email,r.status,r.declined')
+            ->select('r.id, r.datefrom,r.dateto,ro.id as room,c.name,u.email,r.status,r.declined,r.paymentMethod')
             ->join(
                 User::class,
                 'u',
@@ -95,7 +95,7 @@ class ReservationRepository extends ServiceEntityRepository
                 Expr\Join::WITH,
                 'ro.category=c.id'
             )
-            ->groupBy('r.id, r.datefrom,r.dateto,ro.id,u.email,c.name,r.status,r.declined')
+            ->groupBy('r.id, r.datefrom,r.dateto,ro.id,u.email,c.name,r.status,r.declined,r.paymentMethod')
             ->orderBy($condition, 'asc')
             ->getQuery()
             ->getResult();
