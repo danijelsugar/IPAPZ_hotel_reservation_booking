@@ -3,7 +3,6 @@
 
 namespace App\Controller;
 
-use App\Entity\PaymentMethod;
 use App\Form\CategoryFormType;
 use App\Form\UserFormType;
 use App\Form\OrderByFormType;
