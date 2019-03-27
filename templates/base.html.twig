@@ -28,7 +28,7 @@
     </div>
     <div class="navbar-collapse">
         <ul class="navbar-nav ml-auto">
-            {% if (is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPLOYEE') or is_granted('ROLE_USER') ) %}
+            {% if app.user %}
                 {% if (is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPLOYEE')) %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Rezervacije</a>
@@ -50,12 +50,14 @@
                         <a class="nav-link" href="{{ path('admin/employees') }}">Dodaj zaposlenika</a>
                     </li>
                 {% endif %}
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Profil</a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="{{ path('user-reservations') }}">Rezervacije</a>
-                    </div>
-                </li>
+                {% if (is_granted('ROLE_USER')) %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Profil</a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="{{ path('user-reservations') }}">Rezervacije</a>
+                        </div>
+                    </li>
+                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_logout') }}">Odjavi se</a>
                 </li>
