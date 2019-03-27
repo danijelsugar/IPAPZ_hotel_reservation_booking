@@ -3,7 +3,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Transaction;
 use App\Form\CategoryFormType;
 use App\Form\UserFormType;
 use App\Form\OrderByFormType;
@@ -686,9 +685,11 @@ class AdminController extends AbstractController
         /**
          * @var \App\Entity\Transaction $transaction
          */
-        $transaction = $transactionRepository->findOneBy([
-           'reservation' => $reservation
-        ]);
+        $transaction = $transactionRepository->findOneBy(
+            [
+                'reservation' => $reservation
+            ]
+        );
 
         $fileName = $transaction->getFileName();
         $filePath = $this->getParameter('kernel.project_dir'). '/public/uploads/invoice/' . $fileName;
