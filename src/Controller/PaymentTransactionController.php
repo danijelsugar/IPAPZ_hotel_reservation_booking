@@ -111,6 +111,7 @@ class PaymentTransactionController extends AbstractController
         $trans->setUser($this->getUser());
         $trans->setRoom($room);
         $trans->setTransactionId($transaction->id);
+        $trans->setReservation($reservation);
         $trans->setMethod('Paypal');
         $trans->onPrePersistChosenAt();
         $trans->onPrePersistPaidAt();
@@ -149,6 +150,10 @@ class PaymentTransactionController extends AbstractController
         $dateFrom = $session->get('datefrom');
         $dateTo = $session->get('dateto');
 
+        $totalDays = $dateTo->diff($dateFrom);
+        $costPerNight = $room->getCost();
+        $amount = $costPerNight * $totalDays->days;
+
         $reservation = new Reservation();
         $reservation->setRoom($room);
         $reservation->setUser($this->getUser());
@@ -160,23 +165,31 @@ class PaymentTransactionController extends AbstractController
         $trans = new Transaction();
         $trans->setUser($this->getUser());
         $trans->setRoom($room);
+        $trans->setReservation($reservation);
         $trans->setMethod('Invoice');
         $trans->onPrePersistChosenAt();
         $entityManager->persist($trans);
         $entityManager->flush();
 
-        self:$this->createPdf($room, $trans, $entityManager);
+        self:$this->createPdf($room, $reservation, $entityManager, $trans, $amount);
         $this->addFlash('success', 'Uspiješno ste platili poduzećem');
         return $this->redirectToRoute('rooms');
     }
 
     /**
      * @param Room $room
-     * @param Transaction $transaction
+     * @param Reservation $reservation
      * @param EntityManagerInterface $entityManager
+     * @param Transaction $transaction
+     * @param $amount
      */
-    public function createPdf(Room $room, Transaction $transaction, EntityManagerInterface $entityManager)
-    {
+    public function createPdf(
+        Room $room,
+        Reservation $reservation,
+        EntityManagerInterface $entityManager,
+        Transaction $transaction,
+        $amount
+    ) {
         // Configure Dompdf
         $pdfOptions = new Options();
         $pdfOptions->set('defaultFont', 'Arial');
@@ -190,14 +203,17 @@ class PaymentTransactionController extends AbstractController
             [
                 'title' => "Welcome to our PDF Test",
                 'room' => $room,
-                'invoice' => $transaction,
-                'user' => $this->getUser()
+                'reservation' => $reservation,
+                'user' => $this->getUser(),
+                'amount' => $amount
             ]
         );
+        $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
 
-        $pdfName = date('Y') . $transaction->getId() . $this->getUser()->getId() . '.pdf';
+        $pdfName = date('Y') . $reservation->getId() . $this->getUser()->getId() . '.pdf';
 
         $transaction->setTransactionId($pdfName);
+        $transaction->setFileName($pdfName);
         $entityManager->persist($transaction);
         $entityManager->flush();
 
@@ -212,7 +228,7 @@ class PaymentTransactionController extends AbstractController
 
         $output = $dompdf->output();
 
-        $publicDirectory = '../public/uploads/invoice';
+        $publicDirectory = '../public/uploads/invoice/';
 
         $pdfFilePath = $publicDirectory . $pdfName;
 

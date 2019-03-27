@@ -36,7 +36,7 @@
                                         <td>
                                             <a class="btn btn-primary" href="{{ path('admin/accept', {'id': reservation.id, 'roomid': reservation.room}) }}">Prihvati</a>
                                             <a class="btn btn-warning" href="{{ path('admin/decline', {'id': reservation.id, 'roomid': reservation.room}) }}">Odbi rezervaciju</a>
-                                            <a class="btn btn-primary" href="">Račun</a>
+                                            <a class="btn btn-primary" href="{{ path('admin/pdf-download', {'reservation': reservation.id}) }}">Račun</a>
                                         </td>
                                     </tr>
                                 {% endif %}

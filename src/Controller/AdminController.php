@@ -3,6 +3,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Transaction;
 use App\Form\CategoryFormType;
 use App\Form\UserFormType;
 use App\Form\OrderByFormType;
@@ -10,6 +11,7 @@ use App\Form\ReservationFormType;
 use App\Form\RoomFormType;
 use App\Form\SubCategoryFormType;
 use App\Repository\CategoryRepository;
+use App\Repository\TransactionRepository;
 use App\Repository\UserRepository;
 use App\Repository\ReservationRepository;
 use App\Repository\RoomRepository;
@@ -671,6 +673,39 @@ class AdminController extends AbstractController
                 'form' => $form->createView()
             ]
         );
+    }
+
+    /**
+     * @Symfony\Component\Routing\Annotation\Route("/admin/download/{reservation}", name="admin/pdf-download")
+     * @param $reservation
+     * @param TransactionRepository $transactionRepository
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function downloadPdf($reservation, TransactionRepository $transactionRepository)
+    {
+        /**
+         * @var \App\Entity\Transaction $transaction
+         */
+        $transaction = $transactionRepository->findOneBy([
+           'reservation' => $reservation
+        ]);
+
+        $fileName = $transaction->getFileName();
+        $filePath = $this->getParameter('kernel.project_dir'). '/public/uploads/invoice/' . $fileName;
+
+        $response = new Response();
+        $response->headers->set('Content-type', 'application/octet-stream');
+        $response->headers->set(
+            'Content-Disposotopn',
+            'attachment; filename="%s"',
+            $fileName
+        );
+        $response->setContent(file_get_contents($filePath));
+        $response->setStatusCode(200);
+        $response->headers->set('Content-Transfer-Encoding', 'binary');
+        $response->headers->set('Pragma', 'no-cache');
+        $response->headers->set('Expires', '0');
+        return $response;
     }
 
     /**

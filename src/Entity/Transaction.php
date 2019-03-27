@@ -51,10 +51,15 @@ class Transaction
     private $paidAt;
 
     /**
-     * @@Doctrine\ORM\Mapping\ManyToOne(targetEntity="App\Entity\Reservation")
-     * @@Doctrine\ORM\Mapping\JoinColumn(nullable=false)
+     * @Doctrine\ORM\Mapping\ManyToOne(targetEntity="App\Entity\Reservation")
+     * @Doctrine\ORM\Mapping\JoinColumn(nullable=false)
      */
     private $reservation;
+
+    /**
+     * @Doctrine\ORM\Mapping\Column(type="string", length=255, nullable=true)
+     */
+    private $fileName;
 
     public function getId(): ?int
     {
@@ -159,6 +164,18 @@ class Transaction
     public function setReservation(?Reservation $reservation): self
     {
         $this->reservation = $reservation;
+
+        return $this;
+    }
+
+    public function getFileName(): ?string
+    {
+        return $this->fileName;
+    }
+
+    public function setFileName(?string $fileName): self
+    {
+        $this->fileName = $fileName;
 
         return $this;
     }
