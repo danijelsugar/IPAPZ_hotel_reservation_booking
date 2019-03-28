@@ -160,53 +160,6 @@ class IndexController extends AbstractController
     }
 
     /**
-     * @Symfony\Component\Routing\Annotation\Route("finish_reservation/{room}", name="finish_reservation")
-     * @param                              RoomRepository $roomRepository
-     * @param                              EntityManagerInterface $entityManager
-     * @param                              ReservationRepository $reservationRepository
-     * @param                              $room
-     * @return                             \Symfony\Component\HttpFoundation\Response
-     */
-    public function finishReservation(
-        RoomRepository $roomRepository,
-        EntityManagerInterface $entityManager,
-        ReservationRepository $reservationRepository,
-        $room
-    ) {
-
-        $session = new Session();
-        $user = $this->getUser();
-        $dateFrom = $session->get('datefrom');
-        $dateTo = $session->get('dateto');
-        $room = $roomRepository->findOneBy(
-            [
-                'id' => $room
-            ]
-        );
-        $res = $reservationRepository->reservationNum($dateFrom, $dateTo, $room);
-        if ($res === 0) {
-            /**
-             * @var \App\Entity\Reservation $reservation
-             */
-            $reservation = new Reservation();
-            $reservation->setRoom($room);
-            $reservation->setUser($user);
-            $reservation->setDatefrom($dateFrom);
-            $reservation->setDateto($dateTo);
-            $entityManager->persist($reservation);
-            $this->addFlash('success', 'Soba rezervirana');
-            $entityManager->flush();
-        } else {
-            return $this->redirectToRoute(
-                'rooms'
-            );
-        }
-
-
-        return $this->redirectToRoute('home');
-    }
-
-    /**
      * @Symfony\Component\Routing\Annotation\Route("edit-reservation/{id}", name="edit-reservation")
      * @param                          Request $request
      * @param                          EntityManagerInterface $entityManager

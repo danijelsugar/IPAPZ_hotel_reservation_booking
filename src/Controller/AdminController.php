@@ -399,6 +399,16 @@ class AdminController extends AbstractController
                 'id' => $id
             ]
         );
+        $dateFrom = $reservation->getDateFrom();
+        $dateTo = $reservation->getDateTo();
+
+        $reservationNum = $reservationRepository->reservationNum($dateFrom, $dateTo, $roomid);
+        if ($reservationNum !== 0) {
+            $this->addFlash('success', 'Rezervacija ne može biti prihvaćena termin je zauzet');
+            return $this->redirectToRoute(
+                'admin/reservations'
+            );
+        }
 
         /**
          * @var \App\Entity\Reservation $reservation
@@ -415,15 +425,12 @@ class AdminController extends AbstractController
          * @var \App\Entity\Room $room
          */
         $room->setStatus(1);
-        $this->addFlash('success', 'Reservation accepted');
+        $this->addFlash('success', 'Rezervacija prihvaćena');
         $entityManager->flush();
 
 
         return $this->redirectToRoute(
-            'admin/reservations',
-            [
-                'reservations' => $reservation
-            ]
+            'admin/reservations'
         );
     }
 
