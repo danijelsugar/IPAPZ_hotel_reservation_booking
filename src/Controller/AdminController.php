@@ -505,7 +505,6 @@ class AdminController extends AbstractController
      * @Symfony\Component\Routing\Annotation\Route("/admin/accept/{id}/{roomid}", name="admin/accept")
      * @param                                EntityManagerInterface $entityManager
      * @param                                ReservationRepository $reservationRepository
-     * @param                                RoomRepository $roomRepository
      * @param                                $id
      * @param                                $roomid
      * @return                               Response
@@ -513,7 +512,6 @@ class AdminController extends AbstractController
     public function acceptReservation(
         EntityManagerInterface $entityManager,
         ReservationRepository $reservationRepository,
-        RoomRepository $roomRepository,
         $id,
         $roomid
     ) {
