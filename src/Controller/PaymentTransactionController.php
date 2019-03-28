@@ -38,11 +38,9 @@ class PaymentTransactionController extends AbstractController
         $status = $method->getEnabled();
 
         if (!$status) {
+            $this->addFlash('warning', 'Plaćanje paypalom je onemogućeno');
             return $this->redirectToRoute(
-                'rooms',
-                [
-                    'message' => 'Plaćanje paypalom je onemogućeno'
-                ]
+                'rooms'
             );
         }
 
@@ -64,11 +62,9 @@ class PaymentTransactionController extends AbstractController
                 ]
             );
         } else {
+            $this->addFlash('warning', 'Termin nije dostupan. Promijenite termin');
             return $this->redirectToRoute(
-                'rooms',
-                [
-                    'message' => 'Termin nije dostupan. Promijenite termin'
-                ]
+                'rooms'
             );
         }
     }
@@ -175,11 +171,9 @@ class PaymentTransactionController extends AbstractController
         $status = $method->getEnabled();
 
         if (!$status) {
+            $this->addFlash('warning', 'Plaćanje poduzećem je onemogućeno');
             return $this->redirectToRoute(
-                'rooms',
-                [
-                    'message' => 'Plaćanje poduzećem je onemogućeno'
-                ]
+                'rooms'
             );
         }
 
@@ -214,11 +208,9 @@ class PaymentTransactionController extends AbstractController
             $this->addFlash('success', 'Uspiješno ste platili poduzećem');
             return $this->redirectToRoute('rooms');
         } else {
+            $this->addFlash('warning', 'Termin nije dostupan. Promijenite termin');
             return $this->redirectToRoute(
-                'rooms',
-                [
-                    'message' => 'Termin nije dostupan. Promijenite termin'
-                ]
+                'rooms'
             );
         }
     }

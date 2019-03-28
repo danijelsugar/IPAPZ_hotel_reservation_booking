@@ -1,11 +1,6 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {% if (message != '') %}
-        <div class="alert alert-warning">
-            <h3>{{ message }}</h3>
-        </div>
-    {% endif %}
     <a class="btn btn-primary" href="{{ path('booking') }}">Nazad</a>
     <h1>Sobe</h1>
     <p><strong>Pretražuju se sobe u periodu od {{ dateFrom|date('d.m.Y') }} do {{ dateTo|date('d.m.Y') }}</strong></p>
