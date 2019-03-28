@@ -20,7 +20,11 @@ class ReservationFormType extends AbstractType
                 DateType::class,
                 [
                     'widget' => 'single_text',
-                    'attr' => ['class' => 'js-datepicker'],
+                    'attr' =>
+                        [
+                            'class' => 'js-datepicker',
+                            'autocomplete' => 'off'
+                        ],
                     'html5' => false,
                     'format' => 'dd.MM.yyyy.'
                 ]
@@ -30,7 +34,11 @@ class ReservationFormType extends AbstractType
                 DateType::class,
                 [
                     'widget' => 'single_text',
-                    'attr' => ['class' => 'js-datepicker'],
+                    'attr' =>
+                        [
+                            'class' => 'js-datepicker',
+                            'autocomplete' => 'off'
+                        ],
                     'html5' => false,
                     'format' => 'dd.MM.yyyy.'
                 ]

@@ -53,7 +53,7 @@ class Room
     /**
      * @Doctrine\ORM\Mapping\Column(type="boolean")
      */
-    private $status = 0;
+    private $status = 1;
 
     /**
      * @Doctrine\ORM\Mapping\OneToMany(targetEntity="App\Entity\Review", mappedBy="room", orphanRemoval=true)

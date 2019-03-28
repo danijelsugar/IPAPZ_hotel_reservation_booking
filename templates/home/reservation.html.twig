@@ -11,12 +11,10 @@
     <p><strong>Pretražuju se sobe u periodu od {{ dateFrom|date('d.m.Y') }} do {{ dateTo|date('d.m.Y') }}</strong></p>
     <h3>{{ alert }}</h3>
 
-
-
-
     <div class="row">
         <div class="col-12">
                 {% for room in rooms %}
+                    {% if room.status is same as(true) %}
                         <div class="row">
                             <div class="col-12">
                                 <p>{{ room.category.name }} {{ room.subcategory.name }}</p>
@@ -62,13 +60,10 @@
                                     <a class="btn btn-primary" href="{{ path('invoice-payment', {'id': room.id}) }}">Poduzećem</a>
                                     <a class="btn btn-primary" href="{{ path('room-reviews', {'room': room.id}) }}">Recenzije</a>
                                 {% endif %}
-                                {% if is_granted('ROLE_ADMIN') %}
-                                    <a class="btn btn-info" href="{{ path('admin/edit-room', {'id': room.id}) }}">Uredi</a>
-                                    <a class="btn btn-danger" href="{{ path('admin/delete-room', {'id': room.id}) }}">Obriši</a>
-                                {% endif %}
                             </div>
                         </div>
                         <hr>
+                    {% endif %}
                 {% endfor %}
         </div>
     </div>

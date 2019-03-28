@@ -1,0 +1,114 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="row">
+        <div class="col-12">
+            <h3>Sve sobe</h3>
+            <a class="btn btn-primary btn-lg btn-block" href="{{ path('admin/create-room') }}">Dodaj sobu</a>
+            {% for room in rooms %}
+                <div class="row">
+                    <div class="col-12">
+                        <p>{{ room.category.name }} {{ room.subcategory.name }}</p>
+                    </div>
+                </div>
+                <div class="row room-desc">
+                    <div class="col-3">
+                        <img width="200" height="150" src="../../../../../uploads/image/{{ room.image }}" alt="">
+                    </div>
+                    <div class="col-2">
+                        <p>{{ room.description }}</p>
+                        <p>{{ room.cost }} $</p>
+                    </div>
+                    <div class="col-3">
+                        <!-- Button trigger modal -->
+                        <a href="#" id="{{ room.id }}" type="button" class="btn btn-primary roomid">
+                            Pogledaj dostupnost sobe
+                        </a>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Zauzeti datumi oznaćeni su crvenom bojom</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div id="calendar"></div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        {% if (is_granted('ROLE_USER')) %}
+                            <a class="btn btn-primary" href="{{ path('paypal-pay', {'id': room.id}) }}">Plačanje PayPal-om</a>
+                            <a class="btn btn-primary" href="{{ path('invoice-payment', {'id': room.id}) }}">Poduzećem</a>
+                            <a class="btn btn-primary" href="{{ path('room-reviews', {'room': room.id}) }}">Recenzije</a>
+                        {% endif %}
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a class="btn btn-info" href="{{ path('admin/edit-room', {'id': room.id}) }}">Uredi</a>
+                            {% if room.status is same as(true) %}
+                                <a class="btn btn-danger" href="{{ path('admin/disable-room', {'id': room.id}) }}">Makni vidljivost</a>
+                            {% else %}
+                                <a class="btn btn-primary" href="{{ path('admin/enable-room', {'id': room.id}) }}">Vrati vidljivost</a>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+                <hr>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('lib/moment.min.js') }}"></script>
+    <script src="{{ asset('lib/fullcalendar.js') }}"></script>
+    <script>
+        $( document ).ready(function() {
+
+            $(function() {
+
+                $('.roomid').click(function(e) {
+                    e.preventDefault();
+                    var roomId = ($(this).attr('id'));
+                    $.ajax({
+                        url:'{{ (path('room_reservations')) }}',
+                        type: 'POST',
+                        data: {'id': roomId},
+                        success: function (response) {
+                            var events = [];
+                            $('#calendar').fullCalendar('destroy');
+                            for (var i=0;i<response.length;i++) {
+                                events[i] = {};
+                                events[i].title = 'soba';
+                                events[i].start = response[i].datefrom.date;
+                                events[i].end = response[i].dateto.date;
+                                events[i].color = 'red';
+                            }
+                            $('#calendar').fullCalendar({
+                                eventLimit: true,
+                                events: events
+                            });
+                            $("#calendar").fullCalendar('render');
+                            $('#exampleModal').modal('show');
+                        }
+                    });
+                });
+
+            });
+
+
+        });
+
+    </script>
+{% endblock %}

@@ -27,16 +27,20 @@
                 </thead>
                 <tbody>
                     {% for employee in employees %}
-                    <tr>
-                        <td>{{ employee.firstname }}</td>
-                        <td>{{ employee.lastname }}</td>
-                        <td>{{ employee.email }}</td>
-                        <td>{{ employee.roles|join(', ') }}</td>
-                        <td>
-                            <a class="btn btn-info" href="{{ path('admin/edit-employee', {'id': employee.id}) }}">Uredi</a>
-                            <a class="btn btn-danger" href="{{ path('admin/delete-employee', {'id': employee.id}) }}">Obriši</a>
-                        </td>
-                    </tr>
+                        {% if employee.roles|join(', ') is same as("ROLE_USER,") %}
+
+                        {% else %}
+                            <tr>
+                                <td>{{ employee.firstname }}</td>
+                                <td>{{ employee.lastname }}</td>
+                                <td>{{ employee.email }}</td>
+                                <td>{{ employee.roles|join(', ') }}</td>
+                                <td>
+                                    <a class="btn btn-info" href="{{ path('admin/edit-employee', {'id': employee.id}) }}">Uredi</a>
+                                    <a class="btn btn-danger" href="{{ path('admin/delete-employee', {'id': employee.id}) }}">Obriši</a>
+                                </td>
+                            </tr>
+                        {% endif %}
                     {% endfor %}
                 </tbody>
             </table>

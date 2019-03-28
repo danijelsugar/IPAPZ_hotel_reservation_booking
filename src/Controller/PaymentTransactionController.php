@@ -7,7 +7,6 @@ use App\Entity\Room;
 use App\Entity\Transaction;
 use App\Repository\PaymentMethodRepository;
 use App\Repository\ReservationRepository;
-use App\Repository\RoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,14 +20,12 @@ class PaymentTransactionController extends AbstractController
     /**
      * @Symfony\Component\Routing\Annotation\Route("/transaction/pay/{id}", name="paypal-pay")
      * @param Room $room
-     * @param RoomRepository $roomRepository
      * @param ReservationRepository $reservationRepository
      * @param PaymentMethodRepository $paymentMethodRepository
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function payPalShow(
         Room $room,
-        RoomRepository $roomRepository,
         ReservationRepository $reservationRepository,
         PaymentMethodRepository $paymentMethodRepository
     ) {
@@ -52,12 +49,7 @@ class PaymentTransactionController extends AbstractController
         $session = new Session();
         $dateFrom = $session->get('datefrom');
         $dateTo = $session->get('dateto');
-        $r = $roomRepository->findOneBy(
-            [
-                'id' => $room
-            ]
-        );
-        $res = $reservationRepository->reservationNum($dateFrom, $dateTo, $r);
+        $res = $reservationRepository->reservationNum($dateFrom, $dateTo, $room);
         if ($res === 0) {
             $gateway = self::gateway();
             $totalDays = $session->get('dateto')->diff($session->get('datefrom'));
@@ -164,13 +156,15 @@ class PaymentTransactionController extends AbstractController
      * @param Room $room
      * @param EntityManagerInterface $entityManager
      * @param PaymentMethodRepository $paymentMethodRepository
+     * @param ReservationRepository $reservationRepository
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
     public function invoicePayment(
         Room $room,
         EntityManagerInterface $entityManager,
-        PaymentMethodRepository $paymentMethodRepository
+        PaymentMethodRepository $paymentMethodRepository,
+        ReservationRepository $reservationRepository
     ) {
 
         $method = $paymentMethodRepository->findOneBy(
@@ -193,30 +187,40 @@ class PaymentTransactionController extends AbstractController
         $dateFrom = $session->get('datefrom');
         $dateTo = $session->get('dateto');
 
-        $totalDays = $dateTo->diff($dateFrom);
-        $costPerNight = $room->getCost();
-        $amount = $costPerNight * $totalDays->days;
+        $res = $reservationRepository->reservationNum($dateFrom, $dateTo, $room);
+        if ($res === 0) {
+            $totalDays = $dateTo->diff($dateFrom);
+            $costPerNight = $room->getCost();
+            $amount = $costPerNight * $totalDays->days;
 
-        $reservation = new Reservation();
-        $reservation->setRoom($room);
-        $reservation->setUser($this->getUser());
-        $reservation->setDatefrom($dateFrom);
-        $reservation->setDateto($dateTo);
-        $reservation->setPaymentMethod('Invoice');
-        $entityManager->persist($reservation);
+            $reservation = new Reservation();
+            $reservation->setRoom($room);
+            $reservation->setUser($this->getUser());
+            $reservation->setDatefrom($dateFrom);
+            $reservation->setDateto($dateTo);
+            $reservation->setPaymentMethod('Invoice');
+            $entityManager->persist($reservation);
 
-        $trans = new Transaction();
-        $trans->setUser($this->getUser());
-        $trans->setRoom($room);
-        $trans->setReservation($reservation);
-        $trans->setMethod('Invoice');
-        $trans->onPrePersistChosenAt();
-        $entityManager->persist($trans);
-        $entityManager->flush();
+            $trans = new Transaction();
+            $trans->setUser($this->getUser());
+            $trans->setRoom($room);
+            $trans->setReservation($reservation);
+            $trans->setMethod('Invoice');
+            $trans->onPrePersistChosenAt();
+            $entityManager->persist($trans);
+            $entityManager->flush();
 
-        self:$this->createPdf($room, $reservation, $entityManager, $trans, $amount);
-        $this->addFlash('success', 'Uspiješno ste platili poduzećem');
-        return $this->redirectToRoute('rooms');
+            self:$this->createPdf($room, $reservation, $entityManager, $trans, $amount);
+            $this->addFlash('success', 'Uspiješno ste platili poduzećem');
+            return $this->redirectToRoute('rooms');
+        } else {
+            return $this->redirectToRoute(
+                'rooms',
+                [
+                    'message' => 'Termin nije dostupan. Promijenite termin'
+                ]
+            );
+        }
     }
 
     /**
