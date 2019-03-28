@@ -6,7 +6,6 @@ namespace App\Controller;
 use App\Form\CategoryFormType;
 use App\Form\UserFormType;
 use App\Form\OrderByFormType;
-use App\Form\ReservationFormType;
 use App\Form\RoomFormType;
 use App\Form\SubCategoryFormType;
 use App\Repository\CategoryRepository;
@@ -61,7 +60,7 @@ class AdminController extends AbstractController
              */
             $subCategory = $form->getData();
             $entityManager->persist($subCategory);
-            $this->addFlash('success', 'Potkategorija kreirana');
+            $this->addFlash('success', 'Podkategorija kreirana');
             $entityManager->flush();
 
             return $this->redirectToRoute('admin/create-category');
@@ -497,48 +496,6 @@ class AdminController extends AbstractController
             'admin/reservations',
             [
                 'reservations' => $reservation
-            ]
-        );
-    }
-
-    /**
-     * @Symfony\Component\Routing\Annotation\Route("/admin/edit-reservation/{id}", name="admin/edit-reservation")
-     * @param                                 Request $request
-     * @param                                 EntityManagerInterface $entityManager
-     * @param                                 ReservationRepository $reservationRepository
-     * @param                                 $id
-     * @return                                Response
-     */
-    public function editReservation(
-        Request $request,
-        EntityManagerInterface $entityManager,
-        ReservationRepository $reservationRepository,
-        $id
-    ) {
-        $reservation = $reservationRepository->findOneBy(
-            [
-                'id' => $id
-            ]
-        );
-
-        $form = $this->createForm(ReservationFormType::class, $reservation);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            /**
-             * @var \App\Entity\Reservation $reservation
-             */
-            $reservation = $form->getData();
-            $entityManager->flush();
-
-            return $this->redirectToRoute('admin/accepted');
-        }
-
-
-        return $this->render(
-            'admin/edit_reservation.html.twig',
-            [
-                'form' => $form->createView()
             ]
         );
     }

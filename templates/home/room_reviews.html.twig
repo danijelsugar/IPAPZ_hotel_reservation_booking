@@ -1,19 +1,22 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {% for review in reviews %}
-        <div class="row">
-            <div class="col-12">
-                <p><strong>{{ review.user.fullname }}</strong></p>
-                <hr>
+    {% if reviews is not empty  %}
+        {% for review in reviews %}
+            <div class="row">
+                <div class="col-12">
+                    <p><strong>{{ review.user.fullname }}</strong></p>
+                    <hr>
+                </div>
+                <div class="col-6">
+                    <p>{{ review.text }}</p>
+                </div>
+                <div class="col-6">
+                    <p>{{ review.rating }}</p>
+                </div>
             </div>
-            <div class="col-6">
-                <p>{{ review.text }}</p>
-            </div>
-            <div class="col-6">
-                <p>{{ review.rating }}</p>
-            </div>
-        </div>
-    {% endfor %}
-
+        {% endfor %}
+    {% else %}
+        <h3>Soba još nema rezenzija.</h3>
+    {% endif %}
 {% endblock %}

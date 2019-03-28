@@ -250,9 +250,12 @@ class IndexController extends AbstractController
             if ($res === 0) {
                 $this->addFlash('success', 'Rezervacija promijenjena');
                 $entityManager->flush();
+                return $this->redirectToRoute(
+                    'user-reservations'
+                );
             } else {
                 return $this->redirectToRoute(
-                    'edit-reservation',
+                    'user-reservations',
                     [
                         'id' => $id,
                         'message' => 'Soba nije dostupna u tome terminu molimo vas odaberite drugi termin'
