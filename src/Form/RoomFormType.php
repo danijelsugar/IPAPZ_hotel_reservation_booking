@@ -5,6 +5,8 @@ namespace App\Form;
 use App\Entity\Category;
 use App\Entity\Room;
 use App\Entity\SubCategory;
+use App\Repository\CategoryRepository;
+use App\Repository\SubCategoryRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -36,10 +38,15 @@ class RoomFormType extends AbstractType
                 [
                     'label' => 'Kategorija',
                     'class' => Category::class,
+                    'query_builder' => function (CategoryRepository $cr) {
+                        return $cr->createQueryBuilder('c')
+                            ->where('c.hidden=:status')
+                            ->setParameter(':status', false);
+                    },
                     'attr' => [
                         'class' => 'form-control'
                     ],
-                    'choice_label' => 'name'
+                    'choice_label' => 'name',
                 ]
             )
             ->add(
@@ -48,6 +55,11 @@ class RoomFormType extends AbstractType
                 [
                     'label' => 'Potkategorija',
                     'class' => SubCategory::class,
+                    'query_builder' => function (SubCategoryRepository $sr) {
+                        return $sr->createQueryBuilder('s')
+                            ->where('s.hidden=:status')
+                            ->setParameter(':status', false);
+                    },
                     'attr' => [
                         'class' => 'form-control'
                     ],

@@ -19,6 +19,7 @@
                 <thead class="thead-dark">
                     <tr>
                         <th>Naziv</th>
+                        <th>Status</th>
                         <th>Akcija</th>
                     </tr>
                 </thead>
@@ -27,8 +28,19 @@
                     <tr>
                         <td>{{ category.name }}</td>
                         <td>
+                            {% if category.hidden is same as(false) %}
+                                Aktivno
+                            {% else %}
+                                Skriveno
+                            {% endif %}
+                        </td>
+                        <td>
                             <a class="btn btn-dark" href="{{ path('admin/edit-category', {'id': category.id}) }}">Uredi</a>
-                            <a class="btn btn-danger" href="{{ path('admin/delete-category', {'id': category.id}) }}">Obriši</a>
+                            {% if category.hidden is same as(true) %}
+                                <a class="btn btn-primary" href="{{ path('admin/activate-category', {'id': category.id}) }}">Aktiviraj</a>
+                            {% else %}
+                                <a class="btn btn-danger" href="{{ path('admin/hide-category', {'id': category.id}) }}">Ukloni vidljivost</a>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
@@ -54,6 +66,7 @@
                 <thead class="thead-dark">
                 <tr>
                     <th>Naziv</th>
+                    <th>Status</th>
                     <th>Akcija</th>
                 </tr>
                 </thead>
@@ -62,8 +75,19 @@
                     <tr>
                         <td>{{ subCategory.name }}</td>
                         <td>
+                            {% if subCategory.hidden is same as(false) %}
+                                Aktivno
+                            {% else %}
+                                Skriveno
+                            {% endif %}
+                        </td>
+                        <td>
                             <a class="btn btn-dark" href="{{ path('admin/edit-subcategory', {'id': subCategory.id})  }}">Uredi</a>
-                            <a class="btn btn-danger" href="{{ path('admin/delete-subcategory', {'id': subCategory.id}) }}">Obriši</a>
+                            {% if subCategory.hidden is same as(true) %}
+                                <a class="btn btn-primary" href="{{ path('admin/activate-subcategory', {'id': subCategory.id}) }}">Aktiviraj</a>
+                            {% else %}
+                                <a class="btn btn-danger" href="{{ path('admin/hide-subcategory', {'id': subCategory.id}) }}">Ukloni vidljivost</a>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}

@@ -146,13 +146,13 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Symfony\Component\Routing\Annotation\Route("/admin/delete-subcategory/{id}", name="admin/delete-subcategory")
+     * @Symfony\Component\Routing\Annotation\Route("/admin/hide-subcategory/{id}", name="admin/hide-subcategory")
      * @param                                   EntityManagerInterface $entityManager
      * @param                                   SubCategoryRepository $subCategoryRepository
      * @param                                   $id
      * @return                                  Response
      */
-    public function deleteSubcategory(
+    public function hideSubcategory(
         EntityManagerInterface $entityManager,
         SubCategoryRepository $subCategoryRepository,
         $id
@@ -163,8 +163,33 @@ class AdminController extends AbstractController
             ]
         );
 
-        $entityManager->remove($subCategory);
-        $this->addFlash('success', 'Potkategorija obrisana');
+        $subCategory->setHidden(1);
+        $this->addFlash('success', 'Potkategorija uklonjena');
+        $entityManager->flush();
+
+        return $this->redirectToRoute('admin/create-category');
+    }
+
+    /**
+     * @Symfony\Component\Routing\Annotation\Route("/admin/activate-subcategory/{id}", name="admin/activate-subcategory")
+     * @param                                   EntityManagerInterface $entityManager
+     * @param                                   SubCategoryRepository $subCategoryRepository
+     * @param                                   $id
+     * @return                                  Response
+     */
+    public function activateSubcategory(
+        EntityManagerInterface $entityManager,
+        SubCategoryRepository $subCategoryRepository,
+        $id
+    ) {
+        $subCategory = $subCategoryRepository->findOneBy(
+            [
+                'id' => $id
+            ]
+        );
+
+        $subCategory->setHidden(0);
+        $this->addFlash('success', 'Potkategorija aktivirana');
         $entityManager->flush();
 
         return $this->redirectToRoute('admin/create-category');
@@ -217,13 +242,13 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Symfony\Component\Routing\Annotation\Route("/admin/delete-category/{id}", name="admin/delete-category")
+     * @Symfony\Component\Routing\Annotation\Route("/admin/hide-category/{id}", name="admin/hide-category")
      * @param                                EntityManagerInterface $entityManager
      * @param                                CategoryRepository $categoryRepository
      * @param                                $id
      * @return                               Response
      */
-    public function deleteCategory(
+    public function hideategory(
         EntityManagerInterface $entityManager,
         CategoryRepository $categoryRepository,
         $id
@@ -234,8 +259,33 @@ class AdminController extends AbstractController
             ]
         );
 
-        $entityManager->remove($category);
-        $this->addFlash('success', 'Kategorija obrisana');
+        $category->setHidden(1);
+        $this->addFlash('success', 'Kategorija Uklonjena');
+        $entityManager->flush();
+
+        return $this->redirectToRoute('admin/create-category');
+    }
+
+    /**
+     * @Symfony\Component\Routing\Annotation\Route("/admin/activate-category/{id}", name="admin/activate-category")
+     * @param                                EntityManagerInterface $entityManager
+     * @param                                CategoryRepository $categoryRepository
+     * @param                                $id
+     * @return                               Response
+     */
+    public function activateCategory(
+        EntityManagerInterface $entityManager,
+        CategoryRepository $categoryRepository,
+        $id
+    ) {
+        $category = $categoryRepository->findOneBy(
+            [
+                'id' => $id
+            ]
+        );
+
+        $category->setHidden(0);
+        $this->addFlash('success', 'Kategorija aktivirana');
         $entityManager->flush();
 
         return $this->redirectToRoute('admin/create-category');

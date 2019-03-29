@@ -34,6 +34,11 @@ class SubCategory
     private $rooms;
 
     /**
+     * @Doctrine\ORM\Mapping\Column(type="boolean")
+     */
+    private $hidden = 0;
+
+    /**
      * @return \Doctrine\Common\Collections\Collection|Room[]
      */
     public function getRooms()
@@ -71,5 +76,21 @@ class SubCategory
     public function setName($name): void
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHidden()
+    {
+        return $this->hidden;
+    }
+
+    /**
+     * @param mixed $hidden
+     */
+    public function setHidden($hidden): void
+    {
+        $this->hidden = $hidden;
     }
 }
