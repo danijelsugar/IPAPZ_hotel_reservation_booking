@@ -60,10 +60,6 @@ class IndexController extends AbstractController
             $session->set('people', $choice);
             $session->set('datefrom', $dateFrom);
             $session->set('dateto', $dateTo);
-            if ($session->get('dateto') <= $session->get('datefrom')) {
-                $this->addFlash('warning', 'Završni datum mora biti veći od poćetnog');
-                return $this->redirectToRoute('booking');
-            }
 
             return $this->redirectToRoute('rooms');
         }

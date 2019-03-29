@@ -9,6 +9,9 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\GreaterThan;
+use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ReservationFormType extends AbstractType
 {
@@ -26,7 +29,14 @@ class ReservationFormType extends AbstractType
                             'autocomplete' => 'off'
                         ],
                     'html5' => false,
-                    'format' => 'dd.MM.yyyy.'
+                    'format' => 'dd.MM.yyyy.',
+                    'constraints' =>
+                        [
+                            new NotBlank(),
+                            new GreaterThanOrEqual('today')
+                        ],
+                    'invalid_message' => 'Promijeni zavrsni datum',
+
                 ]
             )
             ->add(
@@ -40,7 +50,14 @@ class ReservationFormType extends AbstractType
                             'autocomplete' => 'off'
                         ],
                     'html5' => false,
-                    'format' => 'dd.MM.yyyy.'
+                    'format' => 'dd.MM.yyyy.',
+                    'constraints' =>
+                        [
+                            new NotBlank(),
+                            new GreaterThan('today')
+                        ],
+                    'invalid_message' => 'Promijeni zavrsni datum',
+
                 ]
             )
             ->add(
