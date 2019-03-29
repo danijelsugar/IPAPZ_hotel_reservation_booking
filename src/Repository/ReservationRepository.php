@@ -8,6 +8,8 @@ use App\Entity\Reservation;
 use App\Entity\Room;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\ORM\Query\Expr;
 
@@ -76,7 +78,7 @@ class ReservationRepository extends ServiceEntityRepository
     public function orderReservations($condition)
     {
         return $this->createQueryBuilder('r')
-            ->select('r.id, r.datefrom,r.dateto,ro.id as room,c.name,u.email,r.status,r.declined')
+            ->select('r.id, r.datefrom,r.dateto,ro.id as room,c.name,u.email,r.status,r.declined,r.paymentMethod')
             ->join(
                 User::class,
                 'u',
@@ -95,7 +97,7 @@ class ReservationRepository extends ServiceEntityRepository
                 Expr\Join::WITH,
                 'ro.category=c.id'
             )
-            ->groupBy('r.id, r.datefrom,r.dateto,ro.id,u.email,c.name,r.status,r.declined')
+            ->groupBy('r.id, r.datefrom,r.dateto,ro.id,u.email,c.name,r.status,r.declined,r.paymentMethod')
             ->orderBy($condition, 'asc')
             ->getQuery()
             ->getResult();
@@ -103,18 +105,22 @@ class ReservationRepository extends ServiceEntityRepository
 
     public function getClosest($dateFromMinus, $dateFromPlus, $dateToMinus, $dateToPlus, $roomId)
     {
-        return $this->createQueryBuilder('r')
-            ->select('count(r.room)')
-            ->where('r.datefrom > :dateFromMinus and r.datefrom < :dateFromPlus')
-            ->andWhere('r.dateto > :dateToMinus and r.dateto < :dateToPlus')
-            ->andWhere('r.room=:roomId')
-            ->andWhere('r.status=1')
-            ->setParameter('dateFromMinus', $dateFromMinus)
-            ->setParameter('dateFromPlus', $dateFromPlus)
-            ->setParameter('dateToMinus', $dateToMinus)
-            ->setParameter('dateToPlus', $dateToPlus)
-            ->setParameter('roomId', $roomId)
-            ->getQuery()
-            ->getSingleScalarResult();
+        try {
+            return (int)$this->createQueryBuilder('r')
+                ->select('count(r.room)')
+                ->where('r.datefrom > :dateFromMinus and r.datefrom < :dateFromPlus')
+                ->andWhere('r.dateto > :dateToMinus and r.dateto < :dateToPlus')
+                ->andWhere('r.room=:roomId')
+                ->andWhere('r.status=1')
+                ->setParameter('dateFromMinus', $dateFromMinus)
+                ->setParameter('dateFromPlus', $dateFromPlus)
+                ->setParameter('dateToMinus', $dateToMinus)
+                ->setParameter('dateToPlus', $dateToPlus)
+                ->setParameter('roomId', $roomId)
+                ->getQuery()
+                ->getSingleResult();
+        } catch (NoResultException $e) {
+        } catch (NonUniqueResultException $e) {
+        }
     }
 }

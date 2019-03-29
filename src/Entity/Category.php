@@ -3,13 +3,10 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\CategoryRepository")
+ * @Doctrine\ORM\Mapping\Entity(repositoryClass="App\Repository\CategoryRepository")
  */
 class Category
 {
@@ -20,15 +17,15 @@ class Category
     }
 
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @Doctrine\ORM\Mapping\Id()
+     * @Doctrine\ORM\Mapping\GeneratedValue()
+     * @Doctrine\ORM\Mapping\Column(type="integer")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string")
-     * @Assert\NotBlank()
+     * @Doctrine\ORM\Mapping\Column(type="string")
+     * @Symfony\Component\Validator\Constraints\NotBlank()
      */
     private $name;
 
@@ -36,7 +33,12 @@ class Category
     private $rooms;
 
     /**
-     * @return Collection|Room[]
+     * @Doctrine\ORM\Mapping\Column(type="boolean")
+     */
+    private $hidden = 0;
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection|Room[]
      */
     public function getRooms()
     {
@@ -73,5 +75,21 @@ class Category
     public function setName($name): void
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHidden()
+    {
+        return $this->hidden;
+    }
+
+    /**
+     * @param mixed $hidden
+     */
+    public function setHidden($hidden): void
+    {
+        $this->hidden = $hidden;
     }
 }

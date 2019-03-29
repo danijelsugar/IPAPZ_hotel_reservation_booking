@@ -3,30 +3,23 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
-use App\Entity\Reservation;
-use App\Entity\SubCategory;
-use App\Entity\Category;
-use App\Entity\Room;
 use App\Form\CategoryFormType;
 use App\Form\UserFormType;
 use App\Form\OrderByFormType;
-use App\Form\ReservationFormType;
 use App\Form\RoomFormType;
 use App\Form\SubCategoryFormType;
 use App\Repository\CategoryRepository;
+use App\Repository\PaymentMethodRepository;
+use App\Repository\TransactionRepository;
 use App\Repository\UserRepository;
 use App\Repository\ReservationRepository;
 use App\Repository\RoomRepository;
 use App\Repository\SubCategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
@@ -43,7 +36,7 @@ class AdminController extends AbstractController
 
 
     /**
-     * @Route("/admin/create-category", name="admin/create-category")
+     * @Symfony\Component\Routing\Annotation\Route("/admin/create-category", name="admin/create-category")
      * @param                           Request $request
      * @param                           EntityManagerInterface $entityManager
      * @param                           CategoryRepository $categoryRepository
@@ -63,11 +56,11 @@ class AdminController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             /**
-             * @var SubCategory $subCategory
+             * @var \App\Entity\SubCategory $subCategory
              */
             $subCategory = $form->getData();
             $entityManager->persist($subCategory);
-            $this->addFlash('success', 'Potkategorija kreirana');
+            $this->addFlash('success', 'Podkategorija kreirana');
             $entityManager->flush();
 
             return $this->redirectToRoute('admin/create-category');
@@ -78,7 +71,7 @@ class AdminController extends AbstractController
         if ($categoryForm->isSubmitted() && $categoryForm->isValid()) {
 
             /**
-             * @var Category $category
+             * @var \App\Entity\Category $category
              */
             $category = $categoryForm->getData();
             $entityManager->persist($category);
@@ -105,7 +98,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/admin/edit-subcategory/{id}", name="admin/edit-subcategory")
+     * @Symfony\Component\Routing\Annotation\Route("/admin/edit-subcategory/{id}", name="admin/edit-subcategory")
      * @param                                 Request $request
      * @param                                 EntityManagerInterface $entityManager
      * @param                                 SubCategoryRepository $subCategoryRepository
@@ -130,7 +123,7 @@ class AdminController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             /**
-             * @var SubCategory $subCategory
+             * @var \App\Entity\SubCategory $subCategory
              */
             $subCategory = $form->getData();
             $entityManager->flush();
@@ -153,13 +146,13 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/admin/delete-subcategory/{id}", name="admin/delete-subcategory")
+     * @Symfony\Component\Routing\Annotation\Route("/admin/hide-subcategory/{id}", name="admin/hide-subcategory")
      * @param                                   EntityManagerInterface $entityManager
      * @param                                   SubCategoryRepository $subCategoryRepository
      * @param                                   $id
      * @return                                  Response
      */
-    public function deleteSubcategory(
+    public function hideSubcategory(
         EntityManagerInterface $entityManager,
         SubCategoryRepository $subCategoryRepository,
         $id
@@ -170,15 +163,40 @@ class AdminController extends AbstractController
             ]
         );
 
-        $entityManager->remove($subCategory);
-        $this->addFlash('success', 'Potkategorija obrisana');
+        $subCategory->setHidden(1);
+        $this->addFlash('success', 'Potkategorija uklonjena');
         $entityManager->flush();
 
         return $this->redirectToRoute('admin/create-category');
     }
 
     /**
-     * @Route("/admin/edit-category/{id}", name="admin/edit-category")
+     * @Symfony\Component\Routing\Annotation\Route("/admin/activate-subcategory/{id}", name="admin/activate-subcategory")
+     * @param                                   EntityManagerInterface $entityManager
+     * @param                                   SubCategoryRepository $subCategoryRepository
+     * @param                                   $id
+     * @return                                  Response
+     */
+    public function activateSubcategory(
+        EntityManagerInterface $entityManager,
+        SubCategoryRepository $subCategoryRepository,
+        $id
+    ) {
+        $subCategory = $subCategoryRepository->findOneBy(
+            [
+                'id' => $id
+            ]
+        );
+
+        $subCategory->setHidden(0);
+        $this->addFlash('success', 'Potkategorija aktivirana');
+        $entityManager->flush();
+
+        return $this->redirectToRoute('admin/create-category');
+    }
+
+    /**
+     * @Symfony\Component\Routing\Annotation\Route("/admin/edit-category/{id}", name="admin/edit-category")
      * @param                              Request $request
      * @param                              EntityManagerInterface $entityManager
      * @param                              CategoryRepository $categoryRepository
@@ -202,7 +220,7 @@ class AdminController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             /**
-             * @var Category $category
+             * @var \App\Entity\Category $category
              */
             $category = $form->getData();
             $entityManager->flush();
@@ -224,13 +242,13 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/admin/delete-category/{id}", name="admin/delete-category")
+     * @Symfony\Component\Routing\Annotation\Route("/admin/hide-category/{id}", name="admin/hide-category")
      * @param                                EntityManagerInterface $entityManager
      * @param                                CategoryRepository $categoryRepository
      * @param                                $id
      * @return                               Response
      */
-    public function deleteCategory(
+    public function hideategory(
         EntityManagerInterface $entityManager,
         CategoryRepository $categoryRepository,
         $id
@@ -241,27 +259,70 @@ class AdminController extends AbstractController
             ]
         );
 
-        $entityManager->remove($category);
-        $this->addFlash('success', 'Kategorija obrisana');
+        $category->setHidden(1);
+        $this->addFlash('success', 'Kategorija Uklonjena');
         $entityManager->flush();
 
         return $this->redirectToRoute('admin/create-category');
     }
 
     /**
-     * @Route("/admin/create-room", name="admin/create-room")
+     * @Symfony\Component\Routing\Annotation\Route("/admin/activate-category/{id}", name="admin/activate-category")
+     * @param                                EntityManagerInterface $entityManager
+     * @param                                CategoryRepository $categoryRepository
+     * @param                                $id
+     * @return                               Response
+     */
+    public function activateCategory(
+        EntityManagerInterface $entityManager,
+        CategoryRepository $categoryRepository,
+        $id
+    ) {
+        $category = $categoryRepository->findOneBy(
+            [
+                'id' => $id
+            ]
+        );
+
+        $category->setHidden(0);
+        $this->addFlash('success', 'Kategorija aktivirana');
+        $entityManager->flush();
+
+        return $this->redirectToRoute('admin/create-category');
+    }
+
+    /**
+     * @Symfony\Component\Routing\Annotation\Route("/admin/all-rooms", name="admin/all-rooms")
+     * @param RoomRepository $roomRepository
+     * @return                         \Symfony\Component\HttpFoundation\Response
+     */
+    public function allRooms(RoomRepository $roomRepository)
+    {
+        $rooms = $roomRepository->findAll();
+
+        return $this->render(
+            'admin/all_rooms.html.twig',
+            [
+                'rooms' => $rooms
+            ]
+        );
+    }
+
+    /**
+     * @Symfony\Component\Routing\Annotation\Route("/admin/create-room", name="admin/create-room")
      * @param                       Request $request
      * @param                       EntityManagerInterface $entityManager
-     * @return                      Response
+     * @param RoomRepository $roomRepository
+     * @return                         \Symfony\Component\HttpFoundation\Response
      */
-    public function createRoom(Request $request, EntityManagerInterface $entityManager)
+    public function createRoom(Request $request, EntityManagerInterface $entityManager, RoomRepository $roomRepository)
     {
         $form = $this->createForm(RoomFormType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             /**
-             * @var Room $room
+             * @var \App\Entity\Room $room
              */
 
             $room = $form->getData();
@@ -275,20 +336,130 @@ class AdminController extends AbstractController
             } catch (FileException $e) {
                 // ... handle exception if something happens during file upload
             }
+
             $room->setImage($fileName);
             $entityManager->persist($room);
             $this->addFlash('success', 'Kreirana nova soba');
             $entityManager->flush();
 
-            return $this->redirectToRoute('admin/create-room');
+            return $this->redirectToRoute('admin/all-rooms');
         }
+
+        $rooms = $roomRepository->findAll();
 
         return $this->render(
             'admin/rooms.html.twig',
             [
+                'form' => $form->createView(),
+                'rooms' => $rooms
+            ]
+        );
+    }
+
+    /**
+     * @Symfony\Component\Routing\Annotation\Route("/admin/edit-room/{id}", name="admin/edit-room")
+     * @param                          Request $request
+     * @param                          EntityManagerInterface $entityManager
+     * @param                          RoomRepository $roomRepository
+     * @param                          $id
+     * @return                         \Symfony\Component\HttpFoundation\Response
+     */
+    public function editRoom(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        RoomRepository $roomRepository,
+        $id
+    ) {
+
+        $room = $roomRepository->findOneBy(
+            [
+                'id' => $id
+            ]
+        );
+
+        $form = $this->createForm(RoomFormType::class, $room);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /**
+             * @var \App\Entity\Room $room
+             */
+            $room = $form->getData();
+            $file = $room->getImage();
+            $fileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
+            try {
+                $file->move(
+                    $this->getParameter('image_directory'),
+                    $fileName
+                );
+            } catch (FileException $e) {
+                // ... handle exception if something happens during file upload
+            }
+
+            $room->setImage($fileName);
+            $this->addFlash('success', 'Soba promijenjena');
+            $entityManager->flush();
+
+            return $this->redirectToRoute('admin/all-rooms');
+        }
+
+
+        return $this->render(
+            'admin/edit_room.html.twig',
+            [
                 'form' => $form->createView()
             ]
         );
+    }
+
+    /**
+     * @Symfony\Component\Routing\Annotation\Route("/admin/disable-room/{id}", name="admin/disable-room")
+     * @param                            EntityManagerInterface $entityManager
+     * @param                            RoomRepository $roomRepository
+     * @param                            $id
+     * @return                           \Symfony\Component\HttpFoundation\Response
+     */
+    public function disableRoom(
+        EntityManagerInterface $entityManager,
+        RoomRepository $roomRepository,
+        $id
+    ) {
+
+        $room = $roomRepository->findOneBy(
+            [
+                'id' => $id
+            ]
+        );
+        $room->setStatus(0);
+        $entityManager->flush();
+
+
+        return $this->redirectToRoute('admin/all-rooms');
+    }
+
+    /**
+     * @Symfony\Component\Routing\Annotation\Route("/admin/enable-room/{id}", name="admin/enable-room")
+     * @param                            EntityManagerInterface $entityManager
+     * @param                            RoomRepository $roomRepository
+     * @param                            $id
+     * @return                           \Symfony\Component\HttpFoundation\Response
+     */
+    public function enableRoom(
+        EntityManagerInterface $entityManager,
+        RoomRepository $roomRepository,
+        $id
+    ) {
+
+        $room = $roomRepository->findOneBy(
+            [
+                'id' => $id
+            ]
+        );
+        $room->setStatus(1);
+        $entityManager->flush();
+
+
+        return $this->redirectToRoute('admin/all-rooms');
     }
 
     /**
@@ -302,7 +473,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/admin/reservations", name="admin/reservations")
+     * @Symfony\Component\Routing\Annotation\Route("/admin/reservations", name="admin/reservations")
      * @param                        ReservationRepository $reservationRepository
      * @param                        Request $request
      * @return                       Response
@@ -329,11 +500,7 @@ class AdminController extends AbstractController
             $condition = 'r.datefrom';
         }
 
-
         $reservation = $reservationRepository->orderReservations($condition);
-
-
-
 
         return $this->render(
             'admin/pending.html.twig',
@@ -345,7 +512,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/admin/accepted", name="admin/accepted")
+     * @Symfony\Component\Routing\Annotation\Route("/admin/accepted", name="admin/accepted")
      * @param                    ReservationRepository $reservationRepository
      * @return                   Response
      */
@@ -364,7 +531,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/admin/declined", name="admin/declined")
+     * @Symfony\Component\Routing\Annotation\Route("/admin/declined", name="admin/declined")
      * @param                    ReservationRepository $reservationRepository
      * @return                   Response
      */
@@ -385,10 +552,9 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/admin/accept/{id}/{roomid}", name="admin/accept")
+     * @Symfony\Component\Routing\Annotation\Route("/admin/accept/{id}/{roomid}", name="admin/accept")
      * @param                                EntityManagerInterface $entityManager
      * @param                                ReservationRepository $reservationRepository
-     * @param                                RoomRepository $roomRepository
      * @param                                $id
      * @param                                $roomid
      * @return                               Response
@@ -396,7 +562,6 @@ class AdminController extends AbstractController
     public function acceptReservation(
         EntityManagerInterface $entityManager,
         ReservationRepository $reservationRepository,
-        RoomRepository $roomRepository,
         $id,
         $roomid
     ) {
@@ -405,36 +570,33 @@ class AdminController extends AbstractController
                 'id' => $id
             ]
         );
+        $dateFrom = $reservation->getDateFrom();
+        $dateTo = $reservation->getDateTo();
+
+        $reservationNum = $reservationRepository->reservationNum($dateFrom, $dateTo, $roomid);
+        if ($reservationNum !== 0) {
+            $this->addFlash('success', 'Rezervacija ne može biti prihvaćena termin je zauzet');
+            return $this->redirectToRoute(
+                'admin/reservations'
+            );
+        }
 
         /**
-         * @var Reservation $reservation
+         * @var \App\Entity\Reservation $reservation
          */
         $reservation->setStatus(1);
         $reservation->setDeclined(0);
-
-        $room = $roomRepository->findOneBy(
-            [
-                'id' => $roomid
-            ]
-        );
-        /**
-         * @var Room $room
-         */
-        $room->setStatus(1);
-        $this->addFlash('success', 'Reservation accepted');
+        $this->addFlash('success', 'Rezervacija prihvaćena');
         $entityManager->flush();
 
 
         return $this->redirectToRoute(
-            'admin/reservations',
-            [
-                'reservations' => $reservation
-            ]
+            'admin/reservations'
         );
     }
 
     /**
-     * @Route("/admin/cancel/{id}/{roomid}", name="admin/cancel")
+     * @Symfony\Component\Routing\Annotation\Route("/admin/cancel/{id}/{roomid}", name="admin/cancel")
      * @param                                EntityManagerInterface $entityManager
      * @param                                ReservationRepository $reservationRepository
      * @param                                $id
@@ -457,7 +619,7 @@ class AdminController extends AbstractController
         );
 
         /**
-         * @var Reservation $reservation
+         * @var \App\Entity\Reservation $reservation
          */
         $reservation->setStatus(0);
         $reservation->setDeclined(1);
@@ -473,31 +635,17 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/admin/decline/{id}/{roomid}", name="admin/decline")
+     * @Symfony\Component\Routing\Annotation\Route("/admin/decline/{id}/{roomid}", name="admin/decline")
      * @param                                 EntityManagerInterface $entityManager
      * @param                                 ReservationRepository $reservationRepository
-     * @param                                 RoomRepository $roomRepository
      * @param                                 $id
-     * @param                                 $roomid
      * @return                                Response
      */
     public function declinelReservation(
         EntityManagerInterface $entityManager,
         ReservationRepository $reservationRepository,
-        RoomRepository $roomRepository,
-        $id,
-        $roomid
+        $id
     ) {
-
-        /**
-         * Getting room info by id and changing room amount
-         */
-        $room = $roomRepository->findOneBy(
-            [
-                'id' => $roomid
-            ]
-        );
-
 
         $reservation = $reservationRepository->findOneBy(
             [
@@ -506,7 +654,7 @@ class AdminController extends AbstractController
         );
 
         /**
-         * @var Reservation $reservation
+         * @var \App\Entity\Reservation $reservation
          */
         $reservation->setDeclined(1);
         $this->addFlash('success', 'Reservation declined');
@@ -521,49 +669,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/admin/edit-reservation/{id}", name="admin/edit-reservation")
-     * @param                                 Request $request
-     * @param                                 EntityManagerInterface $entityManager
-     * @param                                 ReservationRepository $reservationRepository
-     * @param                                 $id
-     * @return                                Response
-     */
-    public function editReservation(
-        Request $request,
-        EntityManagerInterface $entityManager,
-        ReservationRepository $reservationRepository,
-        $id
-    ) {
-        $reservation = $reservationRepository->findOneBy(
-            [
-                'id' => $id
-            ]
-        );
-
-        $form = $this->createForm(ReservationFormType::class, $reservation);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            /**
-             * @var Reservation $reservation
-             */
-            $reservation = $form->getData();
-            $entityManager->flush();
-
-            return $this->redirectToRoute('admin/accepted');
-        }
-
-
-        return $this->render(
-            'admin/edit_reservation.html.twig',
-            [
-                'form' => $form->createView()
-            ]
-        );
-    }
-
-    /**
-     * @Route("admin/employees", name="admin/employees")
+     * @Symfony\Component\Routing\Annotation\Route("admin/employees", name="admin/employees")
      * @param                    EntityManagerInterface $entityManager
      * @param                    Request $request
      * @param                    UserPasswordEncoderInterface $encoder
@@ -583,7 +689,7 @@ class AdminController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             /**
-             * @var User $user
+             * @var \App\Entity\User $user
              */
             $user = $form->getData();
             $user->setRoles(array('ROLE_EMPLOYEE'));
@@ -603,7 +709,7 @@ class AdminController extends AbstractController
             return $this->redirectToRoute('admin/employees');
         }
 
-        $employees = $userRepository->findAll();
+        $employees = $userRepository->findByRole();
 
         return $this->render(
             'admin/employees.html.twig',
@@ -615,7 +721,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/admin/delete-employee/{id}", name="admin/delete-employee")
+     * @Symfony\Component\Routing\Annotation\Route("/admin/delete-employee/{id}", name="admin/delete-employee")
      * @param                                EntityManagerInterface $entityManager
      * @param                                UserRepository $employeeRepository
      * @param                                $id
@@ -640,7 +746,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/admin/edit-employee/{id}", name="admin/edit-employee")
+     * @Symfony\Component\Routing\Annotation\Route("/admin/edit-employee/{id}", name="admin/edit-employee")
      * @param                              Request $request
      * @param                              EntityManagerInterface $entityManager
      * @param                              UserRepository $employeeRepository
@@ -666,7 +772,7 @@ class AdminController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             /**
-             * @var User $employee
+             * @var \App\Entity\User $employee
              */
             $employee = $form->getData();
             $employee->setRoles(array('ROLE_EMPLOYEE'));
@@ -695,7 +801,110 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/register", name="register")
+     * @Symfony\Component\Routing\Annotation\Route("/admin/download/{reservation}", name="admin/pdf-download")
+     * @param $reservation
+     * @param TransactionRepository $transactionRepository
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function downloadPdf($reservation, TransactionRepository $transactionRepository)
+    {
+        /**
+         * @var \App\Entity\Transaction $transaction
+         */
+        $transaction = $transactionRepository->findOneBy(
+            [
+                'reservation' => $reservation
+            ]
+        );
+
+        $fileName = $transaction->getFileName();
+        $filePath = $this->getParameter('kernel.project_dir'). '/public/uploads/invoice/' . $fileName;
+
+        $response = new Response();
+        $response->headers->set('Content-type', 'application/octet-stream');
+        $response->headers->set(
+            'Content-Disposotopn',
+            'attachment; filename="%s"',
+            $fileName
+        );
+        $response->setContent(file_get_contents($filePath));
+        $response->setStatusCode(200);
+        $response->headers->set('Content-Transfer-Encoding', 'binary');
+        $response->headers->set('Pragma', 'no-cache');
+        $response->headers->set('Expires', '0');
+        return $response;
+    }
+
+    /**
+     * @Symfony\Component\Routing\Annotation\Route("/admin/payment-methods", name="admin/payment-methods")
+     * @param PaymentMethodRepository $paymentMethodRepository
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function paymentMethods(PaymentMethodRepository $paymentMethodRepository)
+    {
+
+        $methods = $paymentMethodRepository->findAll();
+
+        return $this->render(
+            'admin/payment_methods.html.twig',
+            [
+                'methods' => $methods
+            ]
+        );
+    }
+
+    /**
+     * @Symfony\Component\Routing\Annotation\Route("/admin/disable-payment-method/{id}", name="admin/disable-payment-method")
+     * @param $id
+     * @param PaymentMethodRepository $paymentMethodRepository
+     * @param EntityManagerInterface $entityManager
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function disablePaymentMethod(
+        $id,
+        PaymentMethodRepository $paymentMethodRepository,
+        EntityManagerInterface $entityManager
+    ) {
+        $method = $paymentMethodRepository->findOneBy(
+            [
+                'id' => $id
+            ]
+        );
+        $method->setEnabled(0);
+        $entityManager->flush();
+
+        return $this->redirectToRoute(
+            'admin/payment-methods'
+        );
+    }
+
+    /**
+     * @Symfony\Component\Routing\Annotation\Route("/admin/enable-payment-method/{id}", name="admin/enable-payment-method")
+     * @param $id
+     * @param PaymentMethodRepository $paymentMethodRepository
+     * @param EntityManagerInterface $entityManager
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function enablePaymentMethod(
+        $id,
+        PaymentMethodRepository $paymentMethodRepository,
+        EntityManagerInterface $entityManager
+    ) {
+        $method = $paymentMethodRepository->findOneBy(
+            [
+                'id' => $id
+            ]
+        );
+        $method->setEnabled(1);
+        $entityManager->flush();
+
+        return $this->redirectToRoute(
+            'admin/payment-methods'
+        );
+    }
+
+    /**
+     * @Symfony\Component\Routing\Annotation\Route("/register", name="register")
      * @param              EntityManagerInterface $entityManager
      * @param              Request $request
      * @param              UserPasswordEncoderInterface $encoder
@@ -713,7 +922,7 @@ class AdminController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             /**
-             * @var User $employee
+             * @var \App\Entity\User $employee
              */
             $employee = $form->getData();
             $employee->setRoles(array('ROLE_USER'));
@@ -741,8 +950,8 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/login", name="app_login")
-     * @Security("not   is_granted('ROLE_USER')")
+     * @Symfony\Component\Routing\Annotation\Route("/login", name="app_login")
+     * @Sensio\Bundle\FrameworkExtraBundle\Configuration\Security("not   is_granted('ROLE_USER')")
      * @param           AuthenticationUtils $authenticationUtils
      * @return          Response
      */
@@ -757,7 +966,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/logout", name="app_logout")
+     * @Symfony\Component\Routing\Annotation\Route("/logout", name="app_logout")
      */
     public function logout()
     {

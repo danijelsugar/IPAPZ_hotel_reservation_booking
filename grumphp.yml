@@ -6,7 +6,7 @@ parameters:
     hooks_preset: local
     tasks:
         phpcs:
-            standard: [PSR2]
+            standard: [inchooRuleset.xml]
             tab_width: ~
             report: full
             report_width: ~

@@ -4,12 +4,12 @@
     <a class="btn btn-primary" href="{{ path('booking') }}">Nazad</a>
     <h1>Sobe</h1>
     <p><strong>Pretražuju se sobe u periodu od {{ dateFrom|date('d.m.Y') }} do {{ dateTo|date('d.m.Y') }}</strong></p>
-    <h3>{{ message }}</h3>
+    <h3>{{ alert }}</h3>
 
     <div class="row">
         <div class="col-12">
-
                 {% for room in rooms %}
+                    {% if room.status is same as(true) %}
                         <div class="row">
                             <div class="col-12">
                                 <p>{{ room.category.name }} {{ room.subcategory.name }}</p>
@@ -21,6 +21,7 @@
                             </div>
                             <div class="col-2">
                                 <p>{{ room.description }}</p>
+                                <p>{{ room.cost }} $</p>
                             </div>
                             <div class="col-3">
                                 <!-- Button trigger modal -->
@@ -50,16 +51,14 @@
                             </div>
                             <div class="col-4">
                                 {% if (is_granted('ROLE_USER')) %}
-                                    <a class="btn btn-primary" href="{{ path('finish_reservation', {'room': room.id}) }}">Rezerviraj</a>
+                                    <a class="btn btn-primary" href="{{ path('paypal-pay', {'id': room.id}) }}">Plačanje PayPal-om</a>
+                                    <a class="btn btn-primary" href="{{ path('invoice-payment', {'id': room.id}) }}">Poduzećem</a>
                                     <a class="btn btn-primary" href="{{ path('room-reviews', {'room': room.id}) }}">Recenzije</a>
-                                {% endif %}
-                                {% if is_granted('ROLE_ADMIN') %}
-                                    <a class="btn btn-info" href="{{ path('admin/edit-room', {'id': room.id}) }}">Uredi</a>
-                                    <a class="btn btn-danger" href="{{ path('admin/delete-room', {'id': room.id}) }}">Obriši</a>
                                 {% endif %}
                             </div>
                         </div>
                         <hr>
+                    {% endif %}
                 {% endfor %}
         </div>
     </div>

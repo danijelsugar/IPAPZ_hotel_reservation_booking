@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="row">
+    <div class="col-12">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Naziv</th>
+                    <th>Omogućeno/Onemogućeno</th>
+                    <th>Akcija</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for method in methods %}
+                <tr>
+                    <td>{{ method.method }}</td>
+                    <td>
+                        {% if method.enabled is same as(true) %}
+                            Omogućeno
+                        {% else %}
+                            Onemogućeno
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if method.enabled is same as(true) %}
+                            <a class="btn btn-primary" href="{{ path('admin/disable-payment-method', {'id': method.id}) }}">Onemogući</a>
+                        {% else %}
+                            <a class="btn btn-primary" href="{{ path('admin/enable-payment-method', {'id': method.id}) }}">Omogući</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

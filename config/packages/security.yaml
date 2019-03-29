@@ -41,4 +41,7 @@ security:
      - { path: ^/admin/cancel, roles: [ROLE_EMPLOYEE, ROLE_ADMIN] }
      - { path: ^/admin/edit-reservation, roles: [ROLE_EMPLOYEE, ROLE_ADMIN] }
      - { path: ^/admin/, roles: ROLE_ADMIN }
+     - { path: ^/register, allow_if: "is_anonymous()" }
     # - { path: ^/profile, roles: ROLE_USER }
+
+    access_denied_url: home

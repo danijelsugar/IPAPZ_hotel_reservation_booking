@@ -7,10 +7,11 @@ use App\Entity\Reservation;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\GreaterThan;
+use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ReservationFormType extends AbstractType
 {
@@ -22,9 +23,20 @@ class ReservationFormType extends AbstractType
                 DateType::class,
                 [
                     'widget' => 'single_text',
-                    'attr' => ['class' => 'js-datepicker'],
+                    'attr' =>
+                        [
+                            'class' => 'js-datepicker',
+                            'autocomplete' => 'off'
+                        ],
                     'html5' => false,
-                    'format' => 'dd.MM.yyyy.'
+                    'format' => 'dd.MM.yyyy.',
+                    'constraints' =>
+                        [
+                            new NotBlank(),
+                            new GreaterThanOrEqual('today')
+                        ],
+                    'invalid_message' => 'Promijeni zavrsni datum',
+
                 ]
             )
             ->add(
@@ -32,9 +44,20 @@ class ReservationFormType extends AbstractType
                 DateType::class,
                 [
                     'widget' => 'single_text',
-                    'attr' => ['class' => 'js-datepicker'],
+                    'attr' =>
+                        [
+                            'class' => 'js-datepicker',
+                            'autocomplete' => 'off'
+                        ],
                     'html5' => false,
-                    'format' => 'dd.MM.yyyy.'
+                    'format' => 'dd.MM.yyyy.',
+                    'constraints' =>
+                        [
+                            new NotBlank(),
+                            new GreaterThan('today')
+                        ],
+                    'invalid_message' => 'Promijeni zavrsni datum',
+
                 ]
             )
             ->add(

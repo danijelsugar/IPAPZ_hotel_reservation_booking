@@ -5,10 +5,12 @@ namespace App\Form;
 use App\Entity\Category;
 use App\Entity\Room;
 use App\Entity\SubCategory;
+use App\Repository\CategoryRepository;
+use App\Repository\SubCategoryRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -36,10 +38,15 @@ class RoomFormType extends AbstractType
                 [
                     'label' => 'Kategorija',
                     'class' => Category::class,
+                    'query_builder' => function (CategoryRepository $cr) {
+                        return $cr->createQueryBuilder('c')
+                            ->where('c.hidden=:status')
+                            ->setParameter(':status', false);
+                    },
                     'attr' => [
                         'class' => 'form-control'
                     ],
-                    'choice_label' => 'name'
+                    'choice_label' => 'name',
                 ]
             )
             ->add(
@@ -48,6 +55,11 @@ class RoomFormType extends AbstractType
                 [
                     'label' => 'Potkategorija',
                     'class' => SubCategory::class,
+                    'query_builder' => function (SubCategoryRepository $sr) {
+                        return $sr->createQueryBuilder('s')
+                            ->where('s.hidden=:status')
+                            ->setParameter(':status', false);
+                    },
                     'attr' => [
                         'class' => 'form-control'
                     ],
@@ -67,6 +79,15 @@ class RoomFormType extends AbstractType
                 NumberType::class,
                 [
                     'label' => 'Kapacitet sobe',
+                    'attr' => [
+                        'class' => 'form-control'
+                    ]
+                ]
+            )->add(
+                'cost',
+                MoneyType::class,
+                [
+                    'label' => 'Cijena sobe po danu',
                     'attr' => [
                         'class' => 'form-control'
                     ]
