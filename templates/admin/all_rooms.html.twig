@@ -47,19 +47,13 @@
                         </div>
                     </div>
                     <div class="col-4">
-                        {% if (is_granted('ROLE_USER')) %}
-                            <a class="btn btn-primary" href="{{ path('paypal-pay', {'id': room.id}) }}">Plačanje PayPal-om</a>
-                            <a class="btn btn-primary" href="{{ path('invoice-payment', {'id': room.id}) }}">Poduzećem</a>
                             <a class="btn btn-primary" href="{{ path('room-reviews', {'room': room.id}) }}">Recenzije</a>
-                        {% endif %}
-                        {% if is_granted('ROLE_ADMIN') %}
                             <a class="btn btn-info" href="{{ path('admin/edit-room', {'id': room.id}) }}">Uredi</a>
                             {% if room.status is same as(true) %}
                                 <a class="btn btn-danger" href="{{ path('admin/disable-room', {'id': room.id}) }}">Makni vidljivost</a>
                             {% else %}
                                 <a class="btn btn-primary" href="{{ path('admin/enable-room', {'id': room.id}) }}">Vrati vidljivost</a>
                             {% endif %}
-                        {% endif %}
                     </div>
                 </div>
                 <hr>

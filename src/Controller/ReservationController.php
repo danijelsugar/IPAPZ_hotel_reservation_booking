@@ -3,11 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Reservation;
+use App\Entity\Room;
+use App\Entity\Transaction;
 use App\Form\OrderByFormType;
 use App\Form\ReservationFormType;
 use App\Repository\ReservationRepository;
 use App\Repository\TransactionRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -79,6 +83,7 @@ class ReservationController extends AbstractController
      * @param                          Request $request
      * @param                          EntityManagerInterface $entityManager
      * @param                          ReservationRepository $reservationRepository
+     * @param TransactionRepository $transactionRepository
      * @param                          $id
      * @return                         \Symfony\Component\HttpFoundation\Response
      */
@@ -86,6 +91,7 @@ class ReservationController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager,
         ReservationRepository $reservationRepository,
+        TransactionRepository $transactionRepository,
         $id
     ) {
 
@@ -112,6 +118,15 @@ class ReservationController extends AbstractController
             if ($res === 0) {
                 $this->addFlash('success', 'Rezervacija promijenjena');
                 $entityManager->flush();
+                $totalDays = $dateTo->diff($dateFrom);
+                $costPerNight = $room->getCost();
+                $amount = $costPerNight * $totalDays->days;
+                $transaction = $transactionRepository->findOneBy(
+                    [
+                        'reservation' => $reservation->getId()
+                    ]
+                );
+                self:$this->createPdf($room, $reservation, $entityManager, $amount, $transaction);
                 return $this->redirectToRoute(
                     'user-reservations'
                 );
@@ -129,6 +144,65 @@ class ReservationController extends AbstractController
                 'form' => $form->createView(),
             ]
         );
+    }
+
+    /**
+     * @param Room $room
+     * @param Reservation $reservation
+     * @param EntityManagerInterface $entityManager
+     * @param Transaction $transaction
+     * @param $amount
+     */
+    public function createPdf(
+        Room $room,
+        Reservation $reservation,
+        EntityManagerInterface $entityManager,
+        $amount,
+        Transaction $transaction
+    ) {
+        // Configure Dompdf
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'Arial');
+
+        // Instantiate Dompdf with options
+        $dompdf = new Dompdf($pdfOptions);
+
+        // Retrieve the HTML generated in twig file
+        $html = $this->renderView(
+            'invoice/pdf.html.twig',
+            [
+                'title' => "Welcome to our PDF Test",
+                'room' => $room,
+                'reservation' => $reservation,
+                'user' => $this->getUser(),
+                'amount' => $amount
+            ]
+        );
+        $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
+
+        $pdfName = date('Y') . $reservation->getId() . $this->getUser()->getId() . '.pdf';
+
+        $transaction->setTransactionId($pdfName);
+        $transaction->setFileName($pdfName);
+        $entityManager->persist($transaction);
+        $entityManager->flush();
+
+        // Load HTML to Dompdf
+        $dompdf->loadHtml($html);
+
+        // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
+        $dompdf->setPaper('A4', 'portrait');
+
+        // Render the HTML as PDF
+        $dompdf->render();
+
+        $output = $dompdf->output();
+
+        $publicDirectory = '../public/uploads/invoice/';
+
+        $pdfFilePath = $publicDirectory . $pdfName;
+
+        file_put_contents($pdfFilePath, $output);
     }
 
     /**
