@@ -41,7 +41,10 @@
                 {% endif %}
                 {% if (is_granted('ROLE_ADMIN')) %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('admin/create-category') }}">Dodaj kategoriju</a>
+                        <a class="nav-link" href="{{ path('admin/create-category') }}">Kategorije</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('admin/create-subcategory') }}">Podkategorije</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('admin/all-rooms') }}">Sobe</a>

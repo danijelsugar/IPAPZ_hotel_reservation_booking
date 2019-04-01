@@ -13,8 +13,7 @@
                     <p><strong>Soba:</strong> {{ reservation.room.category.name }} {{ reservation.room.subcategory.name }}</p>
                 </div>
                 <div class="dec-acc col-6">
-                    <a class="btn btn-warning" href="{{ path('admin/cancel', {'id': reservation.id,
-                    'roomid': reservation.room.id}) }}">Otkaži</a>
+                    <a class="btn btn-warning" href="{{ path('admin/cancel', {'id': reservation.id}) }}">Otkaži</a>
                 </div>
             </div>
             <hr>
