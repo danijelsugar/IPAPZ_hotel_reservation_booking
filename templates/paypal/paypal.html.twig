@@ -6,12 +6,12 @@
         <div class="checkout container">
             <header>
                 <p>
-                    Pay using PayPal or credit card
+                    Plaćanje paypal-om
                 </p>
             </header>
             <h3>Soba: {{ room.category.name }} {{ room.subcategory.name }} </h3>
             <h3>Cijena po danu: {{ room.cost }}€  </h3>
-            <h3>Price to pay: {{ totalCost }}€ </h3>
+            <h3>Ukupno za platiti: {{ totalCost }}€ </h3>
             <form method="post" id="payment-form" action="{{ path('paypal-payment', {'id': room.id}) }}">
                 <section>
                     <div class="bt-drop-in-wrapper">

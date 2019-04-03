@@ -1,12 +1,17 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {{ form_start(form) }}
-        {{ form_row(form.datefrom) }}
-        {{ form_row(form.dateto) }}
-        {{ form_row(form.personNum) }}
-        <button type="submit" class="btn btn-primary mt-3" formnovalidate>Save</button>
-    {{ form_end(form) }}
+    <div class="row">
+        <div class="col-3 offset-4">
+            {{ form_start(form) }}
+                {{ form_row(form.datefrom) }}
+                {{ form_row(form.dateto) }}
+                {{ form_row(form.personNum) }}
+                <button type="submit" class="btn btn-primary mt-3" formnovalidate>Save</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+
 
 {% endblock %}
 

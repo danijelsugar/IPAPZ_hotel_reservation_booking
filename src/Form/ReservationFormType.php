@@ -25,7 +25,7 @@ class ReservationFormType extends AbstractType
                     'widget' => 'single_text',
                     'attr' =>
                         [
-                            'class' => 'js-datepicker',
+                            'class' => 'js-datepicker form-control',
                             'autocomplete' => 'off'
                         ],
                     'html5' => false,
@@ -36,6 +36,7 @@ class ReservationFormType extends AbstractType
                             new GreaterThanOrEqual('today')
                         ],
                     'invalid_message' => 'Promijeni zavrsni datum',
+                    'label' => 'Datum od'
 
                 ]
             )
@@ -46,7 +47,7 @@ class ReservationFormType extends AbstractType
                     'widget' => 'single_text',
                     'attr' =>
                         [
-                            'class' => 'js-datepicker',
+                            'class' => 'js-datepicker form-control',
                             'autocomplete' => 'off'
                         ],
                     'html5' => false,
@@ -57,6 +58,7 @@ class ReservationFormType extends AbstractType
                             new GreaterThan('today')
                         ],
                     'invalid_message' => 'Promijeni zavrsni datum',
+                    'label' => 'Datum do'
 
                 ]
             )

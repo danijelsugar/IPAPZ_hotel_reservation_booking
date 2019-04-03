@@ -51,8 +51,8 @@
                             </div>
                             <div class="col-4">
                                 {% if (is_granted('ROLE_USER')) %}
-                                    <a class="btn btn-primary" href="{{ path('paypal-pay', {'id': room.id}) }}">Plačanje PayPal-om</a>
-                                    <a class="btn btn-primary" href="{{ path('invoice-payment', {'id': room.id}) }}">Poduzećem</a>
+                                    <a class="btn btn-primary" href="{{ path('paypal-pay', {'id': room.id}) }}">PayPal</a>
+                                    <a class="btn btn-primary" href="{{ path('invoice-payment', {'id': room.id}) }}">Poduzeće</a>
                                     <a class="btn btn-primary" href="{{ path('room-reviews', {'room': room.id}) }}">Recenzije</a>
                                 {% endif %}
                             </div>

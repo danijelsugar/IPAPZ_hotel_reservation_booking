@@ -6,15 +6,20 @@
 {% endblock %}
 
 {% block body %}
-    <h2>booking</h2>
+    <div class="row">
+        <div class="col-3 offset-4">
+            <h2>booking</h2>
 
-    {{ form_start(form) }}
-        {{ form_row(form.datefrom) }}
-        {{ form_row(form.dateto) }}
-        {{ form_row(form.personNum) }}
-        <button type="submit" class="btn btn-primary mt-3" formnovalidate>Save</button>
-        {{ form_rest(form) }}
-    {{ form_start(form) }}
+            {{ form_start(form) }}
+                {{ form_row(form.datefrom) }}
+                {{ form_row(form.dateto) }}
+                {{ form_row(form.personNum) }}
+                <button type="submit" class="btn btn-primary mt-3" formnovalidate>Save</button>
+                {{ form_rest(form) }}
+            {{ form_start(form) }}
+        </div>
+    </div>
+
 {% endblock %}
 
 {% block javascripts %}
