@@ -54,10 +54,6 @@ class UserFormType extends AbstractType
                 RepeatedType::class,
                 [
                     'type' => PasswordType::class,
-                    'label' => 'Lozinka',
-                    'attr' => [
-                        'class' => 'form-control'
-                    ],
                     'mapped' => false,
                     'constraints' => [
                         new NotBlank(
@@ -72,7 +68,10 @@ class UserFormType extends AbstractType
                                 'max' => 4096,
                             ]
                         )
-                    ]
+                    ],
+                    'options' => ['attr' => ['class' => 'form-control']],
+                    'first_options' => ['label' => 'Password'],
+                    'second_options' => ['label' => 'Repeat password']
                 ]
             );
     }
