@@ -74,6 +74,10 @@ class ReservationFormType extends AbstractType
                     ],
                     'label' => 'Broj osoba',
                     'expanded' => true,
+                    'constraints' =>
+                        [
+                            new NotBlank()
+                        ]
 
                 ]
             );
